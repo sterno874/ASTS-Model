@@ -25,7 +25,8 @@ export const CONSTELLATION_ANCHORS = {
   block2ArraySqM: 223,
   block1ArraySqM: 64,
   block2PeakMbps: 200,
-  block1PeakMbps: 98.9
+  block1PeakMbps: 98.9,
+  dataAsOf: "2026-07-04"
 };
 
 /**
@@ -42,6 +43,18 @@ export function coverageFraction(satCount, coverageSats = CONSTELLATION_ANCHORS.
  * @param {number} sats — operational satellites
  * @param {number} subsPerSat — modeled concurrent users per sat (assumption)
  */
+
+export function coverageMilestonePct(satCount) {
+  const { continuousCoverageMin: min, continuousCoverageMax: max } = CONSTELLATION_ANCHORS;
+  const pctToMin = Math.min(100, (satCount / min) * 100);
+  const pctToMax = Math.min(100, (satCount / max) * 100);
+  const status = satCount >= max ? "full" : satCount >= min ? "continuous" : "partial";
+  return { pctToMin, pctToMax, status };
+}
+
+export function addressableWholesaleFrac(orbitalCoverage) {
+  return Math.max(0.05, orbitalCoverage * 0.25 + 0.1);
+}
 export function subscriberCapacityM(sats, subsPerSat) {
   return (sats * subsPerSat) / 1e6;
 }
@@ -54,9 +67,11 @@ export function subscriberCapacityM(sats, subsPerSat) {
  * @param {number} p.arpuMonthly — wholesale $/sub/month
  * @param {number} p.coverageFrac — fraction of addressable time in dead zones (0–1)
  */
-export function wholesaleRevenueProxyM({ mnoSubsM, penetration, arpuMonthly, coverageFrac = 0.15 }) {
-  const activeSubsM = mnoSubsM * penetration * coverageFrac;
-  return activeSubsM * arpuMonthly * 12;
+export function wholesaleRevenueProxyM({ mnoSubsM, penetration, arpuMonthly, orbitalCoverage, coverageFrac, deadZoneFrac }) {
+  const oc = orbitalCoverage ?? coverageFrac ?? 0;
+  const addressableFrac = deadZoneFrac != null ? Math.max(0.05, oc * deadZoneFrac) : addressableWholesaleFrac(oc);
+  const activeSubsM = mnoSubsM * penetration * addressableFrac;
+  return { activeSubsM, addressableFrac, annualRevenueM: activeSubsM * arpuMonthly * 12 };
 }
 
 /**
@@ -73,8 +88,8 @@ export function computeConstellationMetrics(state) {
   const coverageFrac = coverageFraction(sats, coverageSats);
 
   const capacityM = subscriberCapacityM(sats, subsPerSat);
-  const revProxyM = wholesaleRevenueProxyM({ mnoSubsM, penetration, arpuMonthly, coverageFrac: Math.max(0.05, coverageFrac * 0.25 + 0.1) });
-  const pctToContinuous = Math.min(100, (sats / coverageSats) * 100);
+  const milestones = coverageMilestonePct(sats);
+  const rev = wholesaleRevenueProxyM({ mnoSubsM, penetration, arpuMonthly, orbitalCoverage: coverageFrac });
   const pctToTarget = Math.min(100, (sats / target) * 100);
 
   return {
@@ -83,8 +98,8 @@ export function computeConstellationMetrics(state) {
     coverageSats,
     coverageFrac,
     capacityM,
-    revProxyM,
-    pctToContinuous,
+    revProxyM: rev.annualRevenueM, activeSubsM: rev.activeSubsM, addressableFrac: rev.addressableFrac,
+    pctToContinuous: milestones.pctToMin, pctToFullCoverage: milestones.pctToMax, coverageStatus: milestones.status,
     pctToTarget,
     subsPerSat,
     mnoSubsM,
