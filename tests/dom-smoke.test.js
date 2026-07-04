@@ -62,6 +62,9 @@ test("constellation tab has Monte Carlo controls", () => {
 test("valuation tab has dilution path table", () => {
   assert.match(html, /id="dilNotesBody"/);
   assert.match(html, /id="dilPrice"/);
+  assert.match(html, /data-dilution-stress="280"/);
+  assert.match(html, /id="vVsMkt"/);
+  assert.match(html, /Q1 2026 filing anchors/);
 });
 
 test("community DD expandable panel present", () => {
