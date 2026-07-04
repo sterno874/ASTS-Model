@@ -19,7 +19,7 @@ import {
 } from "./math/commercial.js";
 import { runLaunchMonteCarlo, LAUNCH_MC_PRESETS } from "./math/monte-carlo.js";
 import { computeFullyDilutedSharesM, CONVERTIBLE_NOTES, evPerShareFd } from "./math/dilution.js";
-import { computeCoverageOrbit } from "./math/coverage-orbit.js";
+import { computeCoverageOrbit, US_COVERAGE_SOURCES } from "./math/coverage-orbit.js";
 import {
   VALID_TABS,
   EXPLAIN_LEVELS,
@@ -203,7 +203,7 @@ function updateConstUI() {
   const cal = $("cLaunchCal");
   if (cal) {
     const evts = launchSchedule({ startSats: m.sats, targetSats: m.target, satsPerLaunch: c.satsPerLaunch, intervalMonths: c.launchInterval });
-    cal.innerHTML = evts.map((e) => `<div class="fact"><b>${e.label}</b><br/>~${formatCatalystMonth(`${e.year}-${String(Math.round(e.month)).padStart(2, "0")}`)} · ${e.satsAfter} sats<br/><span class="tag m">model</span></div>`).join("");
+    cal.innerHTML = evts.map((e) => `<div class="fact"><b>${e.label}</b><br/>~${formatCatalystMonth(`${e.year}-${String(Math.round(e.month)).padStart(2, "0")}`)} · ${e.satsAfter} sats<br/><span class="tag ${e.milestoneTag === "verified" ? "f" : "m"}">${e.milestoneTag === "verified" ? "verified" : "model"}</span></div>`).join("");
   }
   renderBands($, (id) => {
     const key = id.replace("mk-", "");
@@ -271,7 +271,7 @@ function updateDilutionUI(valMetrics) {
 function updateCoverageOrbitUI() {
   const co = {
     sats: +($("coSats")?.value ?? state.coverageOrbit.sats ?? 10),
-    continuousSats: +($("coContinuousSats")?.value ?? 45),
+    continuousSats: +($("coContinuousSats")?.value ?? US_COVERAGE_SOURCES.min),
     minElevDeg: +($("coMinElev")?.value ?? 25),
     altKm: state.link.altKm ?? 550,
     satsPerLaunch: state.constellation.satsPerLaunch ?? 3,
@@ -286,12 +286,16 @@ function updateCoverageOrbitUI() {
   set("coRadius", r.radiusKm.toFixed(0) + " km");
   set("coOverlap", fmtPct(r.overlapFrac * 100));
   set("coContinuous", fmtPct(r.continuousFrac * 100));
+  set("coMonths45", r.sats >= US_COVERAGE_SOURCES.min ? "reached" : r.monthsTo45Label);
+  set("coMonths60", r.sats >= US_COVERAGE_SOURCES.max ? "reached" : r.monthsTo60Label);
+  set("coFPct", r.heuristic.fPct.toFixed(3) + "%");
+  const note = $("coOverlapNote"); if (note) note.textContent = r.heuristic.note;
   const tl = $("coTimeline");
   if (tl) {
     tl.innerHTML = r.timeline
       .map(
         (e) =>
-          `<div class="fact"><b>${e.label}</b><br/>~${e.month.toFixed(1)} mo · overlap ${fmtPct(e.overlapFrac * 100)}<br/><span class="tag m">model</span></div>`
+          `<div class="fact"><b>${e.label}</b><br/>${e.monthLabel} · overlap ${fmtPct(e.overlapFrac * 100)}<br/><span class="tag ${e.milestoneTag === "verified" ? "f" : "m"}">${e.milestoneTag === "verified" ? "verified" : "model"}</span></div>`
       )
       .join("");
   }
@@ -320,6 +324,12 @@ function drawCoverageSvg(r) {
     <text x="${cx}" y="210" text-anchor="middle" font-size="10" fill="#141b26">Overlap ${(r.overlapFrac * 100).toFixed(1)}% · Continuous proxy ${(r.continuousFrac * 100).toFixed(1)}%</text>`;
 }
 
+
+function drawD2cArchSvg() {
+  const svg = $("d2cArchSvg");
+  if (!svg) return;
+  svg.innerHTML = `<rect width="480" height="200" fill="#f8fafc"/><rect x="200" y="18" width="80" height="28" rx="4" fill="#141b26"/><text x="240" y="36" text-anchor="middle" font-size="10" fill="#fff">BlueBird</text><rect x="216" y="92" width="48" height="64" rx="6" fill="#1f9d55"/><text x="240" y="118" text-anchor="middle" font-size="9" fill="#fff">Phone</text><rect x="330" y="96" width="88" height="56" rx="4" fill="#fff" stroke="#dde2e8"/><text x="374" y="118" text-anchor="middle" font-size="9">MNO</text>`;
+}
 
 function updateCommercialUI() {
   const year = +($("ccalendarYear")?.value ?? 2026);
@@ -703,6 +713,7 @@ function init() {
 
   buildBands($);
   renderStaticPanels();
+  drawD2cArchSvg();
   initFactsAsOf();
 
   document.querySelectorAll(".tabbtn").forEach((b) => {

@@ -113,7 +113,7 @@
     </div>
     <div class="card">
       <h2>Model outputs</h2>
-      <div class="outgrid">
+      <div class="outgrid co-outgrid">
         <div><div class="ok">Coverage fraction</div><div class="ov" id="cCovFrac">—</div></div>
         <div><div class="ok">→ Continuous coverage</div><div class="ov" id="cPctContinuous">—</div></div>
         <div><div class="ok">Concurrent capacity</div><div class="ov" id="cCapacity">—</div></div>
@@ -274,14 +274,16 @@
       <div class="howworks-body"><p><span class="tag m">Model</span> Simplified Friis link budget + footprint geometry. Educational — not AST proprietary RF planning or ITU/FCC compliance model.</p></div>
     </details>
   </div>
-  <div class="facts page-inner">
+  <div class="facts page-inner" id="d2c-architecture">
     <h2>Direct-to-cell architecture <span class="tag f">verified concept</span></h2>
-    <p class="field-note">Large LEO phased array → beam to handset using MNO-licensed low-band spectrum (700/800 MHz SCS). Ground gateways integrate with partner core networks. <a href="https://www.datacenterdynamics.com/en/news/fcc-gives-ast-spacemobile-the-go-ahead-to-launch-satellite-broadband-service/" target="_blank" rel="noopener">DCD</a> · <a href="https://www.fcc.gov/document/fcc-grants-ast-spacemobile-authority-deploy-and-operate-ngso-system" target="_blank" rel="noopener">FCC</a></p>
-    <div class="factgrid">
-      <div class="fact"><b>Block 1 array</b> ~64 m² · 98.9 Mbps peak demo</div>
+    <p class="field-note">Large LEO phased array → beam to handset using MNO-licensed low-band spectrum (700/800 MHz SCS). Ground gateways integrate with partner core networks — AST is wholesale capacity. <a href="https://www.datacenterdynamics.com/en/news/fcc-gives-ast-spacemobile-the-go-ahead-to-launch-satellite-broadband-service/" target="_blank" rel="noopener">DCD</a> · <a href="https://www.fcc.gov/document/fcc-grants-ast-spacemobile-authority-deploy-and-operate-ngso-system" target="_blank" rel="noopener">FCC DA 26-391</a></p>
+    <div class="tech-sim-wrap d2c-arch-wrap"><svg id="d2cArchSvg" class="tech-sim-svg" viewBox="0 0 480 200" role="img" aria-label="D2C architecture"></svg><p class="tech-sim-legend"><span class="tag m">Schematic</span> BlueBird → phone → MNO core via gateway.</p></div>
+    <div class="factgrid d2c-factgrid">
+      <div class="fact" data-as-of="2024-09"><b>Block 1 array</b> ~64 m² · 98.9 Mbps peak demo<br/><span class="cite"><a href="https://ast-science.com/" target="_blank" rel="noopener">IR</a></span></div>
       <div class="fact"><b>Block 2 array</b> ~223 m² · ~200 Mbps peak target</div>
       <div class="fact"><b>Patents</b> 3,900+ claims per IR</div>
-      <div class="fact"><b>Manufacturing</b> ~500k sq ft Midland TX</div>
+      <div class="fact" data-as-of="2026-04-21"><b>Continuous US coverage</b> 45–60 sats<br/><span class="cite"><a href="https://spacenews.com/fcc-clears-ast-spacemobile-constellation-as-launch-setback-clouds-ramp-up/" target="_blank" rel="noopener">SpaceNews Apr 2026</a></span></div>
+      <div class="fact" data-as-of="2026-06-17"><b>Manufacturing</b> ~500k sq ft Midland TX</div>
     </div>
   </div>
   <div class="wrap" id="link-budget-sim">
@@ -315,9 +317,11 @@
   <div class="wrap" id="coverage-orbit-sim">
     <div class="card">
       <h2>Coverage footprint sim</h2>
-      <div class="ctrl"><label>Operational satellites <span id="coSatsVal">10</span></label><input type="range" id="coSats" min="1" max="80" step="1" value="10"/></div>
-      <div class="ctrl"><label>Continuous coverage threshold <span id="coContinuousSatsVal">45</span></label><input type="range" id="coContinuousSats" min="30" max="80" step="1" value="45"/></div>
+      <p class="field-note">Overlap heuristic below — not orbital simulation.</p>
+      <div class="ctrl"><label>Operational satellites <span id="coSatsVal">10</span></label><input type="range" id="coSats" min="1" max="80" step="1" value="10"/><small class="source-line"><span class="tag f">Verified</span> ~10 operational Jul 2026. <a href="https://www.businesswire.com/news/home/20260617420856/en/" target="_blank" rel="noopener">Launch PR</a></small></div>
+      <div class="ctrl"><label>Continuous coverage threshold <span id="coContinuousSatsVal">45</span></label><input type="range" id="coContinuousSats" min="30" max="80" step="1" value="45"/><small class="source-line"><span class="tag f">Verified</span> Company range <b>45–60</b> sats. <a href="https://spacenews.com/fcc-clears-ast-spacemobile-constellation-as-launch-setback-clouds-ramp-up/" target="_blank" rel="noopener">SpaceNews</a></small></div>
       <div class="ctrl"><label>Min elevation (°) <span id="coMinElevVal">25</span></label><input type="range" id="coMinElev" min="10" max="45" step="1" value="25"/></div>
+      <details class="co-overlap-explainer"><summary>Overlap heuristic <span class="tag m">model</span></summary><div class="co-overlap-body"><p><code>1 − (1 − f)^N</code> · f = <span id="coFPct">—</span></p><p class="field-note" id="coOverlapNote">Independent disks heuristic.</p></div></details>
     </div>
     <div class="card">
       <h2>Coverage outputs</h2>
@@ -325,12 +329,15 @@
         <div><div class="ok">Footprint radius</div><div class="ov" id="coRadius">—</div></div>
         <div><div class="ok">Overlap coverage</div><div class="ov" id="coOverlap">—</div></div>
         <div><div class="ok">→ Continuous proxy</div><div class="ov" id="coContinuous">—</div></div>
+        <div><div class="ok">→ 45-sat floor</div><div class="ov" id="coMonths45">—</div></div>
+        <div><div class="ok">→ 60-sat upper</div><div class="ov" id="coMonths60">—</div></div></div>
       </div>
       <div class="tech-sim-wrap">
-        <svg id="coverageSvg" class="tech-sim-svg" viewBox="0 0 400 220" role="img" aria-label="Coverage footprint schematic"></svg>
+        <svg id="coverageSvg" class="tech-sim-svg" viewBox="0 0 480 260" class="co-coverage-svg" role="img" aria-label="Coverage footprint schematic"></svg>
       </div>
       <h3 class="mt-md">Timeline to milestones <span class="tag m">heuristic</span></h3>
-      <div class="factgrid" id="coTimeline"></div>
+      <p class="field-note">3 sats/launch every 1.5 mo — model-only.</p>
+      <div class="factgrid co-timeline-grid" id="coTimeline"></div>
     </div>
   </div>
   <div class="regal-limitations page-inner"><b>Limitations:</b> Overlap model is 1−(1−f)^N heuristic — not Walker delta orbital mechanics. Continuous proxy is linear sats/45 — company cites 45–60 range.</div>

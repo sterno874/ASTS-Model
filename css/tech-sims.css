@@ -9,3 +9,5 @@ css/tech-sims.css
 .link-gauge-fill.ok{background:var(--good)}
 .link-gauge-fill.warn{background:var(--warn)}
 .link-gauge-fill.bad{background:var(--bad)}
+
+.co-overlap-explainer{border:1px solid var(--line);border-radius:8px;background:#fbfcfe;margin-top:8px}.co-overlap-explainer summary{padding:8px 12px;font-weight:600;cursor:pointer}.co-outgrid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}.co-timeline-grid{grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}.co-tl-month{font-size:18px;font-weight:700;color:var(--accent)}.d2c-factgrid{grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}@media(max-width:640px){.co-outgrid{grid-template-columns:repeat(2,1fr)}.d2c-factgrid,.co-timeline-grid{grid-template-columns:1fr}}
