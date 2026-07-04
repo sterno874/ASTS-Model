@@ -7,19 +7,25 @@ Interactive due-diligence explorer for **AST SpaceMobile (NASDAQ: ASTS)** — co
 
 ## Tabs
 
-1. **Constellation / Coverage** — satellites vs targets, capacity & wholesale revenue proxy
-2. **Commercial / Catalysts** — MNO partners, launch history, catalyst calendar, community DD
-3. **Valuation** — EV, $/sh, comparables, dilution stress, runway
+1. **Constellation / Coverage** — satellites vs targets, capacity & wholesale revenue proxy, **launch Monte Carlo**
+2. **Commercial / Catalysts** — MNO partners, launch history, catalyst calendar, **Kook Report** community DD panel
+3. **Valuation** — EV, $/sh, comparables, **convertible dilution path**, dilution stress, runway
 4. **Explain** — ELI5 → PhD with citations
-5. **The Technology** — phased-array context + Friis link-budget sim
+5. **The Technology** — phased-array context + Friis link-budget sim + **coverage footprint**
 
-## Quick start
+## Phase 2 models
+
+| Model | Purpose |
+|-------|---------|
+| Wholesale revenue build | MNO subs × penetration × ARPU × coverage |
+| Launch Monte Carlo | Post-BB7 failure-rate stress to 45 sats |
+| Convertible dilution | 10-K note table → FD shares at assumed price |
+| Coverage footprint | Overlap heuristic + milestone timeline |
+| Segment EV | P(commercial) risk-adjusted bull/base/bear |
 
 ```bash
-# Static site — open index.html or:
-npx serve .
-
-npm test
+npm test          # 86 tests
+npm run test:mutation  # 100% mutation kill rate on core math
 ```
 
 ## Deploy (Vercel)

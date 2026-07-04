@@ -11,11 +11,15 @@ import {
   BEAR_CASE,
   COMMUNITY_THREADS,
   TOP_COMMUNITY_CONTRIBUTORS,
+  KOOK_REPORT_CLAIMS,
   catalystsInYear,
   sortCatalysts,
   layoutTimeline,
   formatCatalystMonth
 } from "./math/commercial.js";
+import { runLaunchMonteCarlo, LAUNCH_MC_PRESETS } from "./math/monte-carlo.js";
+import { computeFullyDilutedSharesM, CONVERTIBLE_NOTES, evPerShareFd } from "./math/dilution.js";
+import { computeCoverageOrbit } from "./math/coverage-orbit.js";
 import {
   VALID_TABS,
   EXPLAIN_LEVELS,
@@ -42,7 +46,42 @@ const $ = (id) => document.getElementById(id);
 let state = structuredClone(DEFAULT_STATE);
 let activeTab = "constellation";
 let curLvl = "eli5";
+let communityDDLoaded = false;
 let restoringState = false;
+
+function communityDDHtml() {
+  const helpful = TOP_COMMUNITY_CONTRIBUTORS.filter((c) => c.tier === "helpful");
+  const mixed = TOP_COMMUNITY_CONTRIBUTORS.filter((c) => c.tier === "mixed");
+  const misleading = TOP_COMMUNITY_CONTRIBUTORS.filter((c) => c.tier === "misleading");
+  const kookRows = KOOK_REPORT_CLAIMS.map((k) => {
+    const cls = k.verdict === "verified" ? "val-ok" : k.verdict === "rejected" ? "val-no" : "val-part";
+    const icon = k.verdict === "verified" ? "✅" : k.verdict === "rejected" ? "❌" : "⚠️";
+    return `<li><span class="${cls}">${icon}</span> <b>${k.claim}</b> — <span class="tag ${k.tag === "verified" ? "f" : k.tag === "model" ? "m" : "c"}">${k.tag}</span> ${k.note}${k.source ? ` <a href="${k.source}" target="_blank" rel="noopener">source ↗</a>` : ""}</li>`;
+  }).join("");
+  const contribBlock = (list, title) =>
+    list
+      .map(
+        (c) =>
+          `<div class="contrib"><h4>${c.user}</h4><p><b>Role:</b> ${c.role}</p><p>${c.note}</p>${c.source ? `<p><a href="${c.source}" target="_blank" rel="noopener">Profile / search ↗</a></p>` : ""}</div>`
+      )
+      .join("");
+  return (
+    `<p class="cw-note">Synthesis of r/ASTSpaceMobile and <a href="https://threadreaderapp.com/user/thekookreport" target="_blank" rel="noopener">@thekookreport</a> weekly threads. Factual bullets cross-checked vs SEC CIK 1780312, <a href="https://www.fcc.gov/document/fcc-grants-ast-spacemobile-authority-deploy-and-operate-ngso-system" target="_blank" rel="noopener">FCC DA 26-391</a>, and IR. Tags: <span class="val-ok">✅ verified</span> · <span class="val-part">⚠️ partial</span> · <span class="val-no">❌ rejected</span> · <span class="val-model">🔬 model</span></p>` +
+    `<h3>Kook Report — verified vs rejected claims</h3><ul class="ref-list">${kookRows}</ul>` +
+    `<h3>Top helpful contributors</h3>${contribBlock(helpful, "helpful")}` +
+    (mixed.length ? `<h3>Mixed signal</h3>${contribBlock(mixed, "mixed")}` : "") +
+    `<h3>Often misleading — use with caution</h3>${contribBlock(misleading, "misleading")}` +
+    `<p class="field-note"><span class="tag c">Community</span> "Kook Bottom" = meme marker when @thekookreport panics during selloffs (<a href="https://www.bloomberg.com/news/features/2026-05-08/spacex-rival-ast-spacemobile-asts-proves-meme-stock-mania-is-back" target="_blank" rel="noopener">Bloomberg May 2026</a>) — sentiment only, not a valuation input.</p>`
+  );
+}
+
+function loadCommunityDD() {
+  if (communityDDLoaded) return;
+  communityDDLoaded = true;
+  const host = $("communityDDHost");
+  if (host) host.innerHTML = communityDDHtml();
+}
+
 let updateRaf = null;
 let liveQuote = null;
 let stopQuotePoll = null;
@@ -178,8 +217,109 @@ function updateConstUI() {
     };
     return map[key];
   });
+  updateMonteCarloUI(c);
   updateHeader();
 }
+
+function updateMonteCarloUI(c) {
+  const failureRate = +($("mcFailureRate")?.value ?? state.monteCarlo.failureRate ?? 0.05);
+  state.monteCarlo.failureRate = failureRate;
+  const mc = runLaunchMonteCarlo({
+    startSats: c.sats ?? 10,
+    targetSats: c.targetSats ?? 45,
+    satsPerLaunch: c.satsPerLaunch ?? 3,
+    launchIntervalMonths: c.launchInterval ?? 1.5,
+    failureRate
+  });
+  const set = (id, v) => {
+    const el = $(id);
+    if (el) el.textContent = v;
+  };
+  set("mcPSuccess", fmtPct(mc.pSuccess * 100));
+  set("mcP50", mc.p50Months.toFixed(1) + " mo");
+  set("mcP90", mc.p90Months.toFixed(1) + " mo");
+  set("mcDet", mc.deterministicMonths.toFixed(1) + " mo");
+}
+
+function updateDilutionUI(valMetrics) {
+  const price = +($("dilPrice")?.value ?? 45);
+  const fd = computeFullyDilutedSharesM({
+    baseSharesM: state.val.v_shares ?? 256,
+    stockPrice: price,
+    convertAll: true
+  });
+  const ev = valMetrics?.ev ?? computeFullValuation(state.val).ev;
+  const perShFd = evPerShareFd(ev, state.val.v_cash, state.val.v_debt, fd);
+  const set = (id, v) => {
+    const el = $(id);
+    if (el) el.textContent = v;
+  };
+  set("dilFdShares", fd.fdSharesM.toFixed(1) + "M");
+  set("dilPct", "+" + fd.dilutionPct.toFixed(1) + "%");
+  set("dilFdPerSh", "$" + perShFd.toFixed(2));
+  const tbody = $("dilNotesBody");
+  if (tbody) {
+    tbody.innerHTML = fd.rows
+      .map(
+        (r) =>
+          `<tr><td>${r.label}</td><td>${r.principalM ? "$" + r.principalM + "M" : "—"}</td><td>${r.conversionPrice ? "$" + r.conversionPrice : "—"}</td><td>${r.addedSharesM.toFixed(1)}</td><td><span class="tag ${r.tag === "verified" ? "f" : "p"}">${r.tag}</span></td></tr>`
+      )
+      .join("");
+  }
+}
+
+function updateCoverageOrbitUI() {
+  const co = {
+    sats: +($("coSats")?.value ?? state.coverageOrbit.sats ?? 10),
+    continuousSats: +($("coContinuousSats")?.value ?? 45),
+    minElevDeg: +($("coMinElev")?.value ?? 25),
+    altKm: state.link.altKm ?? 550,
+    satsPerLaunch: state.constellation.satsPerLaunch ?? 3,
+    launchIntervalMonths: state.constellation.launchInterval ?? 1.5
+  };
+  state.coverageOrbit = { ...state.coverageOrbit, ...co };
+  const r = computeCoverageOrbit(co);
+  const set = (id, v) => {
+    const el = $(id);
+    if (el) el.textContent = v;
+  };
+  set("coRadius", r.radiusKm.toFixed(0) + " km");
+  set("coOverlap", fmtPct(r.overlapFrac * 100));
+  set("coContinuous", fmtPct(r.continuousFrac * 100));
+  const tl = $("coTimeline");
+  if (tl) {
+    tl.innerHTML = r.timeline
+      .map(
+        (e) =>
+          `<div class="fact"><b>${e.label}</b><br/>~${e.month.toFixed(1)} mo · overlap ${fmtPct(e.overlapFrac * 100)}<br/><span class="tag m">model</span></div>`
+      )
+      .join("");
+  }
+  drawCoverageSvg(r);
+}
+
+function drawCoverageSvg(r) {
+  const svg = $("coverageSvg");
+  if (!svg) return;
+  const cx = 200,
+    cy = 110;
+  const scale = 0.35;
+  const rPx = Math.min(90, r.radiusKm * scale);
+  const n = Math.min(r.sats, 12);
+  const circles = [];
+  for (let i = 0; i < n; i++) {
+    const ang = (i / n) * Math.PI * 2;
+    const ox = Math.cos(ang) * 40;
+    const oy = Math.sin(ang) * 25;
+    circles.push(`<circle cx="${cx + ox}" cy="${cy + oy}" r="${rPx}" fill="rgba(47,111,237,0.12)" stroke="#2f6fed" stroke-width="1"/>`);
+  }
+  svg.innerHTML = `<rect width="400" height="220" fill="#f8fafc"/>
+    <ellipse cx="${cx}" cy="${cy}" rx="120" ry="70" fill="none" stroke="#94a3b8" stroke-dasharray="4 3"/>
+    <text x="${cx}" y="18" text-anchor="middle" font-size="10" fill="#4f5866">US footprint schematic (${r.sats} sats)</text>
+    ${circles.join("")}
+    <text x="${cx}" y="210" text-anchor="middle" font-size="10" fill="#141b26">Overlap ${(r.overlapFrac * 100).toFixed(1)}% · Continuous proxy ${(r.continuousFrac * 100).toFixed(1)}%</text>`;
+}
+
 
 function updateCommercialUI() {
   const year = +($("ccalendarYear")?.value ?? 2026);
@@ -223,6 +363,7 @@ function updateValUI() {
     if (key.startsWith("vv_")) return val["v_" + key.slice(3)];
     return null;
   });
+  updateDilutionUI(v);
   updateHeader();
 }
 
@@ -247,6 +388,7 @@ function updateLinkUI() {
     fill.className = "link-gauge-fill " + (r.linkOk ? "ok" : r.marginDb > -5 ? "warn" : "bad");
   }
   drawLinkSvg(r);
+  updateCoverageOrbitUI();
 }
 
 function drawLinkSvg(r) {
@@ -452,7 +594,10 @@ function switchTab(t, fromRestore = false) {
     if (el) el.hidden = id !== t;
   });
   if (t === "constellation" && tabsDirty.constellation) updateConstUI();
-  if (t === "commercial" && tabsDirty.commercial) updateCommercialUI();
+  if (t === "commercial" && tabsDirty.commercial) {
+    updateCommercialUI();
+    loadCommunityDD();
+  }
   if (t === "value" && tabsDirty.value) updateValUI();
   if (t === "technology" && tabsDirty.technology) updateLinkUI();
   if (t === "explain" && tabsDirty.explain) showLevel(curLvl);
@@ -512,7 +657,8 @@ function renderStaticPanels() {
   const contribs = $("commContribBody");
   if (contribs) {
     contribs.innerHTML = TOP_COMMUNITY_CONTRIBUTORS.map(
-      (c) => `<tr><td>${c.user}</td><td>${c.role}</td><td>${c.note}</td></tr>`
+      (c) =>
+        `<tr><td>${c.user}</td><td>${c.role} <span class="tag ${c.tier === "helpful" ? "f" : c.tier === "misleading" ? "c" : "u"}">${c.tier || "—"}</span></td><td>${c.note}</td></tr>`
     ).join("");
   }
   const cmp = $("vCompBody");
@@ -572,6 +718,26 @@ function init() {
   document.querySelectorAll("[data-dilution-stress]").forEach((b) => {
     b.onclick = () => applyDilutionStress(Number(b.dataset.dilutionStress));
   });
+  document.querySelectorAll("[data-mc-preset]").forEach((b) => {
+    b.onclick = () => {
+      const p = LAUNCH_MC_PRESETS[b.dataset.mcPreset];
+      if (!p) return;
+      const el = $("mcFailureRate");
+      if (el) el.value = p.failureRate;
+      $("mcFailureRateVal").textContent = p.failureRate;
+      document.querySelectorAll("[data-mc-preset]").forEach((x) => x.classList.toggle("active", x.dataset.mcPreset === b.dataset.mcPreset));
+      scheduleUpdate();
+    };
+  });
+  $("communityDDPanel")?.addEventListener("toggle", (e) => {
+    if (e.target.open) loadCommunityDD();
+  });
+
+  bindRange("mcFailureRate", "mcFailureRateVal");
+  bindRange("dilPrice", "dilPriceVal", () => updateDilutionUI(computeFullValuation(readValState())));
+  bindRange("coSats", "coSatsVal");
+  bindRange("coContinuousSats", "coContinuousSatsVal");
+  bindRange("coMinElev", "coMinElevVal");
 
   Object.keys(DEFAULT_STATE.constellation).forEach((k) => bindRange("c" + k, "c" + k + "Val"));
   Object.keys(DEFAULT_STATE.val).forEach((k) => {

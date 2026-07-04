@@ -146,12 +146,113 @@ export const COMMUNITY_THREADS = [
   { label: "FCC DA 26-391 discussion", author: "r/ASTSpaceMobile", url: "https://www.reddit.com/r/ASTSpaceMobile/search/?q=FCC&restrict_sr=1", note: "Regulatory parsing — compare to actual order PDF" }
 ];
 
+/** Kook Report / @thekookreport — cross-checked claims (Apr 2026 weekly thread sample). */
+export const KOOK_REPORT_CLAIMS = [
+  {
+    claim: "Launch cadence accelerating — mostly SpaceX, some Blue Origin",
+    verdict: "partial",
+    tag: "community",
+    source: "https://threadreaderapp.com/thread/1914063374180323818.html",
+    note: "BB8-10 on SpaceX Jun 2026 verified; BB7 Blue Origin loss Apr 2026 verified. Multi-provider strategy confirmed in IR — exact future mix forward-looking."
+  },
+  {
+    claim: "Government / Golden Dome / DoD revenue pipeline heating up",
+    verdict: "partial",
+    tag: "community",
+    source: "https://threadreaderapp.com/thread/1914063374180323818.html",
+    note: "Q1/Q3 gateway + gov milestone revenue verified in 10-Q. Scale of defense contracts not disclosed — lobbying filings exist but $ amounts partial."
+  },
+  {
+    claim: "Vodafone–AST EU SatCo briefing to MEPs",
+    verdict: "partial",
+    tag: "community",
+    source: "https://threadreaderapp.com/thread/1914063374180323818.html",
+    note: "Vodafone partnership verified (IR + Jun 2025 agreement). MEP briefing is community-sourced — plausible but not in SEC primary docs reviewed."
+  },
+  {
+    claim: "Ligado DA signed — spectrum value unlock",
+    verdict: "verified",
+    tag: "verified",
+    source: "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001780312",
+    note: "10-K: Ligado transaction + up to 45 MHz lower mid-band US/Canada access subject to regulatory approval — verified filing language."
+  },
+  {
+    claim: "AST ozone impact << Starlink deorbit pollution",
+    verdict: "partial",
+    tag: "model",
+    source: "https://threadreaderapp.com/thread/1914063374180323818.html",
+    note: "Community calc citing Kevin Coulton thread — educational comparison, not AST IR disclosure. FCC debris conditions apply to both operators."
+  },
+  {
+    claim: "M&A always has a price — buyout thesis",
+    verdict: "rejected",
+    tag: "community",
+    note: "Speculation only. AT&T 2.7% stake (Schedule 13D) and carrier investors verified — no acquisition offer or process disclosed."
+  },
+  {
+    claim: "Fully funded — no dilution needed",
+    verdict: "rejected",
+    tag: "community",
+    note: "Rejected vs 10-K: $2.2B+ convertibles, Oct 2025 ATM, warrant exercises, share count 81.8M→256M FY2023–25."
+  },
+  {
+    claim: "200 Mbps for every user at all times",
+    verdict: "rejected",
+    tag: "community",
+    note: "Block 2 ~200 Mbps is peak demo target (SatNews Jun 2026) — shared beam capacity; not per-subscriber SLA."
+  }
+];
+
 export const TOP_COMMUNITY_CONTRIBUTORS = [
-  { user: "u/TheKook", role: "Unofficial mascot / morale & DD posts", note: "Anonymous; 'Kook Bottom' meme — sentiment, not IR" },
-  { user: "u/ASTSpaceMobile mods", role: "Daily thread maintainers", note: "Pinned launch calendars, rules" },
-  { user: "r/ASTSpaceMobile power users", role: "FCC / TLE / Form 4 trackers", note: "High-signal technical posts; usernames rotate — search 'DD' flair" },
-  { user: "r/stocks ASTS commentators", role: "Dilution & valuation skeptics", note: "Cross-check against SEC primary sources" },
-  { user: "Stocktwits $ASTS", role: "Real-time launch sentiment", note: "Temperature check only — not diligence" }
+  {
+    user: "u/hyeonk",
+    tier: "helpful",
+    role: "High-signal filing & partner news aggregator",
+    note: "Frequent Vodafone/AT&T/Google/13D posts with primary links — verify terms vs hype",
+    source: "https://www.reddit.com/r/ASTSpaceMobile/search/?q=author%3Ahyeonk&restrict_sr=1"
+  },
+  {
+    user: "u/EducatedFool1",
+    tier: "helpful",
+    role: "Technical milestone summaries",
+    note: "Launch/integration threads citing IR — good starting point, still cross-check SEC",
+    source: "https://www.reddit.com/r/ASTSpaceMobile/search/?q=author%3AEducatedFool1&restrict_sr=1"
+  },
+  {
+    user: "u/ASTSpaceMobile mods + DD flair",
+    tier: "helpful",
+    role: "Daily thread + pinned catalyst calendars",
+    note: "Best aggregation hub; separates launch meetups from revenue math errors in comments",
+    source: "https://www.reddit.com/r/ASTSpaceMobile/"
+  },
+  {
+    user: "@thekookreport (The Kook)",
+    tier: "mixed",
+    role: "Weekly 'Kook Report' morale + regulatory sweep",
+    note: "Influential SpaceMob chronicler — mix of verified FCC/launch facts and speculative gov/M&A threads. Not primary source.",
+    source: "https://threadreaderapp.com/user/thekookreport"
+  },
+  {
+    user: "r/wallstreetbets ASTS dilution posts",
+    tier: "misleading",
+    role: "Meme framing + oversimplified revenue",
+    note: "Often ignores wholesale rev-share; useful as sentiment thermometer only",
+    source: "https://www.reddit.com/r/wallstreetbets/search/?q=ASTS"
+  },
+  {
+    user: "Stocktwits $ASTS",
+    tier: "misleading",
+    role: "Launch-hype temperature",
+    note: "Frequent '$3×3B' revenue errors and FCC=profit conflation — do not use for models",
+    source: "https://stocktwits.com/symbol/ASTS"
+  },
+  {
+    user: "Anonymous 'fully funded' bull threads",
+    tier: "misleading",
+    role: "Cash runway cheerleading",
+    note: "Cites Q1 cash ~$3.46B but omits Q1 investing ~$379M and convertible overhang — partial at best",
+    source: "https://www.reddit.com/r/ASTSpaceMobile/search/?q=fully+funded&restrict_sr=1"
+  }
 ];
 
 export function catalystsInYear(year) {

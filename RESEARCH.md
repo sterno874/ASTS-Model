@@ -251,15 +251,180 @@ Community tracks **Form 4** sales by executives (Q3 2025–Q1 2026). **Partial v
 
 ---
 
-## Phase 2 roadmap (for ASTS-Model app)
+## Kook Report deep dive (Phase 2)
 
-1. **Orbital coverage viz** — simplified Walker delta / footprint map.
-2. **Convertible dilution calculator** — note conversion triggers from 10-K debt footnotes.
-3. **Live SEC/FCC feed** — embed latest filing links via EDGAR API.
-4. **Starlink D2C comparator panel** — side-by-side architecture facts.
-5. **Monte Carlo launch cadence** — failure rate stress from BB7 base rate.
-6. **Historical price / EV sensitivity** — optional market data hook with as-of stamp.
+### Who is "The Kook"?
+
+**@thekookreport** (X/Twitter) publishes weekly **"$ASTS WEEK IN REVIEW"** threads — the closest thing r/ASTSpaceMobile has to a recurring community DD newsletter. Bloomberg (May 2026) profiled the anonymous figure as the unofficial "morale engine" of the **SpaceMob** retail community. The subreddit also uses **"Kook Bottom"** slang: when The Kook panics during a selloff, some treat it as a contrarian bullish marker — **community sentiment only**, not a valuation input.
+
+| Item | Detail | Tag |
+|------|--------|-----|
+| Platform | X / Thread Reader App | community |
+| Reddit presence | u/TheKook search returns limited posts; primary content is X | community |
+| Influence | High on sentiment; mixed on primary-source rigor | community |
+| Weekly format | Regulatory sweep + launch calendar + macro FUD rebuttal | community |
+
+**Source:** [Thread Reader — Apr 20 2026 weekly](https://threadreaderapp.com/thread/1914063374180323818.html) · [Bloomberg May 2026](https://www.bloomberg.com/news/features/2026-05-08/spacex-rival-ast-spacemobile-asts-proves-meme-stock-mania-is-back)
+
+### Kook Report claims — verification matrix
+
+| Kook claim (paraphrased) | Verdict | Primary check |
+|--------------------------|---------|---------------|
+| Launch cadence accelerating (SpaceX + Blue Origin) | **partial** | BB8-10 SpaceX Jun 2026 verified; BB7 Blue Origin insertion loss Apr 2026 verified; future mix is forward-looking |
+| DoD / Golden Dome / gov revenue pipeline | **partial** | Q1/Q3 gateway + gov milestones in 10-Q verified; defense scale undisclosed |
+| Vodafone EU / MEP SatCo briefing | **partial** | Vodafone partnership verified (IR); MEP briefing not in SEC |
+| Ligado DA signed — spectrum unlock | **verified** | 10-K Ligado transaction + up to 45 MHz mid-band access (conditions apply) |
+| AST orbital debris/ozone << Starlink | **model** | Community calc via Kevin Coulton thread — not AST IR |
+| M&A / buyout inevitable | **rejected** | No offer; AT&T 13D ~2.7% stake verified but not control |
+| "Fully funded, no dilution" | **rejected** | Convertibles ~$2.2B+, ATM Oct 2025, shares 81.8M→256M |
+| 200 Mbps everywhere | **rejected** | Peak demo target; shared beam capacity |
 
 ---
 
-*End of RESEARCH.md — ASTS-Model Phase 1*
+## Patents & intellectual property
+
+| Item | Value | Tag | Source |
+|------|-------|-----|--------|
+| Patent families worldwide | **36** | verified | FY2025 10-K |
+| Patent + pending claims | **~3,700–3,900** | verified | 10-K / IR (count varies by filing date) |
+| Granted / allowed | **~1,700** | verified | 10-K Jun 30 2025 cite |
+| Core themes | Phased-array aperture, deployable structures, D2D ecosystem space-to-Earth | verified | 10-K |
+| Inventor concentration | Abel Avellan + AST engineering team (multiple families) | partial | USPTO assignee search "AST SpaceMobile" |
+
+**Honest limit:** Patents support IP moat narrative but do **not** guarantee commercial success, freedom-to-operate vs Starlink/Lynk, or wholesale pricing power.
+
+**USPTO search:** [Assignee AST & Science LLC / AST SpaceMobile](https://patents.google.com/?assignee=AST+SpaceMobile) — large phased-array satellite communication families.
+
+---
+
+## SEC EDGAR — capital structure detail (Phase 2)
+
+### Share count evolution
+
+| Period | Diluted shares (approx) | Tag | Source |
+|--------|-------------------------|-----|--------|
+| FY2023 | ~81.8M | verified | 10-K / MetricDuck analysis |
+| FY2025 | ~256M | verified | FY2025 10-K |
+| Mar 31 2026 | Class A ~298.5M + Class B ~11.2M + Class C ~78.2M | verified | Q1 2026 10-Q equity footnote |
+
+### Convertible notes (verified anchors)
+
+| Instrument | Principal | Conv. price (eff.) | Maturity | Tag |
+|------------|-----------|-------------------|----------|-----|
+| 4.25% Convertible Senior Notes | ~$460M | ~$120.12/sh | 2032 | verified |
+| 2.375% Convertible Senior Notes | ~$575M | ~$120.12/sh | 2032 | verified |
+| 2.00% Convertible Senior Notes | ~$1.0B | ~$85/sh | 2036 | verified |
+
+**Jul 2025 PR:** [Business Wire — $575M notes close](https://www.businesswire.com/news/home/20250729408729/en/) — Abel Avellan quote; effective conversion ~$120.12 cited.
+
+### Cash vs CapEx vs GAAP loss (Q1 2026) — do not conflate
+
+| Line item | Q1 2026 | Tag | Notes |
+|-----------|---------|-----|-------|
+| Cash & equivalents | ~$3.46B | verified | Liquidity anchor |
+| Revenue | $14.7M | verified | Gateway + gov milestones, not mass D2C |
+| Net loss | ~$191M | verified | GAAP bottom line |
+| Net cash used in **operations** | ~$48M | verified | Structural opex burn |
+| Net cash used in **investing** | ~$379M | verified | Satellite CapEx — dominant cash use |
+| Long-term debt | ~$698M | verified | Sep 2025 10-Q carry-forward |
+
+**Rejected error:** "Cash $3.46B = fully funded to 248 sats with no dilution." CapEx + convertibles + ATM can still expand share count materially.
+
+---
+
+## FCC & regulatory (expanded)
+
+| Filing / order | Detail | Tag | Source |
+|----------------|--------|-----|--------|
+| **DA 26-391** (Apr 2026) | Authority for up to **248** NGSO satellites + commercial SCS | verified | [FCC](https://www.fcc.gov/document/fcc-grants-ast-spacemobile-authority-deploy-and-operate-ngso-system) |
+| Conditions | Interference protection, debris mitigation, NSF/NRAO coordination | verified | FCC order |
+| SCS framework | AST uses **partner MNO spectrum** (700/800 MHz low-band) — not AST-owned nationwide cellular license | verified | DCD / FCC |
+| ITU / ex-US | Separate approvals required per market | verified | 10-K risk factors |
+| Starlink D2C | Competing D2D via T-Mobile spectrum — different architecture | verified | SpaceX FCC filings |
+| Lynk / Omnispace | Adjacent D2D / MSS players | partial | Industry status varies |
+
+---
+
+## Competitor snapshot
+
+| Name | Architecture | US spectrum path | vs AST | Tag |
+|------|--------------|------------------|--------|-----|
+| **SpaceX Starlink D2C** | Many small LEO sats | T-Mobile partnership | Scale + launch cost; overlapping D2D | verified |
+| **Lynk Global** | Smaller satellites | MSS / carrier deals | Overlapping narrative, less aperture | partial |
+| **Omnispace** | S-band MSS | ITU priority rights | Spectrum strategy differs | partial |
+| **Apple / Globalstar** | Emergency SOS | Narrowband | Not broadband competitor | verified |
+| **Iridium NTN** | IoT / narrowband | Partner integrations | Adjacent | verified |
+
+---
+
+## Community DD — contributor scorecard (Phase 2)
+
+### Top 3 helpful (evidence-based)
+
+| Contributor | Why helpful | Caveat |
+|-------------|-------------|--------|
+| **u/hyeonk** | Frequent posts with primary links (Vodafone, AT&T 13D, Google agreement) | Still verify deal terms vs headline |
+| **u/EducatedFool1** | Milestone summaries tied to IR launches | Not a substitute for 10-Q |
+| **r/ASTSpaceMobile mods + DD flair** | Daily aggregation, launch calendars | Comments section still has revenue math errors |
+
+### Bottom 3 misleading (evidence-based)
+
+| Source | Pattern | Correction |
+|--------|---------|------------|
+| **Stocktwits $ASTS** | "$3×3B=$5.4B" revenue, FCC=profit | Wholesale fraction; deployment still required |
+| **WSB / meme threads** | "No dilution" with cash screenshot | Ignores convertibles + Q1 investing $379M |
+| **Anonymous bull spam** | "200 Mbps for everyone day one" | Peak demo ≠ SLA; beam loading |
+
+### Kook Report role
+
+Useful for **catalyst calendar** and **regulatory pointer** (FCC experimental, lobbying filings). Treat **M&A**, **Golden Dome windfall**, and **TAM=$200B mcap** threads as **unverified** until in SEC 8-K or IR.
+
+---
+
+## Modeling techniques implemented (ASTS-Model Phase 2)
+
+| Technique | Tab | Decision value |
+|-----------|-----|----------------|
+| **Constellation coverage + wholesale revenue** | Constellation | Links sats → coverage % → rev proxy with slider bands |
+| **Launch cadence Monte Carlo** | Constellation | Post-BB7 failure-rate stress; P50/P90 months to 45 sats |
+| **Segment EV + P(commercial)** | Valuation | Risk-adjusted bull/base/bear; comparables panel |
+| **Convertible dilution path** | Valuation | FD shares from 10-K note table at assumed price |
+| **Link budget + footprint** | Technology | Friis margin vs elevation; overlap coverage heuristic |
+| **Coverage orbit timeline** | Technology | Milestone months to 45/60 sats |
+
+**Presets:** Bear · Base · Bull · **BAG** (best-available guess — Jul 2026 anchors) · Commercial bull (valuation).
+
+---
+
+## Primary source index (expanded)
+
+| Type | Link |
+|------|------|
+| SEC EDGAR CIK 1780312 | https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001780312 |
+| FY2025 10-K | https://www.sec.gov/Archives/edgar/data/1780312/000149315226019390/formars.pdf |
+| Q1 2026 10-Q equity footnote | https://www.sec.gov/Archives/edgar/data/1780312/000119312526216950/R21.htm |
+| FCC DA 26-391 | https://www.fcc.gov/document/fcc-grants-ast-spacemobile-authority-deploy-and-operate-ngso-system |
+| Jul 2025 $575M convert PR | https://www.businesswire.com/news/home/20250729408729/en/ |
+| Jun 2026 BB8-10 launch | https://www.businesswire.com/news/home/20260617420856/en/ |
+| BB7 / BB8-10 context | https://spaceflightnow.com/2026/06/16/live-coverage-spacex-to-launch-3-block-2-bluebird-satellites-for-ast-spacemobile/ |
+| Kook Report (Thread Reader) | https://threadreaderapp.com/user/thekookreport |
+| r/ASTSpaceMobile | https://www.reddit.com/r/ASTSpaceMobile/ |
+| Google Patents assignee | https://patents.google.com/?assignee=AST+SpaceMobile |
+| AT&T 13D (community parsed) | https://www.reddit.com/r/ASTSpaceMobile/search/?q=Schedule+13D |
+| Vodafone EU agreement | https://www.reddit.com/r/ASTSpaceMobile/search/?q=Vodafone |
+
+---
+
+## Honest limitations (research & model)
+
+- Wholesale **rev-share rates** and **consumer pricing** are not fully disclosed — revenue models use **assumption sliders**.
+- **Orbital coverage** uses overlap heuristic `1−(1−f)^N` and linear continuous proxy — not Walker delta simulation.
+- **Link budget** is educational Friis only — not AST proprietary RF planning or FCC EIRP compliance model.
+- **Monte Carlo launch** uses constant failure rate — does not model provider-specific anomalies beyond BB7 preset.
+- **Convertible dilution** assumes mechanical conversion at slider price — timing and capped-call overlays not modeled.
+- **Market price** fetched via Yahoo delayed quote when API available; model $/sh is scenario math, not price target.
+- **Kook Report / Reddit** = sentiment & thesis tracking, not verified financial data.
+
+---
+
+*End of RESEARCH.md — ASTS-Model Phase 2*

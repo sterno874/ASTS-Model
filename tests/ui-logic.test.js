@@ -12,9 +12,10 @@ test("six explain levels", () => {
   assert.equal(EXPLAIN_LEVELS.length, 6);
 });
 
-test("const presets include base and bear", () => {
+test("const presets include base bear and bag", () => {
   assert.ok(CONST_PRESETS.base);
   assert.ok(CONST_PRESETS.bear);
+  assert.ok(CONST_PRESETS.bag);
 });
 
 test("community DD has verdict tags", () => {

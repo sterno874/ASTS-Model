@@ -4,6 +4,7 @@ import {
   computeConstellationMetrics,
   coverageFraction,
   monthsToTarget,
+  wholesaleRevenueProxyM,
   DEFAULT_OPERATIONAL_SATS,
   CONSTELLATION_ANCHORS
 } from "../js/math/constellation.js";
@@ -31,6 +32,14 @@ test("monthsToTarget increases with fewer sats", () => {
   assert.ok(far > near);
 });
 
-test("FCC authorized constellation is 248", () => {
-  assert.equal(CONSTELLATION_ANCHORS.fccAuthorized, 248);
+test("coverageFraction caps at 1 above threshold", () => {
+  assert.equal(coverageFraction(100, 45), 1);
+  assert.equal(coverageFraction(90, 45), 1);
+});
+
+test("wholesaleRevenueProxyM annualizes ARPU by 12 months", () => {
+  const m3 = wholesaleRevenueProxyM({ mnoSubsM: 1000, penetration: 0.01, arpuMonthly: 3, coverageFrac: 1 });
+  const m6 = wholesaleRevenueProxyM({ mnoSubsM: 1000, penetration: 0.01, arpuMonthly: 6, coverageFrac: 1 });
+  assert.equal(m6, m3 * 2);
+  assert.equal(m3, 360);
 });

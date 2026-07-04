@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { computeFullValuation, peakWholesaleRevenueM, FILING_ANCHORS } from "../js/math/valuation.js";
+import { computeFullValuation, peakWholesaleRevenueM, computeRunwayMonths, FILING_ANCHORS } from "../js/math/valuation.js";
 import { DEFAULT_STATE, VAL_PRESETS } from "../js/ui/state.js";
 
 test("peakWholesaleRevenueM scales with penetration", () => {
@@ -19,6 +19,11 @@ test("bull preset EV exceeds bear", () => {
   const bull = computeFullValuation({ ...DEFAULT_STATE.val, ...VAL_PRESETS.bull });
   const bear = computeFullValuation({ ...DEFAULT_STATE.val, ...VAL_PRESETS.bear });
   assert.ok(bull.ev > bear.ev);
+});
+
+test("runway uses quarterly-to-months factor of 3", () => {
+  assert.equal(computeRunwayMonths(300, 100), 9);
+  assert.equal(computeRunwayMonths(120, 40), 9);
 });
 
 test("runway decreases with higher burn", () => {

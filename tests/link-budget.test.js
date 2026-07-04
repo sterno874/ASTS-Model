@@ -2,6 +2,11 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { fsplDb, linkMarginDb, computeLinkBudget, arrayGainBoostDb, coverageRadiusKm } from "../js/math/link-budget.js";
 
+test("fsplDb at 2M slant range is roughly 150+ dB at 800 MHz", () => {
+  const pl = fsplDb(800e6, 2e6);
+  assert.ok(pl > 145 && pl < 165);
+});
+
 test("fsplDb increases with distance", () => {
   const near = fsplDb(800e6, 500e3);
   const far = fsplDb(800e6, 2000e3);

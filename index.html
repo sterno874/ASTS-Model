@@ -23,7 +23,7 @@
   <div class="hdr-top">
     <div class="hdr-title-block">
       <h1>AST SpaceMobile ($ASTS) — Interactive Model</h1>
-      <div class="sub hdr-disclaimer">Primary-sourced models; sliders = undisclosed assumptions. <a href="https://asts-model.vercel.app/" target="_blank" rel="noopener" class="hdr-link">Live</a> · <a href="https://github.com/sterno874/ASTS-Model" target="_blank" rel="noopener" class="hdr-link">GitHub</a> · <a href="#explain" class="hdr-link" onclick="document.querySelector('.tabbtn[data-tab=explain]').click();return false;">Explain</a>. Not investment advice. <span class="tag f">Phase 1</span></div>
+      <div class="sub hdr-disclaimer">Primary-sourced models; sliders = undisclosed assumptions. <a href="https://asts-model.vercel.app/" target="_blank" rel="noopener" class="hdr-link">Live</a> · <a href="https://github.com/sterno874/ASTS-Model" target="_blank" rel="noopener" class="hdr-link">GitHub</a> · <a href="#explain" class="hdr-link" onclick="document.querySelector('.tabbtn[data-tab=explain]').click();return false;">Explain</a>. Not investment advice. <span class="tag f">Phase 2</span></div>
     </div>
   </div>
   <div id="headerStrip" class="best-est-strip no-print embed-hide" aria-live="polite"></div>
@@ -99,6 +99,7 @@
         <button type="button" class="p" data-const-preset="coverage">Coverage<span class="p-sub">45 sats</span></button>
         <button type="button" class="p p-best" data-const-preset="bull">Bull<span class="p-sub">High pen/ARPU</span></button>
         <button type="button" class="p" data-const-preset="bear">Bear<span class="p-sub">Slow attach</span></button>
+        <button type="button" class="p" data-const-preset="bag">BAG<span class="p-sub">Jul 2026 anchors</span></button>
       </div>
       <div class="ctrl"><label>Operational satellites <span id="csatsVal">10</span></label><input type="range" id="csats" min="1" max="80" step="1" value="10"/><div class="bands" id="band-csats"></div><small class="source-line"><span class="tag f">Verified</span> Jul 2026 count excl. lost BB7. <a href="https://www.businesswire.com/news/home/20260617420856/en/" target="_blank" rel="noopener">Launch PR</a></small></div>
       <div class="ctrl"><label>2026 deployment target <span id="ctargetSatsVal">45</span></label><input type="range" id="ctargetSats" min="20" max="100" step="1" value="45"/><div class="bands" id="band-ctargetSats"></div><small class="source-line"><span class="tag u">Forward-looking</span> Company ~45 sats EOY 2026. <a href="https://spacenews.com/fcc-clears-ast-spacemobile-constellation-as-launch-setback-clouds-ramp-up/" target="_blank" rel="noopener">SpaceNews</a></small></div>
@@ -120,8 +121,23 @@
         <div><div class="ok">Months to target</div><div class="ov" id="cMonthsTarget">—</div></div>
       </div>
       <p class="field-note"><span class="tag m">Model</span> Revenue proxy is educational wholesale math — not guidance. Real economics depend on undisclosed MNO rev-share.</p>
-      <h2 class="mt-md">Launch cadence <span class="tag m">heuristic</span></h2>
+      <h2 class="mt-md">Launch schedule <span class="tag m">heuristic</span></h2>
       <div class="factgrid" id="cLaunchCal"></div>
+      <h2 class="mt-md">Launch cadence Monte Carlo <span class="tag m">stress</span></h2>
+      <p class="field-note">Post-BB7 failure-rate stress — educational; not company forecast. BB7 was launch insertion loss (<a href="https://spaceflightnow.com/2026/06/16/live-coverage-spacex-to-launch-3-block-2-bluebird-satellites-for-ast-spacemobile/" target="_blank" rel="noopener">Spaceflight Now</a>).</p>
+      <div class="presets">
+        <button type="button" class="p p-def active" data-mc-preset="base">Base 5%</button>
+        <button type="button" class="p" data-mc-preset="optimistic">Optimistic 2%</button>
+        <button type="button" class="p" data-mc-preset="stressed">Stressed 12%</button>
+        <button type="button" class="p" data-mc-preset="bb7">BB7 analog 25%</button>
+      </div>
+      <div class="ctrl"><label>Failure rate / launch <span id="mcFailureRateVal">0.05</span></label><input type="range" id="mcFailureRate" min="0" max="0.3" step="0.01" value="0.05"/></div>
+      <div class="outgrid">
+        <div><div class="ok">P(reach target)</div><div class="ov" id="mcPSuccess">—</div></div>
+        <div><div class="ok">P50 months</div><div class="ov" id="mcP50">—</div></div>
+        <div><div class="ok">P90 months</div><div class="ov" id="mcP90">—</div></div>
+        <div><div class="ok">Deterministic</div><div class="ov" id="mcDet">—</div></div>
+      </div>
     </div>
   </div>
   <div class="regal-limitations page-inner">
@@ -146,7 +162,13 @@
     <h2 class="mt-md">Launch history</h2>
     <div class="table-wrap"><table class="valtbl"><thead><tr><th>Mission</th><th>Date</th><th>Provider</th><th>Block</th><th>Status</th><th>Tag</th></tr></thead><tbody id="launchTableBody"></tbody></table></div>
     <h2 class="mt-md">Community DD <span class="tag c">cross-checked</span></h2>
-    <p class="field-note">Themes from <a href="https://www.reddit.com/r/ASTSpaceMobile/" target="_blank" rel="noopener">r/ASTSpaceMobile</a>, r/stocks, r/wallstreetbets — tagged vs SEC/FCC/IR.</p>
+    <p class="field-note">Themes from <a href="https://www.reddit.com/r/ASTSpaceMobile/" target="_blank" rel="noopener">r/ASTSpaceMobile</a>, <a href="https://threadreaderapp.com/user/thekookreport" target="_blank" rel="noopener">Kook Report</a>, r/stocks, r/wallstreetbets — tagged vs SEC/FCC/IR.</p>
+    <details class="howworks" id="communityDDPanel">
+      <summary>Community DD panel — Kook Report + contributor synthesis</summary>
+      <div class="howworks-body" id="communityDDHost">
+        <p class="cw-note">Loading contributor synthesis…</p>
+      </div>
+    </details>
     <div class="table-wrap"><table class="valtbl"><thead><tr><th>Claim</th><th>Verdict</th><th>Tag</th><th>Notes</th></tr></thead><tbody id="commDDBody"></tbody></table></div>
     <h2 class="mt-md">Top community contributors</h2>
     <div class="table-wrap"><table class="valtbl"><thead><tr><th>User / channel</th><th>Role</th><th>Notes</th></tr></thead><tbody id="commContribBody"></tbody></table></div>
@@ -213,7 +235,15 @@
       <div class="table-wrap"><table class="valtbl"><thead><tr><th>Name</th><th>Multiple</th><th>Note</th><th>Tag</th></tr></thead><tbody id="vCompBody"></tbody></table></div>
       <h2 class="mt-md">Community DD · dilution &amp; revenue</h2>
       <div class="table-wrap"><table class="valtbl"><thead><tr><th>Theme</th><th>Verdict</th><th>Tag</th><th>Notes</th></tr></thead><tbody id="vDDBody"></tbody></table></div>
-      <p class="field-note"><span class="tag m">Model</span> Ref price slider hidden at $45 illustrative — <b>not a live quote</b>. ATM/shelf + convertibles remain dilution overhang.</p>
+      <h2 class="mt-md">Convertible dilution path <span class="tag f">10-K anchors</span></h2>
+      <div class="ctrl"><label>Assumed stock price ($) <span id="dilPriceVal">45</span></label><input type="range" id="dilPrice" min="20" max="150" step="1" value="45"/></div>
+      <div class="outgrid">
+        <div><div class="ok">FD shares</div><div class="ov" id="dilFdShares">—</div></div>
+        <div><div class="ok">Dilution vs base</div><div class="ov" id="dilPct">—</div></div>
+        <div><div class="ok">FD $/sh (model EV)</div><div class="ov" id="dilFdPerSh">—</div></div>
+      </div>
+      <div class="table-wrap"><table class="valtbl"><thead><tr><th>Note / warrant</th><th>Principal</th><th>Conv $</th><th>Adds (M sh)</th><th>Tag</th></tr></thead><tbody id="dilNotesBody"></tbody></table></div>
+      <p class="field-note"><span class="tag m">Model</span> Conversion at assumed price — not a forecast of when/if notes convert. See <a href="https://www.businesswire.com/news/home/20250729408729/en/" target="_blank" rel="noopener">Jul 2025 $575M notes PR</a>.</p>
     </div>
   </div>
   <div class="regal-limitations page-inner"><b>Limitations:</b> Pre-commercial; segment peaks are assumptions. Convertible dilution not auto-modeled. EV/Revenue multiples from comps are illustrative.</div>
@@ -282,6 +312,28 @@
     </div>
   </div>
   <div class="regal-limitations page-inner"><b>Limitations:</b> No multi-beam interference, Doppler, fading, or 3GPP NAS/RRC modeling. Peak Mbps claims are company demos, not simulated here.</div>
+  <div class="wrap" id="coverage-orbit-sim">
+    <div class="card">
+      <h2>Coverage footprint sim</h2>
+      <div class="ctrl"><label>Operational satellites <span id="coSatsVal">10</span></label><input type="range" id="coSats" min="1" max="80" step="1" value="10"/></div>
+      <div class="ctrl"><label>Continuous coverage threshold <span id="coContinuousSatsVal">45</span></label><input type="range" id="coContinuousSats" min="30" max="80" step="1" value="45"/></div>
+      <div class="ctrl"><label>Min elevation (°) <span id="coMinElevVal">25</span></label><input type="range" id="coMinElev" min="10" max="45" step="1" value="25"/></div>
+    </div>
+    <div class="card">
+      <h2>Coverage outputs</h2>
+      <div class="outgrid">
+        <div><div class="ok">Footprint radius</div><div class="ov" id="coRadius">—</div></div>
+        <div><div class="ok">Overlap coverage</div><div class="ov" id="coOverlap">—</div></div>
+        <div><div class="ok">→ Continuous proxy</div><div class="ov" id="coContinuous">—</div></div>
+      </div>
+      <div class="tech-sim-wrap">
+        <svg id="coverageSvg" class="tech-sim-svg" viewBox="0 0 400 220" role="img" aria-label="Coverage footprint schematic"></svg>
+      </div>
+      <h3 class="mt-md">Timeline to milestones <span class="tag m">heuristic</span></h3>
+      <div class="factgrid" id="coTimeline"></div>
+    </div>
+  </div>
+  <div class="regal-limitations page-inner"><b>Limitations:</b> Overlap model is 1−(1−f)^N heuristic — not Walker delta orbital mechanics. Continuous proxy is linear sats/45 — company cites 45–60 range.</div>
   <div class="facts page-inner">
     <h2>References · Technology</h2>
     <ol class="ref-list">

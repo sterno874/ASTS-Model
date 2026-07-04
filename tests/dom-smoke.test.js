@@ -49,6 +49,34 @@ test("technology tab has link budget sim", () => {
   assert.match(html, /id="linkSvg"/);
 });
 
+test("technology tab has coverage orbit sim", () => {
+  assert.match(html, /id="coverage-orbit-sim"/);
+  assert.match(html, /id="coverageSvg"/);
+});
+
+test("constellation tab has Monte Carlo controls", () => {
+  assert.match(html, /id="mcFailureRate"/);
+  assert.match(html, /data-mc-preset/);
+});
+
+test("valuation tab has dilution path table", () => {
+  assert.match(html, /id="dilNotesBody"/);
+  assert.match(html, /id="dilPrice"/);
+});
+
+test("community DD expandable panel present", () => {
+  assert.match(html, /id="communityDDPanel"/);
+  assert.match(js, /KOOK_REPORT_CLAIMS/);
+});
+
+test("BAG preset button in constellation", () => {
+  assert.match(html, /data-const-preset="bag"/);
+});
+
+test("Phase 2 badge in header", () => {
+  assert.match(html, /Phase 2/);
+});
+
 test("SEC CIK cited", () => {
   assert.match(html, /CIK=0001780312/);
 });

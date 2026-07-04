@@ -75,6 +75,21 @@ export const DEFAULT_STATE = {
     txGainDbi: 28,
     minElevDeg: 25
   },
+  monteCarlo: {
+    failureRate: 0.05,
+    trials: 2000,
+    targetSats: 45,
+    satsPerLaunch: 3,
+    launchIntervalMonths: 1.5
+  },
+  coverageOrbit: {
+    sats: 10,
+    continuousSats: 45,
+    altKm: 550,
+    minElevDeg: 25,
+    satsPerLaunch: 3,
+    launchIntervalMonths: 1.5
+  },
   ui: { explainLvl: "eli5", showHeaderStrip: true }
 };
 
@@ -83,7 +98,8 @@ export const CONST_PRESETS = {
   ramp: { sats: 25, targetSats: 45, penetration: 0.025, arpuMonthly: 3.5, label: "Ramp — mid-2026 target" },
   coverage: { sats: 45, targetSats: 60, penetration: 0.03, arpuMonthly: 4, label: "Coverage — 45 sats" },
   bull: { sats: 45, penetration: 0.05, arpuMonthly: 5, mnoSubsM: 3000, label: "Bull — high pen / ARPU" },
-  bear: { sats: 10, penetration: 0.008, arpuMonthly: 2, label: "Bear — slow ramp" }
+  bear: { sats: 10, penetration: 0.008, arpuMonthly: 2, label: "Bear — slow ramp" },
+  bag: { sats: 10, targetSats: 45, penetration: 0.02, arpuMonthly: 3, subsPerSat: 50000, label: "Best-available guess — Jul 2026 anchors" }
 };
 
 export const VAL_PRESETS = {
