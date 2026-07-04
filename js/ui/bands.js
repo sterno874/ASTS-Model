@@ -100,7 +100,23 @@ export const VAL_BANDS = [
     min: 2,
     max: 12,
     sig: { b1: [4, 7], b2: [3, 9], b3: [2, 12] },
-    why: "EV / peak revenue multiple — satellite infra comps 3–8×."
+    why: "EV / peak revenue multiple — satellite infra comps 3–8× (IRDM ~4–6×, VSAT ~1–3×)."
+  },
+  {
+    id: "vv_debt",
+    min: 0,
+    max: 2500,
+    sig: { b1: [600, 900], b2: [400, 1200], b3: [0, 2500] },
+    anchor: 698,
+    why: "Long-term debt ($M) — ◆ ~$698M Sep 2025 10-Q carry-forward."
+  },
+  {
+    id: "vv_platform",
+    min: 0,
+    max: 3000,
+    sig: { b1: [200, 800], b2: [0, 1500], b3: [0, 3000] },
+    anchor: 500,
+    why: "Platform / IP optionality ($M) — not backlog; residual strategic value."
   }
 ];
 
