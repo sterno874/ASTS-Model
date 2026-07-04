@@ -56,6 +56,23 @@ test("technology tab has coverage orbit sim", () => {
   assert.match(html, /co-overlap-explainer/);
 });
 
+test("technology tab wires block preset buttons", () => {
+  assert.match(js, /data-lk-block/);
+  assert.match(js, /applyLinkBlock/);
+  assert.match(js, /\[data-lk-block\]/);
+});
+
+test("technology tab populates coverage milestone outputs", () => {
+  assert.match(js, /coMonths45/);
+  assert.match(js, /coFPct/);
+});
+
+test("technology tab has shared sim design tokens", () => {
+  const css = readFileSync(path.join(root, "css/tech-sims.css"), "utf8");
+  assert.match(css, /\.co-threshold-strip/);
+  assert.match(css, /\.sim-legend/);
+});
+
 test("constellation tab has Monte Carlo controls", () => {
   assert.match(html, /id="mcFailureRate"/);
   assert.match(html, /data-mc-preset/);

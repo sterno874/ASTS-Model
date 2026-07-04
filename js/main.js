@@ -408,6 +408,9 @@ function updateCoverageOrbitUI() {
   set("coRadius", r.radiusKm.toFixed(0) + " km");
   set("coOverlap", fmtPct(r.overlapFrac * 100));
   set("coContinuous", fmtPct(r.continuousFrac * 100));
+  set("coMonths45", r.monthsTo45Label);
+  set("coMonths60", r.monthsTo60Label);
+  set("coFPct", fmtPct(r.heuristic.fPct));
   const tl = $("coTimeline");
   if (tl) {
     tl.innerHTML = r.timeline
@@ -423,29 +426,76 @@ function updateCoverageOrbitUI() {
 function drawCoverageSvg(r) {
   const svg = $("coverageSvg");
   if (!svg) return;
-  const cx = 200,
-    cy = 110;
-  const scale = 0.35;
-  const rPx = Math.min(90, r.radiusKm * scale);
-  const n = Math.min(r.sats, 12);
+  const W = 480;
+  const H = 260;
+  const cx = W / 2;
+  const cy = 118;
+  const scale = 0.32;
+  const rPx = Math.min(78, r.radiusKm * scale);
+  const n = Math.min(r.sats, 16);
   const circles = [];
+  const sats = [];
   for (let i = 0; i < n; i++) {
-    const ang = (i / n) * Math.PI * 2;
-    const ox = Math.cos(ang) * 40;
-    const oy = Math.sin(ang) * 25;
-    circles.push(`<circle cx="${cx + ox}" cy="${cy + oy}" r="${rPx}" fill="rgba(47,111,237,0.12)" stroke="#2f6fed" stroke-width="1"/>`);
+    const ang = (i / n) * Math.PI * 2 - Math.PI / 2;
+    const ox = Math.cos(ang) * 52;
+    const oy = Math.sin(ang) * 32;
+    circles.push(
+      `<circle cx="${cx + ox}" cy="${cy + oy}" r="${rPx}" fill="rgba(47,111,237,0.1)" stroke="#2f6fed" stroke-width="1" opacity=".9"/>`
+    );
+    sats.push(
+      `<circle cx="${cx + ox}" cy="${cy + oy}" r="4" fill="#141b26"/><text x="${cx + ox}" y="${cy + oy - 8}" text-anchor="middle" font-size="7" fill="#4f5866">BB</text>`
+    );
   }
-  svg.innerHTML = `<rect width="400" height="220" fill="#f8fafc"/>
-    <ellipse cx="${cx}" cy="${cy}" rx="120" ry="70" fill="none" stroke="#94a3b8" stroke-dasharray="4 3"/>
-    <text x="${cx}" y="18" text-anchor="middle" font-size="10" fill="#4f5866">US footprint schematic (${r.sats} sats)</text>
+  const thresh45 = r.continuousSats || 45;
+  const thresh60 = 60;
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
+  svg.innerHTML = `<rect width="${W}" height="${H}" fill="#f8fafc"/>
+    <text x="${cx}" y="16" text-anchor="middle" font-size="10" fill="#4f5866" font-weight="600">US coverage footprint schematic (${r.sats} operational sats)</text>
+    <path d="M ${cx - 130} ${cy + 20} Q ${cx - 80} ${cy - 55} ${cx} ${cy - 62} Q ${cx + 90} ${cy - 50} ${cx + 128} ${cy + 18} Q ${cx + 70} ${cy + 72} ${cx} ${cy + 78} Q ${cx - 75} ${cy + 70} ${cx - 130} ${cy + 20} Z" fill="#eef1f5" stroke="#94a3b8" stroke-width="1.5"/>
+    <text x="${cx}" y="${cy + 4}" text-anchor="middle" font-size="9" fill="#4f5866">continental US (not to scale)</text>
     ${circles.join("")}
-    <text x="${cx}" y="210" text-anchor="middle" font-size="10" fill="#141b26">Overlap ${(r.overlapFrac * 100).toFixed(1)}% · Continuous proxy ${(r.continuousFrac * 100).toFixed(1)}%</text>`;
+    ${sats.join("")}
+    <line x1="24" y1="200" x2="120" y2="200" stroke="#1f9d55" stroke-width="2"/><text x="124" y="203" font-size="9" fill="#141b26">45-sat continuous floor</text>
+    <line x1="24" y1="216" x2="120" y2="216" stroke="#d98a00" stroke-width="2"/><text x="124" y="219" font-size="9" fill="#141b26">60-sat continuous upper</text>
+    <text x="${cx}" y="${H - 28}" text-anchor="middle" font-size="10" fill="#141b26">Overlap ${(r.overlapFrac * 100).toFixed(1)}% · Continuous proxy ${(r.continuousFrac * 100).toFixed(1)}% (threshold ${thresh45})</text>
+    <text x="${cx}" y="${H - 14}" text-anchor="middle" font-size="9" fill="#4f5866">Footprint r≈${r.radiusKm.toFixed(0)} km at ${r.minElevDeg}° min elev · f=${(r.heuristic?.fPct ?? 0).toFixed(2)}% of US area per sat</text>`;
 }
 
 function drawD2cArchSvg() {
   const svg = $("d2cArchSvg");
   if (!svg) return;
-  svg.innerHTML = `<rect width="480" height="200" fill="#f8fafc"/><rect x="200" y="18" width="80" height="28" rx="4" fill="#141b26"/><text x="240" y="36" text-anchor="middle" font-size="10" fill="#fff">BlueBird</text><rect x="216" y="92" width="48" height="64" rx="6" fill="#1f9d55"/><text x="240" y="118" text-anchor="middle" font-size="9" fill="#fff">Phone</text><rect x="330" y="96" width="88" height="56" rx="4" fill="#fff" stroke="#dde2e8"/><text x="374" y="118" text-anchor="middle" font-size="9">MNO</text>`;
+  const W = 480;
+  const H = 220;
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
+  svg.innerHTML = `<rect width="${W}" height="${H}" fill="#f8fafc"/>
+    <text x="${W / 2}" y="16" text-anchor="middle" font-size="10" fill="#4f5866" font-weight="600">AST SpaceMobile direct-to-cell architecture (schematic)</text>
+    <path d="M 40 52 Q 240 8 440 52" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="6 4"/>
+    <text x="240" y="12" text-anchor="middle" font-size="8" fill="#4f5866">LEO orbit ~550 km</text>
+    <g transform="translate(200,36)">
+      <rect x="0" y="0" width="80" height="22" fill="#141b26" rx="4"/>
+      <line x1="10" y1="6" x2="70" y2="6" stroke="#4f5866" stroke-width="1"/>
+      <line x1="10" y1="11" x2="70" y2="11" stroke="#4f5866" stroke-width="1"/>
+      <line x1="10" y1="16" x2="70" y2="16" stroke="#4f5866" stroke-width="1"/>
+      <text x="40" y="36" text-anchor="middle" font-size="9" fill="#141b26" font-weight="600">BlueBird phased array</text>
+    </g>
+    <line x1="240" y1="58" x2="240" y2="108" stroke="#2f6fed" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#d2c-beam)"/>
+    <defs><marker id="d2c-beam" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#2f6fed"/></marker></defs>
+    <text x="252" y="88" font-size="8" fill="#2f6fed">700/800 MHz beam</text>
+    <rect x="216" y="112" width="48" height="56" fill="#1f9d55" rx="6"/>
+    <rect x="222" y="118" width="36" height="44" fill="#fff" opacity=".2" rx="3"/>
+    <text x="240" y="140" text-anchor="middle" font-size="9" fill="#fff">Phone</text>
+    <text x="240" y="152" text-anchor="middle" font-size="8" fill="#fff">unmodified</text>
+    <path d="M 264 140 L 310 140" stroke="#5b6472" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <rect x="310" y="118" width="96" height="44" fill="#fff" stroke="#dde2e8" rx="6"/>
+    <text x="358" y="136" text-anchor="middle" font-size="9" fill="#141b26" font-weight="600">MNO core network</text>
+    <text x="358" y="150" text-anchor="middle" font-size="8" fill="#4f5866">partner spectrum (SCS)</text>
+    <path d="M 358 162 L 358 188" stroke="#5b6472" stroke-width="1.5"/>
+    <rect x="318" y="188" width="80" height="24" fill="#eef3fe" stroke="#2f6fed" rx="4"/>
+    <text x="358" y="204" text-anchor="middle" font-size="8" fill="#2f6fed">Ground gateway</text>
+    <text x="80" y="200" font-size="8" fill="#4f5866">AST = wholesale capacity</text>
+    <text x="80" y="212" font-size="8" fill="#4f5866">not consumer MVNO</text>`;
 }
 
 function ddRow(row) {
@@ -912,6 +962,7 @@ function init() {
   });
   document.querySelectorAll("[data-const-preset]").forEach((b) => (b.onclick = () => applyConstPreset(b.dataset.constPreset)));
   document.querySelectorAll("[data-val-preset]").forEach((b) => (b.onclick = () => applyValPreset(b.dataset.valPreset)));
+  document.querySelectorAll("[data-lk-block]").forEach((b) => (b.onclick = () => applyLinkBlock(b.dataset.lkBlock)));
   document.querySelectorAll("[data-dilution-stress]").forEach((b) => {
     b.onclick = () => applyDilutionStress(Number(b.dataset.dilutionStress));
   });
