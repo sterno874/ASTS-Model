@@ -128,24 +128,74 @@ const EXPL = {
 <h4>Competition</h4>
 <p><span class="tag f">Fact</span> <b>SpaceX Starlink D2C</b> (T-Mobile partnership), <b>Lynk/Omnispace</b>, Apple/Globalstar emergency — overlapping D2D spectrum strategies. AST bets on fewer, larger satellites vs Starlink's distributed small-sat approach.</p>`,
 
-  col: `<h3>Constellation economics</h3>
-<p><span class="tag m">Model</span> Revenue proxy: <code>activeSubs = MNO_subs × penetration × coverageFraction</code>; <code>rev = activeSubs × ARPU_monthly × 12</code>. Penetration is space-layer attach rate, not total MNO subs.</p>
-<p><span class="tag c">Community</span> Reddit thesis "$3/mo × 3B = $5.4B" is <b>rejected</b> — assumes 100% attach and full ARPU to AST; wholesale rev-share is a fraction of carrier pricing.</p>
-<h4>Capital structure</h4>
-<p><span class="tag f">Fact</span> Q1 2026 cash ~$3.46B; Q1 investing cash outflow ~$379M (satellite CapEx). Diluted shares ~256M FY2025; convertibles ~$2.2B outstanding — dilution remains structural (<a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001780312" target="_blank" rel="noopener">SEC CIK 1780312</a>).</p>`,
+  col: `<h3>FCC Supplemental Coverage from Space (SCS)</h3>
+<p><span class="tag f">Fact</span> AST does <b>not</b> own nationwide cellular spectrum. Under the FCC's <b>Supplemental Coverage from Space (SCS)</b> framework, satellites re-use <b>MNO-licensed low-band</b> (700/800 MHz) so standard phones can connect without new chips (<a href="https://www.datacenterdynamics.com/en/news/fcc-gives-ast-spacemobile-the-go-ahead-to-launch-satellite-broadband-service/" target="_blank" rel="noopener">DCD</a> · <a href="https://www.fcc.gov/document/fcc-grants-ast-spacemobile-authority-deploy-and-operate-ngso-system" target="_blank" rel="noopener">FCC DA 26-391</a>).</p>
+<p><span class="tag f">Fact</span> Order <b>DA 26-391</b> (Apr 2026) authorizes up to <b>248 NGSO satellites</b> plus commercial SCS operations, with conditions on interference, debris mitigation, and NSF/NRAO coordination (<a href="https://www.fcc.gov/document/fcc-grants-ast-spacemobile-authority-deploy-and-operate-ngso-system" target="_blank" rel="noopener">FCC order</a> · <a href="https://spacenews.com/fcc-clears-ast-spacemobile-constellation-as-launch-setback-clouds-ramp-up/" target="_blank" rel="noopener">SpaceNews</a>).</p>
+<h4>Wholesale MNO model</h4>
+<p><span class="tag f">Fact</span> AST is a <b>wholesale capacity provider</b> — AT&T, Verizon, Vodafone, and ~60 agreements covering <b>3B+ subscribers</b> are MOUs/partnerships, not all binding commercial contracts (<a href="https://ast-science.com/" target="_blank" rel="noopener">IR</a>).</p>
+<p><span class="tag f">Fact</span> Carriers set consumer pricing; AST receives capacity fees or rev-share. Q1 2026 revenue <b>$14.7M</b> was largely gateway hardware and government milestones — not mass-market phone broadband (<a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001780312" target="_blank" rel="noopener">SEC 10-Q</a>).</p>
+<p><span class="tag m">Model</span> This app's revenue proxy: <code>activeSubs = MNO_subs × penetration × coverageFraction</code>; <code>rev = activeSubs × ARPU_monthly × 12</code>. Penetration = space-layer attach rate, not total MNO subs.</p>
+<p><span class="tag c">Community</span> Reddit thesis "$3/mo × 3B = $5.4B to AST" is <b>rejected</b> — assumes 100% attach and full consumer ARPU to AST; wholesale share is a fraction of carrier billing (<a href="https://www.reddit.com/r/ASTSpaceMobile/" target="_blank" rel="noopener">r/ASTSpaceMobile</a>).</p>
+<h4>Dilution &amp; convertibles</h4>
+<p><span class="tag f">Fact</span> Diluted shares rose ~<b>81.8M → 256M</b> FY2023–25; ~<b>$2.2B+ convertible notes</b> outstanding with conversion prices ~$85–$120/sh (<a href="https://www.sec.gov/Archives/edgar/data/1780312/000149315226019390/formars.pdf" target="_blank" rel="noopener">FY2025 10-K</a> · <a href="https://www.businesswire.com/news/home/20250729408729/en/" target="_blank" rel="noopener">Jul 2025 note PR</a>).</p>
+<p><span class="tag f">Fact</span> Q1 2026 cash ~$3.46B, but Q1 investing cash outflow ~$379M (satellite CapEx) — liquidity ≠ zero dilution (<a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001780312" target="_blank" rel="noopener">SEC CIK 1780312</a> · <a href="https://www.metricduck.com/blog/asts-10k-analysis-revenue-backlog-funding-clock" target="_blank" rel="noopener">MetricDuck 10-K analysis</a>).</p>
+<h4>Launch risk — BlueBird 7</h4>
+<p><span class="tag f">Fact</span> BlueBird 7 (Apr 2026, Blue Origin NG-3) was lost to a <b>low-orbit insertion error</b> — launch vehicle anomaly, not payload power-on failure; insured per filings (<a href="https://spaceflightnow.com/2026/06/16/live-coverage-spacex-to-launch-3-block-2-bluebird-satellites-for-ast-spacemobile/" target="_blank" rel="noopener">Spaceflight Now</a> · <a href="https://www.businesswire.com/news/home/20260617420856/en/" target="_blank" rel="noopener">BB8-10 recovery PR</a>).</p>
+<h4>Starlink D2C vs AST</h4>
+<p><span class="tag f">Fact</span> <b>SpaceX Starlink D2C</b> (T-Mobile US partnership) uses many small LEO sats vs AST's fewer, large-aperture BlueBirds — overlapping D2D spectrum strategy, different RF architecture and scale economics (<a href="https://www.fcc.gov/document/fcc-grants-ast-spacemobile-authority-deploy-and-operate-ngso-system" target="_blank" rel="noopener">FCC filings context</a> · <a href="https://satnews.com/2026/06/17/direct-to-device-momentum-ast-spacemobile-successfully-launches-giant-next-gen-bluebird-satellites-atop-spacex-falcon-9/" target="_blank" rel="noopener">SatNews Block 2</a>).</p>
+<h4>Kook Report — use with caveats</h4>
+<p><span class="tag c">Community</span> <b>@thekookreport</b> weekly threads are useful for catalyst calendars and FCC pointers, but mix verified launch facts with speculative M&A/Golden Dome threads — cross-check every dollar claim vs SEC (<a href="https://threadreaderapp.com/user/thekookreport" target="_blank" rel="noopener">Thread Reader</a> · <a href="https://www.bloomberg.com/news/features/2026-05-08/spacex-rival-ast-spacemobile-asts-proves-meme-stock-mania-is-back" target="_blank" rel="noopener">Bloomberg May 2026</a>).</p>`,
 
-  pro: `<h3>Regulatory &amp; spectrum</h3>
-<p><span class="tag f">Fact</span> FCC DA 26-391 (Apr 2026): NGSO deployment + SCS authority for 248 sats; conditions on interference, debris, NSF/NRAO coordination. ITU / local approvals still required ex-US.</p>
-<p><span class="tag f">Fact</span> AST holds 3,900+ patents/patent-pending per IR — IP supports beamforming, deployment, spectrum coordination; patents ≠ commercial moat alone.</p>
-<h4>Launch cadence risk</h4>
-<p><span class="tag f">Fact</span> Multi-provider strategy: SpaceX, Blue Origin, ISRO. BB7 failure (NG-3 insertion) insured; demonstrates launch-specific risk distinct from payload failure.</p>
-<p><span class="tag m">Model</span> Valuation uses segment-weighted EV = Σ (peakRev × P(commercial) × EV/Revenue × weight) + platform optionality. Treat $/sh as scenario math, not price target.</p>`,
+  pro: `<h3>SCS regulatory stack &amp; deployment conditions</h3>
+<p><span class="tag f">Fact</span> <b>DA 26-391</b> grants NGSO deployment authority for 248 satellites and commercial SCS using partner MNO spectrum — AST holds no standalone nationwide cellular license (<a href="https://www.fcc.gov/document/fcc-grants-ast-spacemobile-authority-deploy-and-operate-ngso-system" target="_blank" rel="noopener">FCC order</a> · <a href="https://www.datacenterdynamics.com/en/news/fcc-gives-ast-spacemobile-the-go-ahead-to-launch-satellite-broadband-service/" target="_blank" rel="noopener">DCD</a>).</p>
+<p><span class="tag f">Fact</span> Conditions include interference protection, orbital debris mitigation, and NSF/NRAO coordination — not a rubber stamp (<a href="https://www.fcc.gov/document/fcc-grants-ast-spacemobile-authority-deploy-and-operate-ngso-system" target="_blank" rel="noopener">FCC DA 26-391</a>). Ex-US markets require ITU filings and local approvals per 10-K risk factors (<a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001780312" target="_blank" rel="noopener">SEC 10-K</a>).</p>
+<p><span class="tag f">Fact</span> Company cites <b>45–60 satellites</b> for continuous US coverage; 2026 target ~45 in orbit — forward-looking, not yet achieved (<a href="https://spacenews.com/fcc-clears-ast-spacemobile-constellation-as-launch-setback-clouds-ramp-up/" target="_blank" rel="noopener">SpaceNews Apr 2026</a>).</p>
+<h4>Wholesale economics — what we can and cannot model</h4>
+<p><span class="tag f">Fact</span> Revenue today: Q1 2026 <b>$14.7M</b> (gateway + gov milestones). Wholesale rev-share rates and per-MNO pricing are <b>not disclosed</b> in SEC filings (<a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001780312" target="_blank" rel="noopener">10-Q</a>).</p>
+<p><span class="tag u">Assumption</span> ~60 MNO agreements covering 3B+ subs are addressable TAM, not contracted ARR — commercial terms largely undisclosed (<a href="https://ast-science.com/" target="_blank" rel="noopener">IR</a>).</p>
+<p><span class="tag m">Model</span> Valuation tab uses segment-weighted EV = Σ (peakRev × P(commercial) × EV/Revenue × weight). Constellation tab ARPU slider is wholesale $/sub/month proxy — not carrier consumer pricing.</p>
+<h4>Capital structure &amp; dilution path</h4>
+<p><span class="tag f">Fact</span> Three convertible tranches (~$460M + $575M + $1.0B) at effective conversion ~$85–$120/sh; Jul 2025 $575M close documented (<a href="https://www.businesswire.com/news/home/20250729408729/en/" target="_blank" rel="noopener">Business Wire</a> · <a href="https://www.sec.gov/Archives/edgar/data/1780312/000149315226019390/formars.pdf" target="_blank" rel="noopener">10-K</a>).</p>
+<p><span class="tag f">Fact</span> Q1 2026 equity footnote: Class A ~298.5M + Class B ~11.2M + Class C ~78.2M shares — multi-class structure complicates per-share math (<a href="https://www.sec.gov/Archives/edgar/data/1780312/000119312526216950/R21.htm" target="_blank" rel="noopener">Q1 2026 10-Q equity note</a>).</p>
+<p><span class="tag f">Fact</span> ATM/shelf equity issuance pipeline active; "fully funded, no dilution" is <b>rejected</b> vs filings (<a href="https://www.metricduck.com/blog/asts-10k-analysis-revenue-backlog-funding-clock" target="_blank" rel="noopener">MetricDuck</a> · <a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001780312" target="_blank" rel="noopener">SEC</a>).</p>
+<h4>Launch cadence &amp; BB7 failure anatomy</h4>
+<p><span class="tag f">Fact</span> Multi-provider strategy: SpaceX (BB1-5, BB8-10), ISRO (BB6), Blue Origin (BB7 loss). BB7 Apr 2026: NG-3 delivered to low orbit — insertion failure, insured (<a href="https://spaceflightnow.com/2026/06/16/live-coverage-spacex-to-launch-3-block-2-bluebird-satellites-for-ast-spacemobile/" target="_blank" rel="noopener">Spaceflight Now</a>).</p>
+<p><span class="tag m">Model</span> Constellation Monte Carlo presets stress post-BB7 failure rates (5–25%) — educational, not company forecast. Provider-specific anomalies not fully captured.</p>
+<h4>Competitive landscape — Starlink D2C</h4>
+<p><span class="tag f">Fact</span> Starlink D2C via T-Mobile US spectrum: distributed small-sat architecture vs AST large-aperture (~223 m² Block 2 arrays). Starlink advantages: launch cadence, vertical integration; AST advantages: MNO partnership depth, aperture/EIRP (<a href="https://satnews.com/2026/06/17/direct-to-device-momentum-ast-spacemobile-successfully-launches-giant-next-gen-bluebird-satellites-atop-spacex-falcon-9/" target="_blank" rel="noopener">SatNews</a> · <a href="https://www.fcc.gov/document/fcc-grants-ast-spacemobile-authority-deploy-and-operate-ngso-system" target="_blank" rel="noopener">FCC</a>).</p>
+<p><span class="tag c">Community</span> "Starlink kills AST" is <b>partial</b> — competition is real and formidable; differentiated architecture and carrier alignment mean obsolescence is unproven (<a href="https://www.reddit.com/r/ASTSpaceMobile/" target="_blank" rel="noopener">r/ASTSpaceMobile</a>).</p>
+<h4>Kook Report verification matrix</h4>
+<p><span class="tag c">Community</span> <b>Verified:</b> Ligado DA / mid-band access (10-K). <b>Partial:</b> launch cadence mix, DoD pipeline, Vodafone MEP briefing. <b>Rejected:</b> "fully funded no dilution," "200 Mbps everywhere," M&A inevitability (<a href="https://threadreaderapp.com/thread/1914063374180323818.html" target="_blank" rel="noopener">Apr 2026 weekly sample</a> · <a href="https://threadreaderapp.com/user/thekookreport" target="_blank" rel="noopener">@thekookreport</a>).</p>
+<p><span class="tag c">Community</span> "Kook Bottom" = meme contrarian marker when @thekookreport panics during selloffs — sentiment only (<a href="https://www.bloomberg.com/news/features/2026-05-08/spacex-rival-ast-spacemobile-asts-proves-meme-stock-mania-is-back" target="_blank" rel="noopener">Bloomberg</a>).</p>`,
 
-  phd: `<h3>Link budget &amp; system capacity</h3>
-<p><span class="tag m">Model</span> Friis: <code>PL(dB) = 20 log₁₀(4πd/λ)</code>. Slant range from elevation angle ε and altitude h. Handset link: budget margin = P_rx − sensitivity; positive margin necessary but not sufficient for broadband QoS.</p>
-<p><span class="tag f">Fact</span> LEO Doppler and handoff require ground gateway integration with MNO core; AST builds gateways + uses partner spectrum — not standalone MVNO in most markets.</p>
-<p><span class="tag u">Assumption</span> Concurrent users/sat bounded by beamforming sectors, spectrum reuse, and backhaul — model uses subs/sat slider as opaque capacity proxy. See Technology tab for margin vs elevation sensitivity.</p>
-<p><span class="tag f">Fact</span> Continuous coverage requires time-averaged satellite availability across orbits — company cites 45–60 sats; exact geometry depends on inclination, planes, and min elevation angle.</p>`
+  phd: `<h3>Revenue identifiability — what SEC filings actually disclose</h3>
+<p><span class="tag f">Fact</span> Q1 2026 revenue <b>$14.7M</b> is identifiable: gateway hardware deliveries and US government milestone payments — disclosed in 10-Q, not extrapolatable to consumer D2D ARPU (<a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001780312" target="_blank" rel="noopener">SEC 10-Q</a>).</p>
+<p><span class="tag f">Fact</span> SEC filings disclose: cash (~$3.46B Mar 2026), CapEx cadence (Q1 investing ~$379M), debt/convertible terms, share classes, customer concentration risk factors — but <b>do not</b> disclose wholesale rev-share %, per-MNO pricing, attach-rate forecasts, or segment-level space-broadband revenue (<a href="https://www.sec.gov/Archives/edgar/data/1780312/000149315226019390/formars.pdf" target="_blank" rel="noopener">FY2025 10-K</a> · <a href="https://www.sec.gov/Archives/edgar/data/1780312/000119312526216950/R21.htm" target="_blank" rel="noopener">Q1 2026 10-Q</a>).</p>
+<p><span class="tag u">Assumption</span> Any model tying $/sh to "$3 × 3B subs" is <b>non-identifiable</b> from filings — penetration, wholesale take-rate, and coverage fraction are exogenous sliders, not extractable parameters.</p>
+<h4>SCS as a spectrum-access regime</h4>
+<p><span class="tag f">Fact</span> SCS lets NGSO systems operate on terrestrial partner licenses in 700/800 MHz — AST's US path is AT&T/Verizon spectrum, not AST-owned nationwide cellular (<a href="https://www.datacenterdynamics.com/en/news/fcc-gives-ast-spacemobile-the-go-ahead-to-launch-satellite-broadband-service/" target="_blank" rel="noopener">DCD</a> · <a href="https://www.fcc.gov/document/fcc-grants-ast-spacemobile-authority-deploy-and-operate-ngso-system" target="_blank" rel="noopener">FCC DA 26-391</a>).</p>
+<p><span class="tag f">Fact</span> FCC conditions (interference, debris, NSF/NRAO) create ongoing compliance obligations — authorization ≠ unconstrained EIRP or unlimited beam density (<a href="https://www.fcc.gov/document/fcc-grants-ast-spacemobile-authority-deploy-and-operate-ngso-system" target="_blank" rel="noopener">FCC order</a>).</p>
+<h4>Wholesale MNO model — structural limits</h4>
+<p><span class="tag f">Fact</span> AST builds gateways integrating with MNO core networks; consumer billing stays with carriers. ~60 agreements / 3B+ subs = partnership footprint, not revenue backlog (<a href="https://ast-science.com/" target="_blank" rel="noopener">IR</a> · <a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001780312" target="_blank" rel="noopener">10-K risk factors</a>).</p>
+<p><span class="tag m">Model</span> Peak demo speeds (Block 1 <b>98.9 Mbps</b>, Block 2 target <b>~200 Mbps</b>) are shared-beam capacity — not per-user SLA. Revenue identifiability requires disclosed wholesale $/GB or $/sub/month; neither exists in filings (<a href="https://satnews.com/2026/06/17/direct-to-device-momentum-ast-spacemobile-successfully-launches-giant-next-gen-bluebird-satellites-atop-spacex-falcon-9/" target="_blank" rel="noopener">SatNews</a>).</p>
+<h4>Dilution mechanics — convertibles, classes, ATM</h4>
+<p><span class="tag f">Fact</span> Convertible overhang ~$2.2B+ across three tranches ($460M @ ~$120.12, $575M @ ~$120.12, $1.0B @ ~$85) — mechanical conversion adds ~30–40M+ shares if in-the-money (<a href="https://www.businesswire.com/news/home/20250729408729/en/" target="_blank" rel="noopener">Jul 2025 PR</a> · <a href="https://www.sec.gov/Archives/edgar/data/1780312/000149315226019390/formars.pdf" target="_blank" rel="noopener">10-K</a>).</p>
+<p><span class="tag f">Fact</span> Share count trajectory 81.8M → 256M diluted FY2023–25; Q1 2026 multi-class equity (A/B/C) — GAAP diluted EPS denominator ≠ simple Class A count (<a href="https://www.metricduck.com/blog/asts-10k-analysis-revenue-backlog-funding-clock" target="_blank" rel="noopener">MetricDuck</a> · <a href="https://www.sec.gov/Archives/edgar/data/1780312/000119312526216950/R21.htm" target="_blank" rel="noopener">Q1 10-Q footnote</a>).</p>
+<p><span class="tag u">Assumption</span> Valuation tab FD dilution model assumes mechanical conversion at slider price — ignores capped-call overlays, conversion timing, and ATM issuance path. Cash $3.46B does not eliminate dilution when CapEx ~$379M/qtr and notes remain outstanding.</p>
+<h4>Launch risk — BB7 as provider-specific tail event</h4>
+<p><span class="tag f">Fact</span> BB7 (Apr 28 2026, Blue Origin NG-3): payload delivered to insufficient orbit — launch insertion anomaly, insured; BB8-10 recovered cadence Jun 17 2026 on SpaceX F9 (<a href="https://spaceflightnow.com/2026/06/16/live-coverage-spacex-to-launch-3-block-2-bluebird-satellites-for-ast-spacemobile/" target="_blank" rel="noopener">Spaceflight Now</a> · <a href="https://www.businesswire.com/news/home/20260617420856/en/" target="_blank" rel="noopener">Business Wire</a>).</p>
+<p><span class="tag m">Model</span> Monte Carlo uses constant per-launch failure rate — does not distinguish SpaceX vs Blue Origin vs ISRO reliability; BB7 preset (25%) is stress scenario, not empirical λ.</p>
+<h4>Starlink D2C — architectural &amp; economic comparison</h4>
+<p><span class="tag f">Fact</span> Starlink: thousands of small LEO sats, T-Mobile US spectrum partnership, SpaceX vertical launch integration. AST: fewer satellites, ~223 m² Block 2 phased arrays, deep MNO investor alignment (AT&T, Verizon, Vodafone) (<a href="https://satnews.com/2026/06/17/direct-to-device-momentum-ast-spacemobile-successfully-launches-giant-next-gen-bluebird-satellites-atop-spacex-falcon-9/" target="_blank" rel="noopener">SatNews</a> · <a href="https://ast-science.com/" target="_blank" rel="noopener">IR</a>).</p>
+<p><span class="tag f">Fact</span> Neither operator discloses D2D wholesale economics in SEC filings — competitive outcome is exogenous to any filing-derived model.</p>
+<h4>Kook Report — epistemic status (no sugar)</h4>
+<p><span class="tag c">Community</span> @thekookreport is a <b>sentiment aggregator</b>, not a primary source. Useful: FCC filing pointers, launch calendar, regulatory sweep. Unreliable without SEC cross-check: Golden Dome revenue sizing, M&A inevitability, "fully funded" claims, per-user 200 Mbps SLA (<a href="https://threadreaderapp.com/thread/1914063374180323818.html" target="_blank" rel="noopener">Apr 2026 thread</a> · <a href="https://threadreaderapp.com/user/thekookreport" target="_blank" rel="noopener">archive</a> · <a href="https://www.bloomberg.com/news/features/2026-05-08/spacex-rival-ast-spacemobile-asts-proves-meme-stock-mania-is-back" target="_blank" rel="noopener">Bloomberg</a>).</p>
+<p><span class="tag c">Community</span> Ligado DA claim is filing-verified; ozone-vs-Starlink debris claim is community model (Kevin Coulton thread), not AST IR — treat as hypothesis (<a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001780312" target="_blank" rel="noopener">10-K Ligado</a>).</p>
+<h4>Link budget &amp; capacity — system-level bounds</h4>
+<p><span class="tag m">Model</span> Friis: <code>PL(dB) = 20 log₁₀(4πd/λ)</code>; slant range from elevation ε and altitude h. Positive link margin necessary but insufficient — C/(N+I), Doppler, handoff, and beam scheduling determine usable throughput.</p>
+<p><span class="tag u">Assumption</span> subs/sat slider is an opaque capacity proxy; continuous coverage requires 45–60 sats (company cite) with geometry depending on inclination, planes, min elevation — app uses overlap heuristic, not Walker delta simulation (<a href="https://spacenews.com/fcc-clears-ast-spacemobile-constellation-as-launch-setback-clouds-ramp-up/" target="_blank" rel="noopener">SpaceNews</a>).</p>
+<p><span class="tag f">Fact</span> 3,700–3,900 patent claims support IP narrative but do not disclose revenue, wholesale pricing, or freedom-to-operate vs Starlink/Lynk (<a href="https://patents.google.com/?assignee=AST+SpaceMobile" target="_blank" rel="noopener">USPTO assignee search</a> · <a href="https://www.sec.gov/Archives/edgar/data/1780312/000149315226019390/formars.pdf" target="_blank" rel="noopener">10-K</a>).</p>`
+
 };
 
 function readConstState() {
@@ -617,10 +667,41 @@ function showLevel(l) {
   if (!restoringState) updateHashQuiet();
 }
 
+const FACTS_STALE_DAYS = 90;
+const FACTS_REFERENCE = new Date("2026-07-04T12:00:00Z");
+
+function formatAsOfLabel(iso) {
+  const [y, m, d] = iso.split("-").map(Number);
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  return `${months[m - 1]} ${d}, ${y}`;
+}
+
+function daysSinceAsOf(iso) {
+  const [y, m, d] = iso.split("-").map(Number);
+  const then = Date.UTC(y, m - 1, d);
+  return Math.floor((FACTS_REFERENCE.getTime() - then) / 86400000);
+}
+
 function initFactsAsOf() {
   document.querySelectorAll(".fact[data-as-of]").forEach((el) => {
     const d = el.dataset.asOf;
-    if (d) el.setAttribute("title", "Data as of " + d);
+    if (!d) return;
+    el.setAttribute("title", "Data as of " + d);
+    const b = el.querySelector("b");
+    if (b && !b.querySelector(".as-of")) {
+      const span = document.createElement("span");
+      span.className = "as-of";
+      span.textContent = " · as of " + formatAsOfLabel(d);
+      b.appendChild(span);
+    }
+    const age = daysSinceAsOf(d);
+    if (age > FACTS_STALE_DAYS && !el.querySelector(".stale-badge")) {
+      const badge = document.createElement("span");
+      badge.className = "stale-badge";
+      badge.title = `${age} days since source date — verify for updates`;
+      badge.textContent = "stale";
+      el.querySelector("b")?.appendChild(badge);
+    }
   });
 }
 
