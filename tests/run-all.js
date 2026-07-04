@@ -16,6 +16,7 @@ const files = [
   "monte-carlo.test.js",
   "dilution.test.js",
   "coverage-orbit.test.js",
+  "commercial.test.js",
   "kook-report.test.js",
   "presets.test.js",
   "device.test.js"

@@ -3,14 +3,78 @@
  */
 
 export const MNO_PARTNERS = [
-  { name: "AT&T", region: "US", role: "Spectrum + commercial D2D", investor: true, tag: "verified", source: "https://ast-science.com/" },
-  { name: "Verizon", region: "US", role: "Spectrum + commercial D2D", investor: true, tag: "verified", source: "https://ast-science.com/" },
-  { name: "Vodafone", region: "Europe / global", role: "MNO partner + investor", investor: true, tag: "verified", source: "https://ast-science.com/" },
-  { name: "Rakuten", region: "Japan", role: "MNO partner", investor: false, tag: "verified", source: "https://ast-science.com/" },
-  { name: "Bell / Telus", region: "Canada", role: "MNO partner", investor: false, tag: "verified", source: "https://ast-science.com/" },
-  { name: "stc Group", region: "MENA", role: "MNO partner", investor: false, tag: "verified", source: "https://ast-science.com/" },
-  { name: "Google", region: "Global", role: "Strategic partner", investor: false, tag: "verified", source: "https://ast-science.com/" },
-  { name: "American Tower", region: "Global", role: "Ground infrastructure", investor: false, tag: "verified", source: "https://ast-science.com/" }
+  {
+    name: "AT&T",
+    region: "US",
+    role: "Spectrum + commercial D2D",
+    investor: true,
+    tag: "verified",
+    sourceLabel: "SEC filing",
+    source: "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001780312"
+  },
+  {
+    name: "Verizon",
+    region: "US",
+    role: "Spectrum + commercial D2D",
+    investor: true,
+    tag: "verified",
+    sourceLabel: "Business Wire",
+    source: "https://www.businesswire.com/news/home/20240529905438/en/AST-SpaceMobile-and-Verizon-Announce-Definitive-Commercial-Agreement-for-Direct-to-Cellular-Service"
+  },
+  {
+    name: "Vodafone",
+    region: "Europe / global",
+    role: "MNO partner + investor",
+    investor: true,
+    tag: "verified",
+    sourceLabel: "Business Wire",
+    source: "https://www.businesswire.com/news/home/20240617561861/en/AST-SpaceMobile-Announces-Strategic-Investment-by-AT-T-Verizon-Vodafone-and-Google"
+  },
+  {
+    name: "Rakuten",
+    region: "Japan",
+    role: "MNO partner",
+    investor: false,
+    tag: "verified",
+    sourceLabel: "AST IR",
+    source: "https://ast-science.com/"
+  },
+  {
+    name: "Bell / Telus",
+    region: "Canada",
+    role: "MNO partner",
+    investor: false,
+    tag: "verified",
+    sourceLabel: "AST IR",
+    source: "https://ast-science.com/"
+  },
+  {
+    name: "stc Group",
+    region: "MENA",
+    role: "MNO partner",
+    investor: false,
+    tag: "verified",
+    sourceLabel: "AST IR",
+    source: "https://ast-science.com/"
+  },
+  {
+    name: "Google",
+    region: "Global",
+    role: "Strategic partner",
+    investor: false,
+    tag: "verified",
+    sourceLabel: "Business Wire",
+    source: "https://www.businesswire.com/news/home/20240617561861/en/AST-SpaceMobile-Announces-Strategic-Investment-by-AT-T-Verizon-Vodafone-and-Google"
+  },
+  {
+    name: "American Tower",
+    region: "Global",
+    role: "Ground infrastructure",
+    investor: false,
+    tag: "verified",
+    sourceLabel: "AST IR",
+    source: "https://ast-science.com/"
+  }
 ];
 
 export const CATALYSTS = [
@@ -57,11 +121,56 @@ export const CATALYSTS = [
 ];
 
 export const LAUNCH_EVENTS = [
-  { sat: "BlueWalker 3", date: "2022-09-10", provider: "SpaceX Falcon 9", block: "Test", tag: "verified" },
-  { sat: "BlueBird 1–5", date: "2024-09-12", provider: "SpaceX Falcon 9", block: "Block 1", tag: "verified" },
-  { sat: "BlueBird 6", date: "2025-12-06", provider: "ISRO LVM3", block: "Block 2", tag: "verified" },
-  { sat: "BlueBird 7", date: "2026-04-28", provider: "Blue Origin NG-3", block: "Block 2", status: "lost", tag: "verified" },
-  { sat: "BlueBird 8–10", date: "2026-06-17", provider: "SpaceX Falcon 9", block: "Block 2", tag: "verified" }
+  {
+    sat: "BlueWalker 3",
+    date: "2022-09-10",
+    provider: "SpaceX Falcon 9",
+    block: "Test",
+    status: "deployed",
+    count: 1,
+    tag: "verified",
+    source: "https://ast-science.com/"
+  },
+  {
+    sat: "BlueBird 1–5",
+    date: "2024-09-12",
+    provider: "SpaceX Falcon 9",
+    block: "Block 1",
+    status: "deployed",
+    count: 5,
+    tag: "verified",
+    source: "https://www.businesswire.com/news/home/20240912021837/en/AST-SpaceMobile-Successfully-Launches-its-First-Five-Commercial-BlueBird-Satellites"
+  },
+  {
+    sat: "BlueBird 6",
+    date: "2025-12-06",
+    provider: "ISRO LVM3",
+    block: "Block 2",
+    status: "deployed",
+    count: 1,
+    tag: "verified",
+    source: "https://www.businesswire.com/news/home/20251206121383/en/AST-SpaceMobile-Successfully-Launches-its-Sixth-BlueBird-Satellite"
+  },
+  {
+    sat: "BlueBird 7",
+    date: "2026-04-28",
+    provider: "Blue Origin NG-3",
+    block: "Block 2",
+    status: "lost",
+    count: 1,
+    tag: "verified",
+    source: "https://spaceflightnow.com/2026/06/16/live-coverage-spacex-to-launch-3-block-2-bluebird-satellites-for-ast-spacemobile/"
+  },
+  {
+    sat: "BlueBird 8–10",
+    date: "2026-06-17",
+    provider: "SpaceX Falcon 9",
+    block: "Block 2",
+    status: "deployed",
+    count: 3,
+    tag: "verified",
+    source: "https://www.businesswire.com/news/home/20260617420856/en/AST-SpaceMobile-Announces-Successful-Orbital-Launch-of-BlueBirds-8-9-and-10"
+  }
 ];
 
 /** Community DD — cross-checked vs primary sources. */
@@ -138,12 +247,12 @@ export const BEAR_CASE = [
 ];
 
 export const COMMUNITY_THREADS = [
-  { label: "Daily Discussion Thread", author: "r/ASTSpaceMobile mods", url: "https://www.reddit.com/r/ASTSpaceMobile/", note: "Primary hub — launch tracking, FCC, dilution debate" },
-  { label: "ASTS IS DEFINITELY NOT A MEME STOCK", author: "u/Various", url: "https://www.reddit.com/r/ASTSpaceMobile/search/?q=meme+stock&restrict_sr=1", note: "Recurring bull thesis — verify revenue math" },
-  { label: "Kook Report / SpaceMob DD", author: "u/TheKook (anon)", url: "https://www.reddit.com/r/ASTSpaceMobile/search/?q=kook&restrict_sr=1", note: "Community DD series — influential, not primary source" },
-  { label: "BlueBird 8-10 Launch Meetup", author: "r/ASTSpaceMobile", url: "https://www.reddit.com/r/ASTSpaceMobile/search/?q=BlueBird+8&restrict_sr=1", note: "Launch catalyst threads Jun 2026" },
-  { label: "Dilution / convertibles debate", author: "r/stocks, r/wallstreetbets", url: "https://www.reddit.com/r/stocks/search/?q=ASTS+dilution", note: "Cross-sub skeptic threads — check 10-Q notes" },
-  { label: "FCC DA 26-391 discussion", author: "r/ASTSpaceMobile", url: "https://www.reddit.com/r/ASTSpaceMobile/search/?q=FCC&restrict_sr=1", note: "Regulatory parsing — compare to actual order PDF" }
+  { label: "Daily Discussion Thread", author: "r/ASTSpaceMobile mods", url: "https://www.reddit.com/r/ASTSpaceMobile/", note: "Primary hub — launch tracking, FCC, dilution debate", reddit: true },
+  { label: "ASTS IS DEFINITELY NOT A MEME STOCK", author: "u/Various", url: "https://www.reddit.com/r/ASTSpaceMobile/search/?q=meme+stock&restrict_sr=1", note: "Recurring bull thesis — verify revenue math", reddit: true },
+  { label: "Kook Report / SpaceMob DD", author: "u/TheKook (anon)", url: "https://www.reddit.com/r/ASTSpaceMobile/search/?q=kook&restrict_sr=1", note: "Community DD series — influential, not primary source", reddit: true },
+  { label: "BlueBird 8-10 Launch Meetup", author: "r/ASTSpaceMobile", url: "https://www.reddit.com/r/ASTSpaceMobile/search/?q=BlueBird+8&restrict_sr=1", note: "Launch catalyst threads Jun 2026", reddit: true },
+  { label: "Dilution / convertibles debate", author: "r/stocks, r/wallstreetbets", url: "https://www.reddit.com/r/stocks/search/?q=ASTS+dilution", note: "Cross-sub skeptic threads — check 10-Q notes", reddit: true },
+  { label: "FCC DA 26-391 discussion", author: "r/ASTSpaceMobile", url: "https://www.reddit.com/r/ASTSpaceMobile/search/?q=FCC&restrict_sr=1", note: "Regulatory parsing — compare to actual order PDF", reddit: true }
 ];
 
 /** Kook Report / @thekookreport — cross-checked claims (Apr 2026 weekly thread sample). */
@@ -209,54 +318,66 @@ export const TOP_COMMUNITY_CONTRIBUTORS = [
     tier: "helpful",
     role: "High-signal filing & partner news aggregator",
     note: "Frequent Vodafone/AT&T/Google/13D posts with primary links — verify terms vs hype",
-    source: "https://www.reddit.com/r/ASTSpaceMobile/search/?q=author%3Ahyeonk&restrict_sr=1"
+    source: "https://www.reddit.com/r/ASTSpaceMobile/search/?q=author%3Ahyeonk&restrict_sr=1",
+    reddit: true
   },
   {
     user: "u/EducatedFool1",
     tier: "helpful",
     role: "Technical milestone summaries",
     note: "Launch/integration threads citing IR — good starting point, still cross-check SEC",
-    source: "https://www.reddit.com/r/ASTSpaceMobile/search/?q=author%3AEducatedFool1&restrict_sr=1"
+    source: "https://www.reddit.com/r/ASTSpaceMobile/search/?q=author%3AEducatedFool1&restrict_sr=1",
+    reddit: true
   },
   {
     user: "u/ASTSpaceMobile mods + DD flair",
     tier: "helpful",
     role: "Daily thread + pinned catalyst calendars",
     note: "Best aggregation hub; separates launch meetups from revenue math errors in comments",
-    source: "https://www.reddit.com/r/ASTSpaceMobile/"
+    source: "https://www.reddit.com/r/ASTSpaceMobile/",
+    reddit: true
   },
   {
     user: "@thekookreport (The Kook)",
     tier: "mixed",
     role: "Weekly 'Kook Report' morale + regulatory sweep",
     note: "Influential SpaceMob chronicler — mix of verified FCC/launch facts and speculative gov/M&A threads. Not primary source.",
-    source: "https://threadreaderapp.com/user/thekookreport"
+    source: "https://threadreaderapp.com/user/thekookreport",
+    reddit: false
   },
   {
     user: "r/wallstreetbets ASTS dilution posts",
     tier: "misleading",
     role: "Meme framing + oversimplified revenue",
     note: "Often ignores wholesale rev-share; useful as sentiment thermometer only",
-    source: "https://www.reddit.com/r/wallstreetbets/search/?q=ASTS"
+    source: "https://www.reddit.com/r/wallstreetbets/search/?q=ASTS",
+    reddit: true
   },
   {
     user: "Stocktwits $ASTS",
     tier: "misleading",
     role: "Launch-hype temperature",
     note: "Frequent '$3×3B' revenue errors and FCC=profit conflation — do not use for models",
-    source: "https://stocktwits.com/symbol/ASTS"
+    source: "https://stocktwits.com/symbol/ASTS",
+    reddit: false
   },
   {
     user: "Anonymous 'fully funded' bull threads",
     tier: "misleading",
     role: "Cash runway cheerleading",
     note: "Cites Q1 cash ~$3.46B but omits Q1 investing ~$379M and convertible overhang — partial at best",
-    source: "https://www.reddit.com/r/ASTSpaceMobile/search/?q=fully+funded&restrict_sr=1"
+    source: "https://www.reddit.com/r/ASTSpaceMobile/search/?q=fully+funded&restrict_sr=1",
+    reddit: true
   }
 ];
 
 export function catalystsInYear(year) {
-  return CATALYSTS.filter((c) => c.windowStart.startsWith(String(year)) || c.windowEnd.startsWith(String(year)));
+  const y = Number(year);
+  return CATALYSTS.filter((c) => {
+    const startYear = Number(c.windowStart.slice(0, 4));
+    const endYear = Number(c.windowEnd.slice(0, 4));
+    return startYear <= y && y <= endYear;
+  });
 }
 
 export function sortCatalysts(list) {
@@ -276,10 +397,94 @@ export function timelineFrac(iso, year) {
   return (m - 1) / 12;
 }
 
+export function verdictMeta(verdict) {
+  if (verdict === "verified") return { icon: "✅", cls: "val-ok", label: "verified" };
+  if (verdict === "rejected") return { icon: "❌", cls: "val-no", label: "rejected" };
+  return { icon: "⚠️", cls: "val-part", label: "partial" };
+}
+
+export function tagClass(tag) {
+  if (tag === "verified") return "f";
+  if (tag === "forward-looking") return "u";
+  if (tag === "partial") return "a";
+  if (tag === "model") return "m";
+  return "c";
+}
+
+export function catalystBarClass(tag) {
+  return tag === "verified" ? "cat-tl-bar--verified" : "cat-tl-bar--estimate";
+}
+
+export function packTimelineLanes(items) {
+  const sorted = [...items].sort((a, b) => a.left - b.left || a.right - b.right);
+  const laneRight = [];
+  const out = sorted.map((item) => {
+    let lane = laneRight.findIndex((right) => right <= item.left);
+    if (lane === -1) {
+      lane = laneRight.length;
+      laneRight.push(item.right);
+    } else {
+      laneRight[lane] = item.right;
+    }
+    return { ...item, lane };
+  });
+  return { items: out, lanes: laneRight.length || 1 };
+}
+
 export function layoutTimeline(catalysts, year) {
-  return catalysts.map((c) => ({
-    ...c,
-    left: timelineFrac(c.windowStart, year) * 100,
-    width: Math.max(2, (timelineFrac(c.windowEnd, year) - timelineFrac(c.windowStart, year)) * 100)
+  const base = catalysts.map((c) => {
+    const startFrac = timelineFrac(c.windowStart, year);
+    const endFrac = timelineFrac(c.windowEnd, year) + 1 / 12;
+    const left = Math.max(0, Math.min(100, startFrac * 100));
+    const right = Math.max(left, Math.min(100, endFrac * 100));
+    return {
+      ...c,
+      left,
+      right,
+      width: Math.max(2, right - left),
+      contLeft: Number(c.windowStart.slice(0, 4)) < year,
+      contRight: Number(c.windowEnd.slice(0, 4)) > year
+    };
+  });
+  const packed = packTimelineLanes(base);
+  return {
+    items: packed.items.map((c) => ({ ...c, width: Math.max(2, c.right - c.left) })),
+    lanes: packed.lanes
+  };
+}
+
+export function timelineMonthTicks(year) {
+  return ["Jan", "Apr", "Jul", "Oct", "Dec"].map((label, idx) => ({
+    label: idx === 4 ? `${label} ${year}` : label,
+    left: idx === 4 ? 100 : idx * 25
   }));
 }
+
+export function todayMarkerFrac(year, now = new Date()) {
+  if (now.getUTCFullYear() !== Number(year)) return null;
+  const start = Date.UTC(year, 0, 1);
+  const end = Date.UTC(year + 1, 0, 1);
+  const frac = ((now.getTime() - start) / (end - start)) * 100;
+  return Math.max(0, Math.min(100, frac));
+}
+
+export function launchOrbitTotal() {
+  return LAUNCH_EVENTS.reduce((sum, event) => {
+    const count = Number(event.count ?? 1);
+    if (event.status === "lost") return sum;
+    return sum + count;
+  }, 0);
+}
+
+export function formatLaunchStatus(event) {
+  if (!event || !event.status) return "deployed";
+  if (event.status === "lost") return "lost — insertion error";
+  if (event.status === "deployed") return "deployed";
+  return event.status;
+}
+
+export const REDDIT_ATTRIBUTION = {
+  subreddit: "r/ASTSpaceMobile",
+  url: "https://www.reddit.com/r/ASTSpaceMobile/",
+  note: "Community-sourced discussion only. Cross-check claims with SEC/FCC/IR before using in model assumptions."
+};

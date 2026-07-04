@@ -146,22 +146,24 @@
 </div>
 
 <!-- ========== Commercial ========== -->
-<div id="tab-commercial" class="tabpage" hidden>
+<div id="tab-commercial" class="tabpage comm-tab" hidden>
   <div class="tab-intro-bar">
     <details class="howworks howworks-inline"><summary>How this works</summary>
-      <div class="howworks-body"><p><span class="tag f">Fact</span> AST sells capacity to MNOs — AT&T, Verizon, Vodafone, Rakuten, Bell, Telus, stc, Google, American Tower (<a href="https://ast-science.com/" target="_blank" rel="noopener">IR</a>). Catalyst windows from IR + FCC only.</p></div>
+      <div class="howworks-body"><p><span class="tag f">Fact</span> AST sells capacity to MNOs — AT&T, Verizon, Vodafone, Rakuten, Bell, Telus, stc, Google, American Tower (<a href="https://ast-science.com/" target="_blank" rel="noopener">IR</a>). Catalyst windows from IR + FCC only. Community themes are tagged <span class="verdict-badge verdict-badge--verified">verified</span> / <span class="verdict-badge verdict-badge--partial">partial</span> / <span class="verdict-badge verdict-badge--rejected">rejected</span> against primary sources.</p></div>
     </details>
   </div>
-  <div class="facts page-inner">
+  <div class="facts page-inner comm-tab-inner">
     <h2>MNO &amp; strategic partners</h2>
-    <div class="factgrid" id="mnoGrid"></div>
+    <div class="factgrid comm-mno-grid" id="mnoGrid"></div>
     <p id="commSummary" class="field-note"></p>
     <h2>Catalyst timeline <span class="tag m">primary-sourced windows</span></h2>
-    <div class="ctrl"><label>Year <span id="ccalendarYearVal">2026</span></label><input type="range" id="ccalendarYear" min="2026" max="2028" step="1" value="2026"/></div>
+    <p class="cat-tl-intro field-note">Gantt bars use non-overlapping lanes per year, with a list view below for mobile readability.</p>
+    <div class="ctrl cat-tl-controls"><label>Year <span id="ccalendarYearVal">2026</span></label><input type="range" id="ccalendarYear" min="2026" max="2028" step="1" value="2026"/></div>
     <div id="commCalendar" class="cat-tl-host"></div>
     <h2 class="mt-md">Launch history</h2>
-    <div class="table-wrap"><table class="valtbl"><thead><tr><th>Mission</th><th>Date</th><th>Provider</th><th>Block</th><th>Status</th><th>Tag</th></tr></thead><tbody id="launchTableBody"></tbody></table></div>
+    <div class="table-wrap comm-table-wrap"><table class="valtbl comm-launch-tbl"><thead><tr><th>Mission</th><th>Date</th><th>Provider</th><th>Block</th><th>Status</th><th>Tag / source</th></tr></thead><tbody id="launchTableBody"></tbody></table></div>
     <h2 class="mt-md">Community DD <span class="tag c">cross-checked</span></h2>
+    <p id="commRedditNote" class="field-note comm-reddit-note"></p>
     <p class="field-note">Themes from <a href="https://www.reddit.com/r/ASTSpaceMobile/" target="_blank" rel="noopener">r/ASTSpaceMobile</a>, <a href="https://threadreaderapp.com/user/thekookreport" target="_blank" rel="noopener">Kook Report</a>, r/stocks, r/wallstreetbets — tagged vs SEC/FCC/IR.</p>
     <details class="howworks" id="communityDDPanel">
       <summary>Community DD panel — Kook Report + contributor synthesis</summary>
@@ -169,13 +171,13 @@
         <p class="cw-note">Loading contributor synthesis…</p>
       </div>
     </details>
-    <div class="table-wrap"><table class="valtbl"><thead><tr><th>Claim</th><th>Verdict</th><th>Tag</th><th>Notes</th></tr></thead><tbody id="commDDBody"></tbody></table></div>
+    <div class="table-wrap comm-table-wrap"><table class="valtbl comm-dd-tbl"><thead><tr><th>Claim</th><th>Verdict</th><th>Tag</th><th>Notes</th></tr></thead><tbody id="commDDBody"></tbody></table></div>
     <h2 class="mt-md">Top community contributors</h2>
-    <div class="table-wrap"><table class="valtbl"><thead><tr><th>User / channel</th><th>Role</th><th>Notes</th></tr></thead><tbody id="commContribBody"></tbody></table></div>
+    <div class="table-wrap comm-table-wrap"><table class="valtbl comm-contrib-tbl"><thead><tr><th>User / channel</th><th>Role</th><th>Notes</th></tr></thead><tbody id="commContribBody"></tbody></table></div>
     <h2 class="mt-md">Bear case <span class="tag c">honest</span></h2>
-    <div class="table-wrap"><table class="valtbl"><thead><tr><th>Risk</th><th>Verdict</th><th>Tag</th><th>Notes</th></tr></thead><tbody id="commBearBody"></tbody></table></div>
+    <div class="table-wrap comm-table-wrap"><table class="valtbl comm-bear-tbl"><thead><tr><th>Risk</th><th>Verdict</th><th>Tag</th><th>Notes</th></tr></thead><tbody id="commBearBody"></tbody></table></div>
     <h2 class="mt-md">Community threads <span class="tag c">reference</span></h2>
-    <div class="table-wrap"><table class="valtbl"><thead><tr><th>Thread</th><th>Author</th><th>Notes</th></tr></thead><tbody id="commThreadsBody"></tbody></table></div>
+    <div class="table-wrap comm-table-wrap"><table class="valtbl comm-threads-tbl"><thead><tr><th>Thread</th><th>Author</th><th>Notes</th></tr></thead><tbody id="commThreadsBody"></tbody></table></div>
   </div>
 </div>
 
