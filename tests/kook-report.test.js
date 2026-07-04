@@ -32,6 +32,8 @@ test("MNO_PARTNERS includes AT&T and Verizon investors", () => {
   const vz = MNO_PARTNERS.find((p) => p.name === "Verizon");
   assert.ok(att?.investor);
   assert.ok(vz?.investor);
+  assert.ok(att?.sourceLabel);
+  assert.ok(vz?.sourceLabel);
 });
 
 test("Kook report claims have notes", () => {

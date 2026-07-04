@@ -15,7 +15,15 @@ import {
   catalystsInYear,
   sortCatalysts,
   layoutTimeline,
-  formatCatalystMonth
+  formatCatalystMonth,
+  timelineMonthTicks,
+  todayMarkerFrac,
+  verdictMeta,
+  tagClass,
+  catalystBarClass,
+  launchOrbitTotal,
+  formatLaunchStatus,
+  REDDIT_ATTRIBUTION
 } from "./math/commercial.js";
 import { runLaunchMonteCarlo, LAUNCH_MC_PRESETS } from "./math/monte-carlo.js";
 import { computeFullyDilutedSharesM, CONVERTIBLE_NOTES, evPerShareFd } from "./math/dilution.js";
@@ -321,20 +329,43 @@ function drawCoverageSvg(r) {
 }
 
 
+function ddRow(row) {
+  const verdict = verdictMeta(row.verdict);
+  return `<tr><td>${row.theme}</td><td><span class="${verdict.cls}">${verdict.icon}</span> <span class="verdict-badge verdict-badge--${row.verdict}">${verdict.label}</span></td><td><span class="tag ${tagClass(row.tag)}">${row.tag}</span></td><td>${row.note}</td></tr>`;
+}
+
 function updateCommercialUI() {
   const year = +($("ccalendarYear")?.value ?? 2026);
   const cats = sortCatalysts(catalystsInYear(year));
+  const timeline = layoutTimeline(cats.length ? cats : CATALYSTS, year);
   const host = $("commCalendar");
   if (host) {
-    host.innerHTML = layoutTimeline(cats.length ? cats : CATALYSTS, year)
-      .map(
-        (c) =>
-          `<div class="cat-tl-bar" style="left:${c.left}%;width:${Math.max(c.width, 3)}%" title="${c.label}"><span>${c.label}</span><span class="tag ${c.tag === "verified" ? "f" : c.tag === "forward-looking" ? "u" : "p"}">${c.tag}</span></div>`
-      )
+    const ticks = timelineMonthTicks(year)
+      .map((t) => `<span class="cat-tl-tick" style="left:${t.left}%">${t.label}</span>`)
       .join("");
+    const today = todayMarkerFrac(year);
+    const todayHtml = today == null ? "" : `<div class="cat-tl-today" style="left:${today}%"><span>Today</span></div>`;
+    const bars = timeline.items
+      .map((c) => {
+        const contCls = `${c.contLeft ? " cat-tl-bar--cont-left" : ""}${c.contRight ? " cat-tl-bar--cont-right" : ""}`;
+        const short = c.label.length > 28 ? `${c.label.slice(0, 26)}...` : c.label;
+        return `<div class="cat-tl-bar ${catalystBarClass(c.tag)}${contCls}" style="left:${c.left}%;width:${Math.max(c.width, 3)}%;--lane:${c.lane}" title="${c.label}"><span class="cat-tl-bar-label">${short}</span>${c.contRight ? '<span class="cat-tl-bar-arrow">→</span>' : ""}</div>`;
+      })
+      .join("");
+    const list = timeline.items
+      .map((c) => {
+        const dotClass = c.tag === "verified" ? "cat-tl-dot--verified" : "cat-tl-dot--estimate";
+        const win = `${c.contLeft ? "← " : ""}${formatCatalystMonth(c.windowStart)} - ${formatCatalystMonth(c.windowEnd)}${c.contRight ? " →" : ""}`;
+        const src = c.source ? `<a class="cat-tl-source" href="${c.source}" target="_blank" rel="noopener">source ↗</a>` : "";
+        return `<li class="cat-tl-item"><span class="cat-tl-dot ${dotClass}"></span><div class="cat-tl-card"><div class="cat-tl-card-head"><span class="cat-tl-label">${c.label}</span><span class="tag ${tagClass(c.tag)}">${c.tag}</span>${src}</div><div class="cat-tl-window">${win}</div></div></li>`;
+      })
+      .join("");
+    host.innerHTML = `<div class="cat-timeline"><div class="cat-tl-legend"><span class="cat-tl-leg"><span class="cat-tl-leg-swatch cat-tl-leg-swatch--verified"></span> verified / achieved</span><span class="cat-tl-leg"><span class="cat-tl-leg-swatch cat-tl-leg-swatch--estimate"></span> forward-looking / partial</span>${today == null ? "" : '<span class="cat-tl-leg"><span class="cat-tl-leg-today"></span> today</span>'}<span class="cat-tl-leg"><span class="cat-tl-leg-cont">→</span> continues beyond year</span></div><div class="cat-tl-chart"><div class="cat-tl-ticks">${ticks}</div><div class="cat-tl-track" style="--lanes:${timeline.lanes}"><div class="cat-tl-line"></div>${todayHtml}${bars}</div></div><ul class="cat-tl-list">${list}</ul></div>`;
   }
   const sum = $("commSummary");
-  if (sum) sum.textContent = `${MNO_PARTNERS.length} named strategic MNO partners · ${LAUNCH_EVENTS.length} verified launch milestones through Jun 2026 · FCC 248-sat authorization Apr 2026.`;
+  if (sum) {
+    sum.textContent = `${MNO_PARTNERS.length} named strategic MNO partners · ${launchOrbitTotal()} spacecraft in orbit (verified launches) · ${LAUNCH_EVENTS.length} launch milestones through Jun 2026 · FCC 248-sat authorization Apr 2026.`;
+  }
 }
 
 function updateValUI() {
@@ -629,21 +660,16 @@ function renderStaticPanels() {
   if (mno) {
     mno.innerHTML = MNO_PARTNERS.map(
       (p) =>
-        `<div class="fact" data-as-of="2026-06-17"><b>${p.name}</b> — ${p.region}<br/>${p.role}${p.investor ? " · <span class='tag f'>investor</span>" : ""}<br/><span class="cite"><a href="${p.source}" target="_blank" rel="noopener">IR</a></span></div>`
+        `<div class="fact mno-card" data-as-of="2026-06-17"><b>${p.name}</b> — ${p.region}<br/>${p.role}${p.investor ? " · <span class='tag f'>investor</span>" : ""}<br/><span class="tag ${tagClass(p.tag)}">${p.tag}</span><br/><span class="cite"><a href="${p.source}" target="_blank" rel="noopener">${p.sourceLabel || "source"} ↗</a></span></div>`
     ).join("");
   }
   const launches = $("launchTableBody");
   if (launches) {
     launches.innerHTML = LAUNCH_EVENTS.map(
       (e) =>
-        `<tr><td>${e.sat}</td><td>${e.date}</td><td>${e.provider}</td><td>${e.block}</td><td>${e.status || "deployed"}</td><td><span class="tag f">${e.tag}</span></td></tr>`
+        `<tr><td>${e.sat}${e.count > 1 ? ` <span class="tag m">${e.count} sats</span>` : ""}</td><td>${e.date}</td><td>${e.provider}</td><td>${e.block}</td><td>${formatLaunchStatus(e)}</td><td><span class="tag f">${e.tag}</span>${e.source ? ` · <a href="${e.source}" target="_blank" rel="noopener">source</a>` : ""}</td></tr>`
     ).join("");
   }
-  const ddRow = (row) => {
-    const cls = row.verdict === "verified" ? "val-ok" : row.verdict === "rejected" ? "val-no" : "val-part";
-    const icon = row.verdict === "verified" ? "✅" : row.verdict === "rejected" ? "❌" : "⚠️";
-    return `<tr><td>${row.theme}</td><td><span class="${cls}">${icon}</span> ${row.verdict}</td><td><span class="tag ${row.tag === "verified" ? "f" : "c"}">${row.tag}</span></td><td>${row.note}</td></tr>`;
-  };
   const dd = $("commDDBody");
   if (dd) dd.innerHTML = COMMUNITY_DD.map(ddRow).join("");
   const bear = $("commBearBody");
@@ -651,15 +677,20 @@ function renderStaticPanels() {
   const threads = $("commThreadsBody");
   if (threads) {
     threads.innerHTML = COMMUNITY_THREADS.map(
-      (t) => `<tr><td><a href="${t.url}" target="_blank" rel="noopener">${t.label}</a></td><td>${t.author}</td><td>${t.note}</td></tr>`
+      (t) =>
+        `<tr><td><a href="${t.url}" target="_blank" rel="noopener">${t.label}</a></td><td>${t.reddit ? '<span class="reddit-tag">Reddit</span> ' : ""}${t.author}</td><td>${t.note}</td></tr>`
     ).join("");
   }
   const contribs = $("commContribBody");
   if (contribs) {
     contribs.innerHTML = TOP_COMMUNITY_CONTRIBUTORS.map(
       (c) =>
-        `<tr><td>${c.user}</td><td>${c.role} <span class="tag ${c.tier === "helpful" ? "f" : c.tier === "misleading" ? "c" : "u"}">${c.tier || "—"}</span></td><td>${c.note}</td></tr>`
+        `<tr><td>${c.reddit ? '<span class="reddit-tag">Reddit</span> ' : ""}${c.source ? `<a href="${c.source}" target="_blank" rel="noopener">${c.user}</a>` : c.user}</td><td>${c.role} <span class="tag ${c.tier === "helpful" ? "f" : c.tier === "misleading" ? "c" : "u"}">${c.tier || "—"}</span></td><td>${c.note}</td></tr>`
     ).join("");
+  }
+  const redditNote = $("commRedditNote");
+  if (redditNote) {
+    redditNote.innerHTML = `<span class="reddit-tag">Reddit</span> ${REDDIT_ATTRIBUTION.note} <a href="${REDDIT_ATTRIBUTION.url}" target="_blank" rel="noopener">${REDDIT_ATTRIBUTION.subreddit} ↗</a>`;
   }
   const cmp = $("vCompBody");
   if (cmp) {

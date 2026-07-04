@@ -84,7 +84,11 @@ test("SEC CIK cited", () => {
 test("community DD tables present", () => {
   assert.match(html, /id="commDDBody"/);
   assert.match(html, /id="commContribBody"/);
+  assert.match(html, /id="commRedditNote"/);
   assert.match(html, /Community DD/);
+  assert.match(html, /comm-tab/);
+  assert.match(js, /layoutTimeline/);
+  assert.match(js, /REDDIT_ATTRIBUTION/);
 });
 
 test("prior bands on sliders", () => {
