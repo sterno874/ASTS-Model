@@ -352,7 +352,7 @@
     <h2>Direct-to-cell architecture <span class="tag f">verified concept</span></h2>
     <p class="field-note">Large LEO phased array → beam to handset using MNO-licensed low-band spectrum (700/800 MHz SCS). Ground gateways integrate with partner core networks — AST is wholesale capacity, not a consumer MVNO in most markets. <a href="https://www.datacenterdynamics.com/en/news/fcc-gives-ast-spacemobile-the-go-ahead-to-launch-satellite-broadband-service/" target="_blank" rel="noopener">DCD</a> · <a href="https://www.fcc.gov/document/fcc-grants-ast-spacemobile-authority-deploy-and-operate-ngso-system" target="_blank" rel="noopener">FCC DA 26-391</a></p>
     <div class="tech-sim-wrap d2c-arch-wrap">
-      <svg id="d2cArchSvg" class="tech-sim-svg d2c-arch-svg" viewBox="0 0 480 200" role="img" aria-label="Direct-to-cell architecture schematic: satellite, handset, MNO gateway"></svg>
+      <svg id="d2cArchSvg" class="tech-sim-svg d2c-arch-svg" viewBox="0 0 480 232" role="img" aria-label="Direct-to-cell architecture schematic: satellite, handset, MNO gateway"></svg>
       <p class="tech-sim-legend"><span class="tag m">Schematic</span> Signal path: BlueBird beam → unmodified phone → partner MNO core via ground gateway. Not a beamforming or 3GPP NAS diagram.</p>
     </div>
     <div class="factgrid d2c-factgrid">
@@ -387,7 +387,7 @@
     </div>
     <div class="card">
       <h2>Link outputs</h2>
-      <div class="outgrid">
+      <div class="outgrid tech-outgrid">
         <div><div class="ok">Link margin</div><div class="ov" id="lkMargin">—</div></div>
         <div><div class="ok">P_rx</div><div class="ov" id="lkRx">—</div></div>
         <div><div class="ok">Path loss (Friis)</div><div class="ov" id="lkPl">—</div></div>
@@ -400,10 +400,10 @@
       <div class="link-gauge-wrap">
         <div class="link-gauge-head"><span class="best-est-label">Margin gauge</span><span class="link-gauge-val" id="lkGaugeVal">—</span><span class="link-gauge-status ok" id="lkGaugeStatus">—</span></div>
         <div class="link-gauge">
-          <span class="link-gauge-tick" style="left:0%">−15</span>
+          <span class="link-gauge-tick link-gauge-tick--min" style="left:0%">−15</span>
           <span class="link-gauge-tick" style="left:33.3%">0</span>
           <span class="link-gauge-tick" style="left:66.7%">+10</span>
-          <span class="link-gauge-tick" style="left:100%">+15 dB</span>
+          <span class="link-gauge-tick link-gauge-tick--max" style="left:100%">+15 dB</span>
           <div class="link-gauge-bar"><div class="link-gauge-fill ok" id="lkGaugeFill" style="width:50%"></div><div class="link-gauge-marker" id="lkGaugeMarker" style="left:50%"></div></div>
         </div>
         <p class="tech-sim-legend"><span class="tag m">Threshold</span> 0 dB = received power equals −110 dBm handset sensitivity reference.</p>
@@ -414,8 +414,8 @@
         <div class="friis-terms" id="lkFriisTerms"></div>
       </div>
       <div class="tech-sim-wrap">
-        <svg id="linkSvg" class="tech-sim-svg" viewBox="0 0 480 260" role="img" aria-label="Link geometry diagram"></svg>
-        <p class="tech-sim-legend"><span class="tag m">Schematic</span> Slant path at elevation ε — dashed line length ∝ range d; not a beamforming pattern or PFD compliance plot.</p>
+        <svg id="linkSvg" class="tech-sim-svg" viewBox="0 0 480 318" role="img" aria-label="Link geometry diagram"></svg>
+        <p class="tech-sim-legend sim-legend"><span class="sim-legend-item"><span class="sim-legend-swatch" style="background:transparent;border:2px dashed #2f6fed"></span>RF path</span><span class="sim-legend-item"><span class="sim-legend-swatch" style="background:rgba(47,111,237,.15);border-color:#2f6fed"></span>Beam footprint</span><span class="tag m">Schematic</span> Slant path at elevation ε — dashed line length ∝ range d; not a beamforming pattern or PFD compliance plot.</p>
       </div>
     </div>
   </div>
@@ -449,7 +449,8 @@
         <div><div class="ok">→ 60-sat upper</div><div class="ov" id="coMonths60">—</div></div>
       </div>
       <div class="tech-sim-wrap co-svg-wrap">
-        <svg id="coverageSvg" class="tech-sim-svg co-coverage-svg" viewBox="0 0 480 260" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Coverage footprint schematic"></svg>
+        <svg id="coverageSvg" class="tech-sim-svg co-coverage-svg" viewBox="0 0 480 288" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Coverage footprint schematic"></svg>
+        <p class="tech-sim-legend sim-legend co-svg-legend"><span class="sim-legend-item"><span class="sim-legend-swatch" style="background:#1f9d55"></span>45-sat floor</span><span class="sim-legend-item"><span class="sim-legend-swatch" style="background:#d98a00"></span>60-sat upper</span><span class="tag m">Schematic</span> Instantaneous disk footprints — overlap heuristic, not Walker orbital mechanics.</p>
       </div>
       <h3 class="mt-md">Timeline to milestones <span class="tag m">heuristic</span></h3>
       <p class="field-note">From current sat count at 3 sats/launch every 1.5 mo — same cadence as Constellation tab. Months are model-only.</p>
