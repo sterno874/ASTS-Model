@@ -617,10 +617,41 @@ function showLevel(l) {
   if (!restoringState) updateHashQuiet();
 }
 
+const FACTS_STALE_DAYS = 90;
+const FACTS_REFERENCE = new Date("2026-07-04T12:00:00Z");
+
+function formatAsOfLabel(iso) {
+  const [y, m, d] = iso.split("-").map(Number);
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  return `${months[m - 1]} ${d}, ${y}`;
+}
+
+function daysSinceAsOf(iso) {
+  const [y, m, d] = iso.split("-").map(Number);
+  const then = Date.UTC(y, m - 1, d);
+  return Math.floor((FACTS_REFERENCE.getTime() - then) / 86400000);
+}
+
 function initFactsAsOf() {
   document.querySelectorAll(".fact[data-as-of]").forEach((el) => {
     const d = el.dataset.asOf;
-    if (d) el.setAttribute("title", "Data as of " + d);
+    if (!d) return;
+    el.setAttribute("title", "Data as of " + d);
+    const b = el.querySelector("b");
+    if (b && !b.querySelector(".as-of")) {
+      const span = document.createElement("span");
+      span.className = "as-of";
+      span.textContent = " · as of " + formatAsOfLabel(d);
+      b.appendChild(span);
+    }
+    const age = daysSinceAsOf(d);
+    if (age > FACTS_STALE_DAYS && !el.querySelector(".stale-badge")) {
+      const badge = document.createElement("span");
+      badge.className = "stale-badge";
+      badge.title = `${age} days since source date — verify for updates`;
+      badge.textContent = "stale";
+      el.querySelector("b")?.appendChild(badge);
+    }
   });
 }
 

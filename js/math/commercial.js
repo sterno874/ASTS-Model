@@ -146,7 +146,7 @@ export const COMMUNITY_THREADS = [
   { label: "FCC DA 26-391 discussion", author: "r/ASTSpaceMobile", url: "https://www.reddit.com/r/ASTSpaceMobile/search/?q=FCC&restrict_sr=1", note: "Regulatory parsing — compare to actual order PDF" }
 ];
 
-/** Kook Report / @thekookreport — cross-checked claims (Apr 2026 weekly thread sample). */
+/** Kook Report / @thekookreport — full verification matrix (Apr–Jun 2026 weekly threads). */
 export const KOOK_REPORT_CLAIMS = [
   {
     claim: "Launch cadence accelerating — mostly SpaceX, some Blue Origin",
@@ -156,11 +156,25 @@ export const KOOK_REPORT_CLAIMS = [
     note: "BB8-10 on SpaceX Jun 2026 verified; BB7 Blue Origin loss Apr 2026 verified. Multi-provider strategy confirmed in IR — exact future mix forward-looking."
   },
   {
+    claim: "BlueBirds 11–13 launch window Jul–Sep 2026",
+    verdict: "partial",
+    tag: "forward-looking",
+    source: "https://www.businesswire.com/news/home/20260617420856/en/",
+    note: "Company PR post-BB8-10 cites next batch timing — not yet launched as of Jul 4 2026."
+  },
+  {
     claim: "Government / Golden Dome / DoD revenue pipeline heating up",
     verdict: "partial",
     tag: "community",
     source: "https://threadreaderapp.com/thread/1914063374180323818.html",
     note: "Q1/Q3 gateway + gov milestone revenue verified in 10-Q. Scale of defense contracts not disclosed — lobbying filings exist but $ amounts partial."
+  },
+  {
+    claim: "FirstNet / AT&T public-safety adjacency is a revenue wedge",
+    verdict: "partial",
+    tag: "community",
+    source: "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001780312",
+    note: "AT&T partnership + investor stake verified; FirstNet integration scale not quantified in SEC filings reviewed."
   },
   {
     claim: "Vodafone–AST EU SatCo briefing to MEPs",
@@ -170,11 +184,25 @@ export const KOOK_REPORT_CLAIMS = [
     note: "Vodafone partnership verified (IR + Jun 2025 agreement). MEP briefing is community-sourced — plausible but not in SEC primary docs reviewed."
   },
   {
+    claim: "Google strategic partnership unlocks distribution",
+    verdict: "partial",
+    tag: "verified",
+    source: "https://ast-science.com/",
+    note: "Google agreement disclosed on IR; commercial rollout terms and revenue share not in 10-K detail."
+  },
+  {
     claim: "Ligado DA signed — spectrum value unlock",
     verdict: "verified",
     tag: "verified",
     source: "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001780312",
     note: "10-K: Ligado transaction + up to 45 MHz lower mid-band US/Canada access subject to regulatory approval — verified filing language."
+  },
+  {
+    claim: "FCC DA 26-391 removes last US regulatory hurdle",
+    verdict: "partial",
+    tag: "verified",
+    source: "https://www.fcc.gov/document/fcc-grants-ast-spacemobile-authority-deploy-and-operate-ngso-system",
+    note: "248-sat NGSO + SCS authorized Apr 2026 — verified. Conditions (interference, debris, astronomy) remain ongoing compliance obligations."
   },
   {
     claim: "AST ozone impact << Starlink deorbit pollution",
@@ -184,22 +212,53 @@ export const KOOK_REPORT_CLAIMS = [
     note: "Community calc citing Kevin Coulton thread — educational comparison, not AST IR disclosure. FCC debris conditions apply to both operators."
   },
   {
+    claim: "Manufacturing scale — 500k sq ft Midland proves execution",
+    verdict: "partial",
+    tag: "verified",
+    source: "https://www.businesswire.com/news/home/20260617420856/en/",
+    note: "Facility size and in-house production cited in IR/press — BB1-37 production claim forward-looking; 248-sat scale unproven."
+  },
+  {
     claim: "M&A always has a price — buyout thesis",
     verdict: "rejected",
     tag: "community",
-    note: "Speculation only. AT&T 2.7% stake (Schedule 13D) and carrier investors verified — no acquisition offer or process disclosed."
+    source: "https://www.reddit.com/r/ASTSpaceMobile/search/?q=Schedule+13D",
+    note: "Speculation only. AT&T ~2.7% stake (Schedule 13D) and carrier investors verified — no acquisition offer or process disclosed."
   },
   {
     claim: "Fully funded — no dilution needed",
     verdict: "rejected",
     tag: "community",
+    source: "https://www.sec.gov/Archives/edgar/data/1780312/000149315226019390/formars.pdf",
     note: "Rejected vs 10-K: $2.2B+ convertibles, Oct 2025 ATM, warrant exercises, share count 81.8M→256M FY2023–25."
   },
   {
     claim: "200 Mbps for every user at all times",
     verdict: "rejected",
     tag: "community",
+    source: "https://satnews.com/2026/06/17/direct-to-device-momentum-ast-spacemobile-successfully-launches-giant-next-gen-bluebird-satellites-atop-spacex-falcon-9/",
     note: "Block 2 ~200 Mbps is peak demo target (SatNews Jun 2026) — shared beam capacity; not per-subscriber SLA."
+  },
+  {
+    claim: "FCC approval = near-term revenue inflection",
+    verdict: "rejected",
+    tag: "verified",
+    source: "https://www.fcc.gov/document/fcc-grants-ast-spacemobile-authority-deploy-and-operate-ngso-system",
+    note: "FCC authorizes deployment + SCS; Q1 2026 revenue $14.7M was gateway/gov milestones — mass D2C still forward-looking."
+  },
+  {
+    claim: "Starlink D2C makes AST obsolete by 2027",
+    verdict: "partial",
+    tag: "community",
+    source: "https://threadreaderapp.com/user/thekookreport",
+    note: "SpaceX D2D via T-Mobile is real competition — different architecture (small sats vs large arrays). Obsolescence unproven; MNO partnerships differ."
+  },
+  {
+    claim: "Kook Bottom = reliable buy signal",
+    verdict: "rejected",
+    tag: "community",
+    source: "https://www.bloomberg.com/news/features/2026-05-08/spacex-rival-ast-spacemobile-asts-proves-meme-stock-mania-is-back",
+    note: "Meme sentiment marker only — Bloomberg May 2026 profile. Not a valuation or timing input."
   }
 ];
 
