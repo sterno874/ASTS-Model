@@ -326,28 +326,56 @@
   </div>
   <div class="wrap" id="link-budget-sim">
     <div class="card">
-      <h2>Link budget sim</h2>
-      <div class="ctrl"><label>Altitude (km) <span id="lk_altKmVal">550</span></label><input type="range" id="lk_altKm" min="400" max="700" step="10" value="550"/></div>
-      <div class="ctrl"><label>Elevation angle (°) <span id="lk_elevDegVal">30</span></label><input type="range" id="lk_elevDeg" min="10" max="90" step="1" value="30"/></div>
-      <div class="ctrl"><label>Frequency (MHz) <span id="lk_freqMhzVal">800</span></label><input type="range" id="lk_freqMhz" min="600" max="1000" step="10" value="800"/></div>
-      <div class="ctrl"><label>Array area (m²) <span id="lk_arraySqMVal">223</span></label><input type="range" id="lk_arraySqM" min="64" max="250" step="1" value="223"/></div>
+      <h2>Link budget sim <span class="tag m">Friis</span></h2>
+      <p class="field-note">Educational Friis path-loss model — adjust elevation and Block 1 vs Block 2 array size to see margin vs handset sensitivity.</p>
+      <div class="ctrl">
+        <label>Array block <span id="lk_blockLabel">Block 2 · 223 m²</span></label>
+        <div class="presets lk-block-presets">
+          <button type="button" class="p" data-lk-block="block1">Block 1<span class="p-sub">64 m² · 98.9 Mbps demo</span></button>
+          <button type="button" class="p p-def active" data-lk-block="block2">Block 2<span class="p-sub">223 m² · ~200 Mbps target</span></button>
+        </div>
+      </div>
+      <div class="ctrl"><label>Altitude (km) <span id="lk_altKmVal">550</span></label><input type="range" id="lk_altKm" min="400" max="700" step="10" value="550"/><small>LEO orbit height — longer slant range at low elevation</small></div>
+      <div class="ctrl"><label>Elevation angle ε (°) <span id="lk_elevDegVal">30</span></label><input type="range" id="lk_elevDeg" min="10" max="85" step="1" value="30"/><small>Angle above horizon — lower ε → longer path → higher PL</small></div>
+      <div class="ctrl"><label>Frequency (MHz) <span id="lk_freqMhzVal">800</span></label><input type="range" id="lk_freqMhz" min="600" max="1000" step="10" value="800"/><small>MNO partner low-band SCS (700/800 MHz class)</small></div>
+      <input type="hidden" id="lk_arraySqM" value="223"/>
+      <input type="hidden" id="lk_blockId" value="block2"/>
       <input type="hidden" id="lk_eirpDbw" value="35"/>
       <input type="hidden" id="lk_txGainDbi" value="28"/>
       <input type="hidden" id="lk_minElevDeg" value="25"/>
+      <p class="field-note lk-fcc-note"><span class="tag f">FCC</span> Handset TX ≤23 dBm typical (<a href="https://www.ecfr.gov/current/title-47/chapter-I/subchapter-B/part-22" target="_blank" rel="noopener">Part 22</a>/<a href="https://www.ecfr.gov/current/title-47/chapter-I/subchapter-B/part-24" target="_blank" rel="noopener">24</a>). NGSO operators file max EIRP per <a href="https://www.ecfr.gov/current/title-47/chapter-I/subchapter-B/part-25/subpart-C/section-25.114" target="_blank" rel="noopener">47 CFR § 25.114</a>. AST authorized <a href="https://www.fcc.gov/document/fcc-grants-ast-spacemobile-authority-deploy-and-operate-ngso-system" target="_blank" rel="noopener">DA 26-391</a> — model EIRP is illustrative, not a filing value.</p>
     </div>
     <div class="card">
       <h2>Link outputs</h2>
       <div class="outgrid">
         <div><div class="ok">Link margin</div><div class="ov" id="lkMargin">—</div></div>
         <div><div class="ok">P_rx</div><div class="ov" id="lkRx">—</div></div>
-        <div><div class="ok">Path loss</div><div class="ov" id="lkPl">—</div></div>
-        <div><div class="ok">Footprint radius</div><div class="ov" id="lkRadius">—</div></div>
+        <div><div class="ok">Path loss (Friis)</div><div class="ov" id="lkPl">—</div></div>
+        <div><div class="ok">Slant range d</div><div class="ov" id="lkRange">—</div></div>
+        <div><div class="ok">EIRP (model)</div><div class="ov" id="lkEirp">—</div></div>
         <div><div class="ok">Array gain boost</div><div class="ov" id="lkArrayBoost">—</div></div>
+        <div><div class="ok">Footprint radius</div><div class="ov" id="lkRadius">—</div></div>
+        <div><div class="ok">Wavelength λ</div><div class="ov" id="lkLambda">—</div></div>
       </div>
-      <div class="link-gauge"><span class="best-est-label">Margin</span><div class="link-gauge-bar"><div class="link-gauge-fill ok" id="lkGaugeFill" style="width:50%"></div></div></div>
+      <div class="link-gauge-wrap">
+        <div class="link-gauge-head"><span class="best-est-label">Margin gauge</span><span class="link-gauge-val" id="lkGaugeVal">—</span><span class="link-gauge-status ok" id="lkGaugeStatus">—</span></div>
+        <div class="link-gauge">
+          <span class="link-gauge-tick" style="left:0%">−15</span>
+          <span class="link-gauge-tick" style="left:33.3%">0</span>
+          <span class="link-gauge-tick" style="left:66.7%">+10</span>
+          <span class="link-gauge-tick" style="left:100%">+15 dB</span>
+          <div class="link-gauge-bar"><div class="link-gauge-fill ok" id="lkGaugeFill" style="width:50%"></div><div class="link-gauge-marker" id="lkGaugeMarker" style="left:50%"></div></div>
+        </div>
+        <p class="tech-sim-legend"><span class="tag m">Threshold</span> 0 dB = received power equals −110 dBm handset sensitivity reference.</p>
+      </div>
+      <div class="friis-panel">
+        <div class="friis-eq" id="lkFriisEq">PL(dB) = 20 log₁₀(4πd/λ)</div>
+        <div class="friis-budget" id="lkFriisBudget">P_rx = EIRP + G_tx + G_rx − PL − L_impl − L_atm</div>
+        <div class="friis-terms" id="lkFriisTerms"></div>
+      </div>
       <div class="tech-sim-wrap">
-        <svg id="linkSvg" class="tech-sim-svg" viewBox="0 0 400 200" role="img" aria-label="Link geometry diagram"></svg>
-        <p class="tech-sim-legend"><span class="tag m">Schematic</span> Satellite-to-handset slant path at chosen elevation — not beamforming pattern.</p>
+        <svg id="linkSvg" class="tech-sim-svg" viewBox="0 0 480 260" role="img" aria-label="Link geometry diagram"></svg>
+        <p class="tech-sim-legend"><span class="tag m">Schematic</span> Slant path at elevation ε — dashed line length ∝ range d; not a beamforming pattern or PFD compliance plot.</p>
       </div>
     </div>
   </div>
