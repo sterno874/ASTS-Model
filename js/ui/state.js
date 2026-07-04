@@ -71,6 +71,7 @@ export const DEFAULT_STATE = {
     elevDeg: 30,
     freqMhz: 800,
     arraySqM: 223,
+    blockId: "block2",
     eirpDbw: 35,
     txGainDbi: 28,
     minElevDeg: 25

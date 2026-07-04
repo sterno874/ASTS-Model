@@ -9,3 +9,20 @@ css/tech-sims.css
 .link-gauge-fill.ok{background:var(--good)}
 .link-gauge-fill.warn{background:var(--warn)}
 .link-gauge-fill.bad{background:var(--bad)}
+.link-gauge-wrap{margin:var(--space-md) 0}
+.link-gauge-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:var(--space-sm) var(--space-md);margin-bottom:var(--space-xs)}
+.link-gauge-val{font-size:18px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--accent)}
+.link-gauge-status{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.link-gauge-status.ok{color:var(--good)}.link-gauge-status.warn{color:var(--warn)}.link-gauge-status.bad{color:var(--bad)}
+.link-gauge{position:relative;padding:18px 0 4px;margin:var(--space-xs) 0}
+.link-gauge-marker{position:absolute;top:-3px;width:3px;height:20px;margin-left:-1.5px;background:var(--ink);border-radius:2px;transition:left .2s}
+.link-gauge-tick{position:absolute;top:0;font-size:9px;color:var(--muted);transform:translateX(-50%)}
+.friis-panel{margin:var(--space-md) 0;padding:var(--space-md);border:1px solid var(--line);border-radius:var(--radius);background:var(--panel)}
+.friis-eq{font-family:ui-monospace,Menlo,monospace;font-size:13px;font-weight:700;margin-bottom:var(--space-xs)}
+.friis-budget{font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--muted);margin-bottom:var(--space-md)}
+.friis-terms{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,200px),1fr));gap:var(--space-sm)}
+.friis-term{display:grid;grid-template-columns:1fr auto;grid-template-rows:auto auto;gap:2px var(--space-sm);padding:var(--space-xs) var(--space-sm);background:var(--card);border:1px solid var(--line);border-radius:var(--radius-sm);font-size:11px}
+.friis-term-val{font-weight:700;color:var(--accent);text-align:right;align-self:center}
+.lk-block-presets{margin-top:var(--space-xs)}.lk-fcc-note{margin-top:var(--space-sm)}
+.tech-sim-svg{width:100%;max-width:100%;height:auto;display:block;margin:0 auto;min-height:140px}
+@media(max-width:520px){.friis-terms{grid-template-columns:1fr}.link-gauge-head{flex-direction:column;align-items:flex-start}}

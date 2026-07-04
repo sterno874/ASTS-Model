@@ -1,7 +1,8 @@
 "use strict";
 
 import { computeConstellationMetrics, monthsToTarget, launchSchedule, CONSTELLATION_ANCHORS } from "./math/constellation.js";
-import { computeLinkBudget } from "./math/link-budget.js";
+import { computeLinkBudget, BLOCK_PRESETS } from "./math/link-budget.js";
+import { drawLinkSvg, updateLinkGauge, updateFriisPanel, syncBlockPresetButtons } from "./ui/link-budget-sim.js";
 import { computeFullValuation, COMPARABLES, FILING_ANCHORS } from "./math/valuation.js";
 import {
   MNO_PARTNERS,
@@ -172,9 +173,24 @@ function readLinkState() {
   const s = {};
   for (const k of Object.keys(DEFAULT_STATE.link)) {
     const el = $("lk_" + k);
-    if (el) s[k] = +el.value;
+    if (!el) continue;
+    if (k === "blockId") s[k] = el.value;
+    else s[k] = +el.value;
   }
   return s;
+}
+
+function applyLinkBlock(blockId) {
+  const preset = BLOCK_PRESETS[blockId];
+  if (!preset) return;
+  const elSq = $("lk_arraySqM");
+  const elBlock = $("lk_blockId");
+  const elLabel = $("lk_blockLabel");
+  if (elSq) elSq.value = preset.arraySqM;
+  if (elBlock) elBlock.value = blockId;
+  if (elLabel) elLabel.textContent = `${preset.label} · ${preset.arraySqM} m²`;
+  syncBlockPresetButtons(blockId);
+  scheduleUpdate();
 }
 
 function fmtM(v, d = 1) {
@@ -378,36 +394,18 @@ function updateLinkUI() {
   set("lkMargin", r.marginDb.toFixed(1) + " dB");
   set("lkRx", r.rxDbm.toFixed(1) + " dBm");
   set("lkPl", r.pathLossDb.toFixed(1) + " dB");
+  set("lkRange", r.rangeKm.toFixed(0) + " km");
+  set("lkEirp", r.eirpDbw.toFixed(1) + " dBW");
   set("lkRadius", r.radiusKm.toFixed(0) + " km");
-  set("lkFootprint", (r.footprintKm2 / 1e6).toFixed(2) + " M km²");
+  set("lkLambda", (r.lambdaM * 100).toFixed(1) + " cm");
   set("lkArrayBoost", "+" + r.arrayBoost.toFixed(1) + " dB vs Block 1");
-  const fill = $("lkGaugeFill");
-  if (fill) {
-    const pct = Math.min(100, Math.max(0, 50 + r.marginDb * 3));
-    fill.style.width = pct + "%";
-    fill.className = "link-gauge-fill " + (r.linkOk ? "ok" : r.marginDb > -5 ? "warn" : "bad");
-  }
-  drawLinkSvg(r);
+  const elLabel = $("lk_blockLabel");
+  if (elLabel) elLabel.textContent = `${r.blockLabel} · ${r.arraySqM} m²`;
+  syncBlockPresetButtons(r.blockId);
+  updateLinkGauge($, r);
+  updateFriisPanel($, r);
+  drawLinkSvg($("linkSvg"), r);
   updateCoverageOrbitUI();
-}
-
-function drawLinkSvg(r) {
-  const svg = $("linkSvg");
-  if (!svg) return;
-  const w = 400,
-    h = 200;
-  const satY = 30,
-    groundY = 170;
-  const elev = (r.elevDeg * Math.PI) / 180;
-  const phoneX = 200 - Math.cos(elev) * 120;
-  const phoneY = groundY - Math.sin(elev) * 120;
-  svg.innerHTML = `<rect width="${w}" height="${h}" fill="#f8fafc"/>
-    <line x1="200" y1="${satY}" x2="${phoneX}" y2="${phoneY}" stroke="#2f6fed" stroke-width="2" stroke-dasharray="6 4"/>
-    <rect x="185" y="15" width="30" height="20" fill="#141b26" rx="2"/>
-    <text x="200" y="12" text-anchor="middle" font-size="9" fill="#4f5866">BlueBird @ ${r.altKm} km</text>
-    <rect x="${phoneX - 8}" y="${phoneY - 14}" width="16" height="28" fill="#1f9d55" rx="3"/>
-    <text x="${phoneX}" y="${groundY + 14}" text-anchor="middle" font-size="9" fill="#4f5866">${r.elevDeg}° elev</text>
-    <text x="200" y="${h - 8}" text-anchor="middle" font-size="10" fill="#141b26">Margin ${r.marginDb.toFixed(1)} dB · ${r.linkOk ? "Link closes" : "Below sensitivity"}</text>`;
 }
 
 function updateHeader() {
@@ -735,6 +733,9 @@ function init() {
 
   bindRange("mcFailureRate", "mcFailureRateVal");
   bindRange("dilPrice", "dilPriceVal", () => updateDilutionUI(computeFullValuation(readValState())));
+  document.querySelectorAll("[data-lk-block]").forEach((b) => {
+    b.onclick = () => applyLinkBlock(b.dataset.lkBlock);
+  });
   bindRange("coSats", "coSatsVal");
   bindRange("coContinuousSats", "coContinuousSatsVal");
   bindRange("coMinElev", "coMinElevVal");
