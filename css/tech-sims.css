@@ -1,0 +1,11 @@
+css/tech-sims.css
+/* Technology tab educational sims */
+.tech-sim-wrap{margin:var(--space-md) 0;padding:var(--space-md);border:1px solid var(--line);border-radius:var(--radius);background:var(--panel)}
+.tech-sim-svg{width:100%;max-width:520px;height:auto;display:block;margin:0 auto}
+.tech-sim-legend{font-size:11px;color:var(--muted);margin-top:var(--space-sm)}
+.link-gauge{display:flex;align-items:center;gap:var(--space-md);margin:var(--space-md) 0}
+.link-gauge-bar{flex:1;height:12px;border-radius:6px;background:#e8ecf2;overflow:hidden}
+.link-gauge-fill{height:100%;border-radius:6px;transition:width .2s}
+.link-gauge-fill.ok{background:var(--good)}
+.link-gauge-fill.warn{background:var(--warn)}
+.link-gauge-fill.bad{background:var(--bad)}

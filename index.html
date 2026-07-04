@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>AST SpaceMobile Explorer · ASTS Model</title>
+<meta name="description" content="Interactive DD tool for AST SpaceMobile (ASTS) — constellation, MNO partnerships, link budget, valuation with primary-sourced facts."/>
+<link rel="canonical" href="https://asts-model.vercel.app/"/>
+<meta property="og:title" content="AST SpaceMobile Explorer · ASTS Model"/>
+<meta property="og:description" content="Primary-sourced scenario explorer for ASTS constellation, commercial catalysts, and valuation."/>
+<meta property="og:url" content="https://asts-model.vercel.app/"/>
+<meta property="og:type" content="website"/>
+<meta property="og:image" content="https://asts-model.vercel.app/og-image.png"/>
+<meta property="og:image:width" content="1200"/>
+<meta property="og:image:height" content="630"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<link rel="stylesheet" href="css/main.css"/>
+<link rel="stylesheet" href="css/tech-sims.css"/>
+<script defer src="/_vercel/insights/script.js"></script>
+</head>
+<body>
+<header>
+  <div class="hdr-top">
+    <div class="hdr-title-block">
+      <h1>AST SpaceMobile ($ASTS) — Interactive Model</h1>
+      <div class="sub hdr-disclaimer">Primary-sourced models; sliders = undisclosed assumptions. <a href="https://asts-model.vercel.app/" target="_blank" rel="noopener" class="hdr-link">Live</a> · <a href="https://github.com/sterno874/ASTS-Model" target="_blank" rel="noopener" class="hdr-link">GitHub</a> · <a href="#explain" class="hdr-link" onclick="document.querySelector('.tabbtn[data-tab=explain]').click();return false;">Explain</a>. Not investment advice. <span class="tag f">Phase 1</span></div>
+    </div>
+  </div>
+  <div id="headerStrip" class="best-est-strip no-print embed-hide" aria-live="polite"></div>
+  <div class="hdr-tools-wrap no-print">
+    <div class="hdr-tools">
+      <button type="button" class="primary" id="btnShare">🔗 Copy share link</button>
+      <button type="button" id="btnPrint">🖨 Print report</button>
+    </div>
+  </div>
+  <div class="hdr-nav-mobile embed-hide no-print">
+    <button type="button" id="navToggle" class="nav-toggle" aria-expanded="false" aria-controls="mobileNavPanel" aria-label="Open navigation menu">
+      <span class="nav-toggle-bars" aria-hidden="true"><span></span><span></span><span></span></span>
+    </button>
+    <span class="hdr-active-tab" id="hdrActiveTab">Constellation</span>
+  </div>
+  <div id="mobileNavBackdrop" class="mobile-nav-backdrop embed-hide no-print" hidden aria-hidden="true"></div>
+  <div id="mobileNavPanel" class="mobile-nav-panel embed-hide no-print" hidden>
+    <nav aria-label="Tab navigation">
+      <button type="button" class="mobile-nav-item active" data-tab="constellation" aria-current="page">1 · Constellation / Coverage</button>
+      <button type="button" class="mobile-nav-item" data-tab="commercial">2 · Commercial / Catalysts</button>
+      <button type="button" class="mobile-nav-item" data-tab="value">3 · Valuation</button>
+      <button type="button" class="mobile-nav-item" data-tab="explain">4 · Explain (ELI5 → PhD)</button>
+      <button type="button" class="mobile-nav-item" data-tab="technology">5 · The Technology</button>
+    </nav>
+  </div>
+  <div class="tabnav" role="tablist" aria-label="Tab navigation">
+    <button class="tabbtn active" data-tab="constellation" role="tab" aria-selected="true">1 · Constellation / Coverage</button>
+    <button class="tabbtn" data-tab="commercial" role="tab" aria-selected="false">2 · Commercial / Catalysts</button>
+    <button class="tabbtn" data-tab="value" role="tab" aria-selected="false">3 · Valuation</button>
+    <button class="tabbtn" data-tab="explain" role="tab" aria-selected="false">4 · Explain (ELI5 → PhD)</button>
+    <button class="tabbtn" data-tab="technology" role="tab" aria-selected="false">5 · The Technology</button>
+  </div>
+</header>
+
+<!-- ========== Constellation ========== -->
+<div id="tab-constellation" class="tabpage">
+  <div class="tab-intro-bar">
+    <details class="howworks howworks-inline">
+      <summary>How this works</summary>
+      <div class="howworks-body">
+        <p><span class="tag f">Fact</span> AST deploys large phased-array <b>BlueBird</b> satellites to relay cellular signals to unmodified phones via MNO partner spectrum (<a href="https://www.fcc.gov/document/fcc-grants-ast-spacemobile-authority-deploy-and-operate-ngso-system" target="_blank" rel="noopener">FCC DA 26-391</a>).</p>
+        <p><span class="tag m">Model</span> Sliders scale operational sats × capacity × wholesale ARPU → revenue <em>proxy</em>. Coverage fraction ramps linearly to 45 sats (company continuous-coverage floor). Not a company forecast.</p>
+      </div>
+    </details>
+    <span class="tab-intro-sep">|</span>
+    <button type="button" class="methodlink" onclick="toggleMethod('m-const')">Methodology</button>
+  </div>
+  <div class="methodpanel" id="m-const" hidden>
+    <b>Constellation model.</b> <code>capacity = sats × subsPerSat</code>; <code>coverageFrac = min(1, sats / coverageSats)</code>; <code>revProxy = MNO_subs × penetration × f(coverage) × ARPU × 12</code>. Launch cadence heuristic: stacked launches every 1.5 mo. Sources: <a href="https://spacenews.com/fcc-clears-ast-spacemobile-constellation-as-launch-setback-clouds-ramp-up/" target="_blank" rel="noopener">SpaceNews Apr 2026</a>, <a href="https://www.businesswire.com/news/home/20260617420856/en/" target="_blank" rel="noopener">BB8-10 PR</a>.
+  </div>
+
+  <div class="facts page-inner">
+    <h2>Verified facts <span class="tag f">as of Jul 2026</span></h2>
+    <div class="factgrid">
+      <div class="fact" data-as-of="2026-06-17"><b>Operational sats</b> ~10 (BW3 + BB1-5 + BB6 + BB8-10)<br/><span class="cite"><a href="https://www.businesswire.com/news/home/20260617420856/en/" target="_blank" rel="noopener">Jun 2026 launch PR</a></span></div>
+      <div class="fact" data-as-of="2026-04-21"><b>FCC authorization</b> Up to 248 NGSO sats + SCS<br/><span class="cite"><a href="https://www.fcc.gov/document/fcc-grants-ast-spacemobile-authority-deploy-and-operate-ngso-system" target="_blank" rel="noopener">FCC order</a></span></div>
+      <div class="fact" data-as-of="2026-04-21"><b>Coverage target</b> 45–60 sats continuous US<br/><span class="cite"><a href="https://spacenews.com/fcc-clears-ast-spacemobile-constellation-as-launch-setback-clouds-ramp-up/" target="_blank" rel="noopener">SpaceNews</a></span></div>
+      <div class="fact" data-as-of="2026-06-17"><b>Block 2 array</b> ~223 m² · peak ~200 Mbps demo<br/><span class="cite"><a href="https://satnews.com/2026/06/17/direct-to-device-momentum-ast-spacemobile-successfully-launches-giant-next-gen-bluebird-satellites-atop-spacex-falcon-9/" target="_blank" rel="noopener">SatNews</a></span></div>
+      <div class="fact" data-as-of="2026-06-17"><b>MNO partners</b> ~60 agreements · 3B+ subs<br/><span class="cite"><a href="https://ast-science.com/" target="_blank" rel="noopener">IR</a></span></div>
+      <div class="fact" data-as-of="2026-03-31"><b>Cash</b> ~$3.46B (Mar 31 2026)<br/><span class="cite"><a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001780312" target="_blank" rel="noopener">SEC 10-Q</a></span></div>
+      <div class="fact" data-as-of="2026-04-28"><b>BB7 loss</b> Low-orbit insertion · insured<br/><span class="cite"><a href="https://spaceflightnow.com/2026/06/16/live-coverage-spacex-to-launch-3-block-2-bluebird-satellites-for-ast-spacemobile/" target="_blank" rel="noopener">Spaceflight Now</a></span></div>
+      <div class="fact" data-as-of="2026-06-17"><b>2026 target</b> ~45 sats in orbit by year-end<br/><span class="tag u">forward-looking</span></div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="card">
+      <h2>Scenario controls</h2>
+      <p class="bandkey"><span class="swatch" style="background:rgba(47,111,237,.5)"></span><b>Blue</b> = prior plausibility · <span class="swatch" style="background:repeating-linear-gradient(45deg,rgba(214,69,69,.4),rgba(214,69,69,.4) 2px,transparent 2px,transparent 4px)"></span><b>Red hatch</b> = hard to defend · <b>◆</b> = filing anchor</p>
+      <div class="presets">
+        <button type="button" class="p p-def active" data-const-preset="base">Base<span class="p-sub">10 sats today</span></button>
+        <button type="button" class="p" data-const-preset="ramp">Ramp<span class="p-sub">25 sats</span></button>
+        <button type="button" class="p" data-const-preset="coverage">Coverage<span class="p-sub">45 sats</span></button>
+        <button type="button" class="p p-best" data-const-preset="bull">Bull<span class="p-sub">High pen/ARPU</span></button>
+        <button type="button" class="p" data-const-preset="bear">Bear<span class="p-sub">Slow attach</span></button>
+      </div>
+      <div class="ctrl"><label>Operational satellites <span id="csatsVal">10</span></label><input type="range" id="csats" min="1" max="80" step="1" value="10"/><div class="bands" id="band-csats"></div><small class="source-line"><span class="tag f">Verified</span> Jul 2026 count excl. lost BB7. <a href="https://www.businesswire.com/news/home/20260617420856/en/" target="_blank" rel="noopener">Launch PR</a></small></div>
+      <div class="ctrl"><label>2026 deployment target <span id="ctargetSatsVal">45</span></label><input type="range" id="ctargetSats" min="20" max="100" step="1" value="45"/><div class="bands" id="band-ctargetSats"></div><small class="source-line"><span class="tag u">Forward-looking</span> Company ~45 sats EOY 2026. <a href="https://spacenews.com/fcc-clears-ast-spacemobile-constellation-as-launch-setback-clouds-ramp-up/" target="_blank" rel="noopener">SpaceNews</a></small></div>
+      <div class="ctrl"><label>Sats for continuous coverage <span id="ccoverageSatsVal">45</span></label><input type="range" id="ccoverageSats" min="30" max="80" step="1" value="45"/><div class="bands" id="band-ccoverageSats"></div><small class="source-line"><span class="tag f">Verified</span> Company range 45–60. ◆ default 45.</small></div>
+      <div class="ctrl"><label>Subs per satellite (concurrent) <span id="csubsPerSatVal">50000</span></label><input type="range" id="csubsPerSat" min="10000" max="150000" step="5000" value="50000"/><div class="bands" id="band-csubsPerSat"></div><small class="source-line"><span class="tag m">Model</span> Opaque capacity proxy — beam loading not disclosed.</small></div>
+      <div class="ctrl"><label>MNO partner subs (M) <span id="cmnoSubsMVal">3000</span></label><input type="range" id="cmnoSubsM" min="500" max="4000" step="100" value="3000"/><small class="source-line"><span class="tag f">Verified</span> ~3B+ per IR Jun 2026. <a href="https://ast-science.com/" target="_blank" rel="noopener">IR</a></small></div>
+      <div class="ctrl"><label>Space-layer penetration <span id="cpenetrationVal">0.02</span></label><input type="range" id="cpenetration" min="0.005" max="0.08" step="0.001" value="0.02"/><div class="bands" id="band-cpenetration"></div><small class="source-line"><span class="tag u">Assumption</span> Fraction of partner subs using satellite layer.</small></div>
+      <div class="ctrl"><label>Wholesale ARPU ($/mo) <span id="carpuMonthlyVal">3</span></label><input type="range" id="carpuMonthly" min="1" max="10" step="0.5" value="3"/><div class="bands" id="band-carpuMonthly"></div><small class="source-line"><span class="tag u">Assumption</span> AST wholesale — MNO sets consumer price.</small></div>
+      <input type="hidden" id="claunchInterval" value="1.5"/>
+      <input type="hidden" id="csatsPerLaunch" value="3"/>
+    </div>
+    <div class="card">
+      <h2>Model outputs</h2>
+      <div class="outgrid">
+        <div><div class="ok">Coverage fraction</div><div class="ov" id="cCovFrac">—</div></div>
+        <div><div class="ok">→ Continuous coverage</div><div class="ov" id="cPctContinuous">—</div></div>
+        <div><div class="ok">Concurrent capacity</div><div class="ov" id="cCapacity">—</div></div>
+        <div><div class="ok">Revenue proxy</div><div class="ov" id="cRevProxy">—</div></div>
+        <div><div class="ok">Months to target</div><div class="ov" id="cMonthsTarget">—</div></div>
+      </div>
+      <p class="field-note"><span class="tag m">Model</span> Revenue proxy is educational wholesale math — not guidance. Real economics depend on undisclosed MNO rev-share.</p>
+      <h2 class="mt-md">Launch cadence <span class="tag m">heuristic</span></h2>
+      <div class="factgrid" id="cLaunchCal"></div>
+    </div>
+  </div>
+  <div class="regal-limitations page-inner">
+    <b>Limitations:</b> Linear coverage ramp oversimplifies orbital geometry. subs/sat is not disclosed beam capacity. Revenue proxy ≠ reported revenue. Launch schedule is model-only.
+  </div>
+</div>
+
+<!-- ========== Commercial ========== -->
+<div id="tab-commercial" class="tabpage" hidden>
+  <div class="tab-intro-bar">
+    <details class="howworks howworks-inline"><summary>How this works</summary>
+      <div class="howworks-body"><p><span class="tag f">Fact</span> AST sells capacity to MNOs — AT&T, Verizon, Vodafone, Rakuten, Bell, Telus, stc, Google, American Tower (<a href="https://ast-science.com/" target="_blank" rel="noopener">IR</a>). Catalyst windows from IR + FCC only.</p></div>
+    </details>
+  </div>
+  <div class="facts page-inner">
+    <h2>MNO &amp; strategic partners</h2>
+    <div class="factgrid" id="mnoGrid"></div>
+    <p id="commSummary" class="field-note"></p>
+    <h2>Catalyst timeline <span class="tag m">primary-sourced windows</span></h2>
+    <div class="ctrl"><label>Year <span id="ccalendarYearVal">2026</span></label><input type="range" id="ccalendarYear" min="2026" max="2028" step="1" value="2026"/></div>
+    <div id="commCalendar" class="cat-tl-host"></div>
+    <h2 class="mt-md">Launch history</h2>
+    <div class="table-wrap"><table class="valtbl"><thead><tr><th>Mission</th><th>Date</th><th>Provider</th><th>Block</th><th>Status</th><th>Tag</th></tr></thead><tbody id="launchTableBody"></tbody></table></div>
+    <h2 class="mt-md">Community DD <span class="tag c">cross-checked</span></h2>
+    <p class="field-note">Themes from <a href="https://www.reddit.com/r/ASTSpaceMobile/" target="_blank" rel="noopener">r/ASTSpaceMobile</a>, r/stocks, r/wallstreetbets — tagged vs SEC/FCC/IR.</p>
+    <div class="table-wrap"><table class="valtbl"><thead><tr><th>Claim</th><th>Verdict</th><th>Tag</th><th>Notes</th></tr></thead><tbody id="commDDBody"></tbody></table></div>
+    <h2 class="mt-md">Top community contributors</h2>
+    <div class="table-wrap"><table class="valtbl"><thead><tr><th>User / channel</th><th>Role</th><th>Notes</th></tr></thead><tbody id="commContribBody"></tbody></table></div>
+    <h2 class="mt-md">Bear case <span class="tag c">honest</span></h2>
+    <div class="table-wrap"><table class="valtbl"><thead><tr><th>Risk</th><th>Verdict</th><th>Tag</th><th>Notes</th></tr></thead><tbody id="commBearBody"></tbody></table></div>
+    <h2 class="mt-md">Community threads <span class="tag c">reference</span></h2>
+    <div class="table-wrap"><table class="valtbl"><thead><tr><th>Thread</th><th>Author</th><th>Notes</th></tr></thead><tbody id="commThreadsBody"></tbody></table></div>
+  </div>
+</div>
+
+<!-- ========== Valuation ========== -->
+<div id="tab-value" class="tabpage" hidden>
+  <div class="tab-intro-bar">
+    <details class="howworks howworks-inline"><summary>How this works</summary>
+      <div class="howworks-body"><p><span class="tag m">Model</span> Segment-weighted EV from wholesale revenue peaks × P(commercial) × EV/Revenue + platform. Cash/debt/shares from Q1 2026 10-Q anchors.</p></div>
+    </details>
+    <span class="tab-intro-sep">|</span>
+    <button type="button" class="methodlink" onclick="toggleMethod('m-value')">Methodology</button>
+  </div>
+  <div class="methodpanel" id="m-value" hidden>
+    <b>Valuation.</b> EV = Σ (segmentPeak × P(s) × multiple × weight) + platform ($M). $/sh = (EV + cash − debt) / shares. Runway = cash / quarterly burn. Dilution stress buttons adjust share count only.
+  </div>
+  <div class="wrap">
+    <div class="card">
+      <h2>Valuation controls</h2>
+      <div class="presets">
+        <button type="button" class="p p-def active" data-val-preset="base">Base</button>
+        <button type="button" class="p" data-val-preset="bull">Commercial bull</button>
+        <button type="button" class="p" data-val-preset="bear">Bear</button>
+      </div>
+      <div class="ctrl"><label>Space-layer penetration <span id="vv_penetrationVal">0.015</span></label><input type="range" id="vv_penetration" min="0.005" max="0.06" step="0.001" value="0.015"/><div class="bands" id="band-vv_penetration"></div></div>
+      <div class="ctrl"><label>P(commercial scale) <span id="vv_pCommercialVal">0.45</span></label><input type="range" id="vv_pCommercial" min="0.1" max="0.9" step="0.05" value="0.45"/><div class="bands" id="band-vv_pCommercial"></div></div>
+      <div class="ctrl"><label>EV / peak revenue × <span id="vv_multVal">5</span></label><input type="range" id="vv_mult" min="2" max="12" step="0.5" value="5"/><div class="bands" id="band-vv_mult"></div></div>
+      <div class="ctrl"><label>Cash ($M) <span id="vv_cashVal">3460</span></label><input type="range" id="vv_cash" min="500" max="5000" step="50" value="3460"/><div class="bands" id="band-vv_cash"></div><small class="source-line"><span class="tag f">Verified</span> ◆ Q1 2026 ~$3.46B. <a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001780312" target="_blank" rel="noopener">SEC</a></small></div>
+      <div class="ctrl"><label>Debt ($M) <span id="vv_debtVal">698</span></label><input type="range" id="vv_debt" min="0" max="2500" step="25" value="698"/><small class="source-line"><span class="tag f">Verified</span> Long-term debt ~$698M Sep 2025 10-Q.</small></div>
+      <div class="ctrl"><label>Shares diluted (M) <span id="vv_sharesVal">256</span></label><input type="range" id="vv_shares" min="150" max="400" step="4" value="256"/><div class="bands" id="band-vv_shares"></div><small class="source-line"><span class="tag f">Verified</span> ◆ FY2025 ~256M diluted. Stress dilution:</small>
+        <div class="presets" style="margin-top:8px">
+          <button type="button" class="p" data-dilution-stress="280">280M</button>
+          <button type="button" class="p" data-dilution-stress="320">320M</button>
+          <button type="button" class="p" data-dilution-stress="360">360M</button>
+        </div>
+      </div>
+      <div class="ctrl"><label>Quarterly burn ($M) <span id="vv_burnQuarterlyVal">120</span></label><input type="range" id="vv_burnQuarterly" min="50" max="500" step="10" value="120"/><div class="bands" id="band-vv_burnQuarterly"></div><small class="source-line"><span class="tag m">Model</span> Includes CapEx ramp; Q1 investing ~$379M.</small></div>
+      <div class="ctrl"><label>Platform optionality ($M) <span id="vv_platformVal">500</span></label><input type="range" id="vv_platform" min="0" max="3000" step="50" value="500"/><small class="source-line"><span class="tag u">Assumption</span> Residual IP / strategic option — not backlog.</small></div>
+      <div class="ctrl"><label><input type="checkbox" id="v_riskadj" checked/> Risk-adjust EV (apply P(commercial))</label></div>
+      <input type="hidden" id="vv_mnoSubsM" value="3000"/>
+      <input type="hidden" id="vv_arpuMonthly" value="3"/>
+      <input type="hidden" id="vv_coverageFrac" value="0.35"/>
+      <input type="hidden" id="vv_govPeakM" value="150"/>
+      <input type="hidden" id="vv_govPs" value="0.6"/>
+      <input type="hidden" id="vv_gatewayPeakM" value="80"/>
+      <input type="hidden" id="vv_refPrice" value="45"/>
+    </div>
+    <div class="card">
+      <h2>Outputs</h2>
+      <div class="outgrid">
+        <div><div class="ok">Risk-adj EV</div><div class="ov" id="vEv">—</div></div>
+        <div><div class="ok">Implied $/sh</div><div class="ov" id="vPerSh">—</div></div>
+        <div><div class="ok">Peak revenue</div><div class="ov" id="vPeak">—</div></div>
+        <div><div class="ok">Cash runway</div><div class="ov" id="vRunway">—</div></div>
+      </div>
+      <div class="table-wrap"><table class="valtbl"><thead><tr><th>Segment</th><th>Peak</th><th>P(s)</th><th>EV contrib</th></tr></thead><tbody id="vRowsBody"></tbody></table></div>
+      <h2 class="mt-md">Comparables</h2>
+      <div class="table-wrap"><table class="valtbl"><thead><tr><th>Name</th><th>Multiple</th><th>Note</th><th>Tag</th></tr></thead><tbody id="vCompBody"></tbody></table></div>
+      <h2 class="mt-md">Community DD · dilution &amp; revenue</h2>
+      <div class="table-wrap"><table class="valtbl"><thead><tr><th>Theme</th><th>Verdict</th><th>Tag</th><th>Notes</th></tr></thead><tbody id="vDDBody"></tbody></table></div>
+      <p class="field-note"><span class="tag m">Model</span> Ref price slider hidden at $45 illustrative — <b>not a live quote</b>. ATM/shelf + convertibles remain dilution overhang.</p>
+    </div>
+  </div>
+  <div class="regal-limitations page-inner"><b>Limitations:</b> Pre-commercial; segment peaks are assumptions. Convertible dilution not auto-modeled. EV/Revenue multiples from comps are illustrative.</div>
+</div>
+
+<!-- ========== Explain ========== -->
+<div id="tab-explain" class="tabpage" hidden>
+  <div class="tab-intro-bar expl-intro">
+    <span class="sub">Graded explanations with citations — facts vs model vs community.</span>
+  </div>
+  <div class="facts expl-content page-inner">
+    <div class="expl-lvlnav">
+      <button type="button" class="lvlb active" data-lvl="eli5">ELI5</button>
+      <button type="button" class="lvlb" data-lvl="ms">Middle school</button>
+      <button type="button" class="lvlb" data-lvl="hs">High school</button>
+      <button type="button" class="lvlb" data-lvl="col">College</button>
+      <button type="button" class="lvlb" data-lvl="pro">Professional</button>
+      <button type="button" class="lvlb" data-lvl="phd">PhD</button>
+    </div>
+    <div id="explbody" class="expl-body card"></div>
+  </div>
+</div>
+
+<!-- ========== Technology ========== -->
+<div id="tab-technology" class="tabpage" hidden>
+  <div class="tab-intro-bar">
+    <details class="howworks howworks-inline"><summary>How this works</summary>
+      <div class="howworks-body"><p><span class="tag m">Model</span> Simplified Friis link budget + footprint geometry. Educational — not AST proprietary RF planning or ITU/FCC compliance model.</p></div>
+    </details>
+  </div>
+  <div class="facts page-inner">
+    <h2>Direct-to-cell architecture <span class="tag f">verified concept</span></h2>
+    <p class="field-note">Large LEO phased array → beam to handset using MNO-licensed low-band spectrum (700/800 MHz SCS). Ground gateways integrate with partner core networks. <a href="https://www.datacenterdynamics.com/en/news/fcc-gives-ast-spacemobile-the-go-ahead-to-launch-satellite-broadband-service/" target="_blank" rel="noopener">DCD</a> · <a href="https://www.fcc.gov/document/fcc-grants-ast-spacemobile-authority-deploy-and-operate-ngso-system" target="_blank" rel="noopener">FCC</a></p>
+    <div class="factgrid">
+      <div class="fact"><b>Block 1 array</b> ~64 m² · 98.9 Mbps peak demo</div>
+      <div class="fact"><b>Block 2 array</b> ~223 m² · ~200 Mbps peak target</div>
+      <div class="fact"><b>Patents</b> 3,900+ claims per IR</div>
+      <div class="fact"><b>Manufacturing</b> ~500k sq ft Midland TX</div>
+    </div>
+  </div>
+  <div class="wrap" id="link-budget-sim">
+    <div class="card">
+      <h2>Link budget sim</h2>
+      <div class="ctrl"><label>Altitude (km) <span id="lk_altKmVal">550</span></label><input type="range" id="lk_altKm" min="400" max="700" step="10" value="550"/></div>
+      <div class="ctrl"><label>Elevation angle (°) <span id="lk_elevDegVal">30</span></label><input type="range" id="lk_elevDeg" min="10" max="90" step="1" value="30"/></div>
+      <div class="ctrl"><label>Frequency (MHz) <span id="lk_freqMhzVal">800</span></label><input type="range" id="lk_freqMhz" min="600" max="1000" step="10" value="800"/></div>
+      <div class="ctrl"><label>Array area (m²) <span id="lk_arraySqMVal">223</span></label><input type="range" id="lk_arraySqM" min="64" max="250" step="1" value="223"/></div>
+      <input type="hidden" id="lk_eirpDbw" value="35"/>
+      <input type="hidden" id="lk_txGainDbi" value="28"/>
+      <input type="hidden" id="lk_minElevDeg" value="25"/>
+    </div>
+    <div class="card">
+      <h2>Link outputs</h2>
+      <div class="outgrid">
+        <div><div class="ok">Link margin</div><div class="ov" id="lkMargin">—</div></div>
+        <div><div class="ok">P_rx</div><div class="ov" id="lkRx">—</div></div>
+        <div><div class="ok">Path loss</div><div class="ov" id="lkPl">—</div></div>
+        <div><div class="ok">Footprint radius</div><div class="ov" id="lkRadius">—</div></div>
+        <div><div class="ok">Array gain boost</div><div class="ov" id="lkArrayBoost">—</div></div>
+      </div>
+      <div class="link-gauge"><span class="best-est-label">Margin</span><div class="link-gauge-bar"><div class="link-gauge-fill ok" id="lkGaugeFill" style="width:50%"></div></div></div>
+      <div class="tech-sim-wrap">
+        <svg id="linkSvg" class="tech-sim-svg" viewBox="0 0 400 200" role="img" aria-label="Link geometry diagram"></svg>
+        <p class="tech-sim-legend"><span class="tag m">Schematic</span> Satellite-to-handset slant path at chosen elevation — not beamforming pattern.</p>
+      </div>
+    </div>
+  </div>
+  <div class="regal-limitations page-inner"><b>Limitations:</b> No multi-beam interference, Doppler, fading, or 3GPP NAS/RRC modeling. Peak Mbps claims are company demos, not simulated here.</div>
+  <div class="facts page-inner">
+    <h2>References · Technology</h2>
+    <ol class="ref-list">
+      <li><a href="https://www.fcc.gov/document/fcc-grants-ast-spacemobile-authority-deploy-and-operate-ngso-system" target="_blank" rel="noopener">FCC DA 26-391</a> — 248-sat NGSO + SCS authorization</li>
+      <li><a href="https://satnews.com/2026/06/17/direct-to-device-momentum-ast-spacemobile-successfully-launches-giant-next-gen-bluebird-satellites-atop-spacex-falcon-9/" target="_blank" rel="noopener">SatNews Jun 2026</a> — Block 2 performance claims</li>
+      <li><a href="https://spacenews.com/fcc-clears-ast-spacemobile-constellation-as-launch-setback-clouds-ramp-up/" target="_blank" rel="noopener">SpaceNews Apr 2026</a> — array size &amp; coverage targets</li>
+      <li><a href="https://ast-science.com/" target="_blank" rel="noopener">AST IR</a> — partnerships &amp; patent count</li>
+      <li><a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001780312" target="_blank" rel="noopener">SEC EDGAR CIK 1780312</a></li>
+    </ol>
+  </div>
+</div>
+
+<div id="toast" class="toast no-print" aria-live="polite"></div>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
