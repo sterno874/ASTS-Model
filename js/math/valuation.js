@@ -138,12 +138,15 @@ export function computeFullValuation(val) {
   });
 
   const platform = val.v_platform ?? 500;
-  const ev = rows.reduce((sum, r) => sum + r.evContrib, 0) + platform;
+  const segmentEv = rows.reduce((sum, r) => sum + r.evContrib, 0);
+  const ev = segmentEv + platform;
   const cash = val.v_cash ?? FILING_ANCHORS.cashQ1_2026_M;
   const debt = val.v_debt ?? FILING_ANCHORS.debtLongTerm_M;
   const shares = val.v_shares ?? FILING_ANCHORS.sharesDiluted_M;
   const perSh = evPerShare(ev, shares, cash, debt);
   const equityM = computeEquityM(ev, cash, debt);
+  const operatingEv = segmentEv;
+  const operatingEquityM = computeEquityM(operatingEv, cash, debt);
   const totalPeak = rows.reduce((s, r) => s + r.riskAdjPeak, 0);
   const burnQ = val.v_burnQuarterly ?? 120;
   const runwayMo = computeRunwayMonths(cash, burnQ);
@@ -152,6 +155,8 @@ export function computeFullValuation(val) {
     ev,
     perSh,
     equityM,
+    operatingEv,
+    operatingEquityM,
     rows,
     platform,
     totalPeak,

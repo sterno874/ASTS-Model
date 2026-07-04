@@ -1,5 +1,6 @@
 import { computeFullValuation } from "../math/valuation.js";
 import { computeConstellationMetrics } from "../math/constellation.js";
+import { computeVsMarketUpside } from "./market-quote.js";
 
 export const VALID_TABS = ["constellation", "commercial", "value", "explain", "technology"];
 export const EXPLAIN_LEVELS = ["eli5", "ms", "hs", "col", "pro", "phd"];
@@ -105,7 +106,15 @@ export const CONST_PRESETS = {
 
 export const VAL_PRESETS = {
   base: { v_penetration: 0.015, v_pCommercial: 0.45, v_mult: 5, v_platform: 500, label: "Base" },
-  bull: { v_penetration: 0.03, v_pCommercial: 0.65, v_mult: 8, v_platform: 1200, label: "Commercial bull" },
+  bull: {
+    v_penetration: 0.05,
+    v_pCommercial: 0.75,
+    v_mult: 10,
+    v_platform: 5000,
+    v_arpuMonthly: 5,
+    v_coverageFrac: 0.6,
+    label: "Commercial bull — 45+ sats scale"
+  },
   bear: { v_penetration: 0.008, v_pCommercial: 0.25, v_mult: 3, v_platform: 200, label: "Bear" }
 };
 
@@ -165,18 +174,16 @@ export function computeHeaderStrip(state, valMetrics, constMetrics, liveQuote = 
   const perSh = valMetrics?.perSh ?? 0;
   const sats = constMetrics?.sats ?? 0;
   const cov = constMetrics?.pctToContinuous ?? 0;
-  const cash = state.val?.v_cash ?? 0;
   const shares = state.val?.v_shares ?? 256;
-  const equity = ev + cash;
+  const equity = valMetrics?.equityM ?? 0;
   const refPrice =
     liveQuote?.ok && liveQuote.price != null ? liveQuote.price : state.val?.v_refPrice ?? 45;
   const refSource = liveQuote?.ok && liveQuote.price != null ? "live" : "illustrative";
-  let mktCapM =
+  const mktCapM =
     liveQuote?.ok && liveQuote.marketCapM != null && liveQuote.marketCapM > 0
       ? liveQuote.marketCapM
       : shares * refPrice;
-  const upsidePct = mktCapM > 0 ? (equity / mktCapM - 1) * 100 : NaN;
-  const upsideMult = mktCapM > 0 ? equity / mktCapM : NaN;
+  const vsMkt = computeVsMarketUpside(equity, mktCapM);
   return {
     preset,
     ev,
@@ -188,10 +195,10 @@ export function computeHeaderStrip(state, valMetrics, constMetrics, liveQuote = 
     equity,
     mktCapM,
     marketCapEstimated: !!(liveQuote?.ok && liveQuote.marketCapEstimated),
-    upsideLabel:
-      Number.isFinite(upsidePct) && Number.isFinite(upsideMult)
-        ? `${upsidePct >= 0 ? "+" : ""}${upsidePct.toFixed(0)}% (${upsideMult.toFixed(2)}×)`
-        : "—"
+    upsideLabel: vsMkt.upsideLabel,
+    upsidePct: vsMkt.upsidePct,
+    upsideMult: vsMkt.upsideMult,
+    vsMktDirection: vsMkt.direction
   };
 }
 

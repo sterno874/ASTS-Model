@@ -184,7 +184,6 @@ const EXPL = {
 <p><span class="tag m">Model</span> Friis: <code>PL(dB) = 20 log₁₀(4πd/λ)</code>; slant range from elevation ε and altitude h. Positive link margin necessary but insufficient — C/(N+I), Doppler, handoff, and beam scheduling determine usable throughput.</p>
 <p><span class="tag u">Assumption</span> subs/sat slider is an opaque capacity proxy; continuous coverage requires 45–60 sats (company cite) with geometry depending on inclination, planes, min elevation — app uses overlap heuristic, not Walker delta simulation (<a href="https://spacenews.com/fcc-clears-ast-spacemobile-constellation-as-launch-setback-clouds-ramp-up/" target="_blank" rel="noopener">SpaceNews</a>).</p>
 <p><span class="tag f">Fact</span> 3,700–3,900 patent claims support IP narrative but do not disclose revenue, wholesale pricing, or freedom-to-operate vs Starlink/Lynk (<a href="https://patents.google.com/?assignee=AST+SpaceMobile" target="_blank" rel="noopener">USPTO assignee search</a> · <a href="https://www.sec.gov/Archives/edgar/data/1780312/000149315226019390/formars.pdf" target="_blank" rel="noopener">10-K</a>).</p>`
-
 };
 
 function readConstState() {
@@ -253,11 +252,19 @@ function updateConstUI() {
   set("cCapacity", m.capacityM.toFixed(2) + "M concurrent");
   set("cRevProxy", fmtM(m.revProxyM));
   set("cPctContinuous", fmtPct(m.pctToContinuous));
+  set("cPctFullCoverage", fmtPct(m.pctToFullCoverage ?? 0));
+  const statusLabels = { partial: "Partial", continuous: "Continuous (45+)", full: "Full range (60+)" };
+  set("cCoverageStatus", statusLabels[m.coverageStatus] ?? "—");
+  set("cActiveSubs", (m.activeSubsM ?? 0).toFixed(2) + "M");
   set("cMonthsTarget", monthsToTarget(m.sats, m.target, c.satsPerLaunch || 3, c.launchInterval || 1.5).toFixed(1) + " mo");
+  const br = $("cRevBreakdown");
+  if (br) {
+    br.innerHTML = `<span class="tag m">Model</span> ${m.mnoSubsM}M × ${(m.penetration * 100).toFixed(1)}% pen × ${((m.addressableFrac ?? 0) * 100).toFixed(1)}% addressable × $${m.arpuMonthly}/mo × 12 = ${fmtM(m.revProxyM)}/yr`;
+  }
   const cal = $("cLaunchCal");
   if (cal) {
     const evts = launchSchedule({ startSats: m.sats, targetSats: m.target, satsPerLaunch: c.satsPerLaunch, intervalMonths: c.launchInterval });
-    cal.innerHTML = evts.map((e) => `<div class="fact"><b>${e.label}</b><br/>~${formatCatalystMonth(`${e.year}-${String(Math.round(e.month)).padStart(2, "0")}`)} · ${e.satsAfter} sats<br/><span class="tag ${e.milestoneTag === "verified" ? "f" : "m"}">${e.milestoneTag === "verified" ? "verified" : "model"}</span></div>`).join("");
+    cal.innerHTML = evts.map((e) => `<div class="fact"><b>${e.label}</b><br/>~${formatCatalystMonth(`${e.year}-${String(Math.round(e.month)).padStart(2, "0")}`)} · ${e.satsAfter} sats<br/><span class="tag m">model</span></div>`).join("");
   }
   renderBands($, (id) => {
     const key = id.replace("mk-", "");
@@ -267,7 +274,8 @@ function updateConstUI() {
       ccoverageSats: c.coverageSats,
       cpenetration: c.penetration,
       carpuMonthly: c.arpuMonthly,
-      csubsPerSat: c.subsPerSat
+      csubsPerSat: c.subsPerSat,
+      cmnoSubsM: c.mnoSubsM
     };
     return map[key];
   });
@@ -368,14 +376,24 @@ function updateValMarketBlock(valMetrics) {
   set("vVsMkt", u.upsideLabel);
   const note = $("vVsMktNote");
   if (note) {
-    note.textContent = `Model equity ${fmtM(equityM)} vs mkt cap ${fmtM(mktCapM)} — scenario math, not investment advice.`;
+    const operatingM = valMetrics?.operatingEquityM ?? equityM;
+    const platformM = valMetrics?.platform ?? 0;
+    let framing = `Model equity ${fmtM(equityM)} vs mkt cap ${fmtM(mktCapM)}`;
+    if (u.direction === "downside" && platformM > 0) {
+      framing += ` · Operating DCF (ex-platform) ${fmtM(operatingM)}`;
+    }
+    if (u.direction === "downside") {
+      framing += " — market prices full-constellation optionality beyond near-term wholesale DCF";
+    }
+    framing += " — scenario math, not investment advice.";
+    note.textContent = framing;
   }
 }
 
 function updateCoverageOrbitUI() {
   const co = {
     sats: +($("coSats")?.value ?? state.coverageOrbit.sats ?? 10),
-    continuousSats: +($("coContinuousSats")?.value ?? US_COVERAGE_SOURCES.min),
+    continuousSats: +($("coContinuousSats")?.value ?? 45),
     minElevDeg: +($("coMinElev")?.value ?? 25),
     altKm: state.link.altKm ?? 550,
     satsPerLaunch: state.constellation.satsPerLaunch ?? 3,
@@ -390,16 +408,12 @@ function updateCoverageOrbitUI() {
   set("coRadius", r.radiusKm.toFixed(0) + " km");
   set("coOverlap", fmtPct(r.overlapFrac * 100));
   set("coContinuous", fmtPct(r.continuousFrac * 100));
-  set("coMonths45", r.sats >= US_COVERAGE_SOURCES.min ? "reached" : r.monthsTo45Label);
-  set("coMonths60", r.sats >= US_COVERAGE_SOURCES.max ? "reached" : r.monthsTo60Label);
-  set("coFPct", r.heuristic.fPct.toFixed(3) + "%");
-  const note = $("coOverlapNote"); if (note) note.textContent = r.heuristic.note;
   const tl = $("coTimeline");
   if (tl) {
     tl.innerHTML = r.timeline
       .map(
         (e) =>
-          `<div class="fact"><b>${e.label}</b><br/>${e.monthLabel} · overlap ${fmtPct(e.overlapFrac * 100)}<br/><span class="tag ${e.milestoneTag === "verified" ? "f" : "m"}">${e.milestoneTag === "verified" ? "verified" : "model"}</span></div>`
+          `<div class="fact"><b>${e.label}</b><br/>~${e.month.toFixed(1)} mo · overlap ${fmtPct(e.overlapFrac * 100)}<br/><span class="tag m">model</span></div>`
       )
       .join("");
   }
@@ -430,47 +444,46 @@ function drawCoverageSvg(r) {
 
 
 function ddRow(row) {
-  const verdict = verdictMeta(row.verdict);
-  return `<tr><td>${row.theme}</td><td><span class="${verdict.cls}">${verdict.icon}</span> <span class="verdict-badge verdict-badge--${row.verdict}">${verdict.label}</span></td><td><span class="tag ${tagClass(row.tag)}">${row.tag}</span></td><td>${row.note}</td></tr>`;
-}
-
-function drawD2cArchSvg() {
-  const svg = $("d2cArchSvg");
-  if (!svg) return;
-  svg.innerHTML = `<rect width="480" height="200" fill="#f8fafc"/><rect x="200" y="18" width="80" height="28" rx="4" fill="#141b26"/><text x="240" y="36" text-anchor="middle" font-size="10" fill="#fff">BlueBird</text><rect x="216" y="92" width="48" height="64" rx="6" fill="#1f9d55"/><text x="240" y="118" text-anchor="middle" font-size="9" fill="#fff">Phone</text><rect x="330" y="96" width="88" height="56" rx="4" fill="#fff" stroke="#dde2e8"/><text x="374" y="118" text-anchor="middle" font-size="9">MNO</text>`;
+  const v = verdictMeta(row.verdict);
+  return `<tr><td>${row.theme}</td><td><span class="${v.cls}">${v.icon}</span> <span class="verdict-badge verdict-badge--${row.verdict}">${v.label}</span></td><td><span class="tag ${tagClass(row.tag)}">${row.tag}</span></td><td>${row.note}</td></tr>`;
 }
 
 function updateCommercialUI() {
   const year = +($("ccalendarYear")?.value ?? 2026);
   const cats = sortCatalysts(catalystsInYear(year));
-  const timeline = layoutTimeline(cats.length ? cats : CATALYSTS, year);
+  const { items, lanes } = layoutTimeline(cats.length ? cats : CATALYSTS, year);
   const host = $("commCalendar");
   if (host) {
     const ticks = timelineMonthTicks(year)
       .map((t) => `<span class="cat-tl-tick" style="left:${t.left}%">${t.label}</span>`)
       .join("");
     const today = todayMarkerFrac(year);
-    const todayHtml = today == null ? "" : `<div class="cat-tl-today" style="left:${today}%"><span>Today</span></div>`;
-    const bars = timeline.items
+    const todayHtml = today != null ? `<div class="cat-tl-today" style="left:${today}%"><span>Today</span></div>` : "";
+    const bars = items
       .map((c) => {
+        const barCls = catalystBarClass(c.tag);
         const contCls = `${c.contLeft ? " cat-tl-bar--cont-left" : ""}${c.contRight ? " cat-tl-bar--cont-right" : ""}`;
-        const short = c.label.length > 28 ? `${c.label.slice(0, 26)}...` : c.label;
-        return `<div class="cat-tl-bar ${catalystBarClass(c.tag)}${contCls}" style="left:${c.left}%;width:${Math.max(c.width, 3)}%;--lane:${c.lane}" title="${c.label}"><span class="cat-tl-bar-label">${short}</span>${c.contRight ? '<span class="cat-tl-bar-arrow">→</span>' : ""}</div>`;
+        const short = c.label.length > 28 ? c.label.slice(0, 26) + "…" : c.label;
+        return `<div class="cat-tl-bar ${barCls}${contCls}" style="left:${c.left}%;width:${Math.max(c.width, 3)}%;--lane:${c.lane}" title="${c.label}"><span class="cat-tl-bar-label">${short}</span>${c.contRight ? '<span class="cat-tl-bar-arrow">→</span>' : ""}</div>`;
       })
       .join("");
-    const list = timeline.items
+    const list = items
       .map((c) => {
-        const dotClass = c.tag === "verified" ? "cat-tl-dot--verified" : "cat-tl-dot--estimate";
-        const win = `${c.contLeft ? "← " : ""}${formatCatalystMonth(c.windowStart)} - ${formatCatalystMonth(c.windowEnd)}${c.contRight ? " →" : ""}`;
+        const dotCls = c.tag === "verified" ? "cat-tl-dot--verified" : "cat-tl-dot--estimate";
+        const win =
+          c.contLeft || c.contRight
+            ? `${c.contLeft ? "← " : ""}${formatCatalystMonth(c.windowStart)} – ${formatCatalystMonth(c.windowEnd)}${c.contRight ? " →" : ""}`
+            : `${formatCatalystMonth(c.windowStart)} – ${formatCatalystMonth(c.windowEnd)}`;
         const src = c.source ? `<a class="cat-tl-source" href="${c.source}" target="_blank" rel="noopener">source ↗</a>` : "";
-        return `<li class="cat-tl-item"><span class="cat-tl-dot ${dotClass}"></span><div class="cat-tl-card"><div class="cat-tl-card-head"><span class="cat-tl-label">${c.label}</span><span class="tag ${tagClass(c.tag)}">${c.tag}</span>${src}</div><div class="cat-tl-window">${win}</div></div></li>`;
+        return `<li class="cat-tl-item"><span class="cat-tl-dot ${dotCls}"></span><div class="cat-tl-card"><div class="cat-tl-card-head"><span class="cat-tl-label">${c.label}</span><span class="tag ${tagClass(c.tag)}">${c.tag}</span>${src}</div><div class="cat-tl-window">${win}</div></div></li>`;
       })
       .join("");
-    host.innerHTML = `<div class="cat-timeline"><div class="cat-tl-legend"><span class="cat-tl-leg"><span class="cat-tl-leg-swatch cat-tl-leg-swatch--verified"></span> verified / achieved</span><span class="cat-tl-leg"><span class="cat-tl-leg-swatch cat-tl-leg-swatch--estimate"></span> forward-looking / partial</span>${today == null ? "" : '<span class="cat-tl-leg"><span class="cat-tl-leg-today"></span> today</span>'}<span class="cat-tl-leg"><span class="cat-tl-leg-cont">→</span> continues beyond year</span></div><div class="cat-tl-chart"><div class="cat-tl-ticks">${ticks}</div><div class="cat-tl-track" style="--lanes:${timeline.lanes}"><div class="cat-tl-line"></div>${todayHtml}${bars}</div></div><ul class="cat-tl-list">${list}</ul></div>`;
+    host.innerHTML = `<div class="cat-timeline"><div class="cat-tl-legend"><span class="cat-tl-leg"><span class="cat-tl-leg-swatch cat-tl-leg-swatch--verified"></span> verified / achieved</span><span class="cat-tl-leg"><span class="cat-tl-leg-swatch cat-tl-leg-swatch--estimate"></span> forward-looking / partial</span>${today != null ? '<span class="cat-tl-leg"><span class="cat-tl-leg-today"></span> today</span>' : ""}<span class="cat-tl-leg"><span class="cat-tl-leg-cont">→</span> continues beyond year</span></div><div class="cat-tl-chart"><div class="cat-tl-ticks">${ticks}</div><div class="cat-tl-track" style="--lanes:${lanes}"><div class="cat-tl-line"></div>${todayHtml}${bars}</div></div><ul class="cat-tl-list">${list}</ul></div>`;
   }
   const sum = $("commSummary");
   if (sum) {
-    sum.textContent = `${MNO_PARTNERS.length} named strategic MNO partners · ${launchOrbitTotal()} spacecraft in orbit (verified launches) · ${LAUNCH_EVENTS.length} launch milestones through Jun 2026 · FCC 248-sat authorization Apr 2026.`;
+    const orbit = launchOrbitTotal();
+    sum.textContent = `${MNO_PARTNERS.length} named strategic MNO partners · ${orbit} spacecraft in orbit (verified launches) · ${LAUNCH_EVENTS.length} launch milestones through Jun 2026 · FCC 248-sat authorization Apr 2026.`;
   }
 }
 
@@ -551,11 +564,11 @@ function updateHeader() {
   } else if (liveQuote && !liveQuote.ok) {
     quoteBlock = `<span class="best-est-sep">·</span><span class="best-est-item market-live"><span class="best-est-label">${QUOTE_LABEL} <span class="tag f">market</span></span><span class="best-est-val best-est-val--error">—</span><span class="best-est-sub">unavailable</span></span>`;
   }
-  const upsideTitle = `Model equity ${fmtM(h.equity)} vs mkt cap ${fmtM(h.mktCapM)}. Not investment advice.`;
+  const upsideTitle = `Model equity ${fmtM(h.equity)} vs mkt cap ${fmtM(h.mktCapM)}${h.vsMktDirection === "downside" ? " — market prices constellation optionality" : ""}. Not investment advice.`;
   strip.innerHTML = `<span class="best-est-item best-est-item--scenario"><span class="best-est-label">Scenario</span><span class="best-est-val best-est-val--scenario">${CONST_PRESETS[h.preset]?.label || h.preset}</span></span>
     <span class="best-est-sep">·</span><span class="best-est-item"><span class="best-est-label">Sats</span><span class="best-est-val">${h.sats}</span></span>
     <span class="best-est-sep">·</span><span class="best-est-item"><span class="best-est-label">→ Continuous</span><span class="best-est-val">${h.cov.toFixed(0)}%</span></span>
-    <span class="best-est-sep">·</span><span class="best-est-item"><span class="best-est-label">EV</span><span class="best-est-val">${fmtM(h.ev)}</span></span>
+    <span class="best-est-sep">·</span><span class="best-est-item"><span class="best-est-label">Model equity</span><span class="best-est-val">${fmtM(h.equity)}</span></span>
     <span class="best-est-sep">·</span><span class="best-est-item"><span class="best-est-label">$/sh</span><span class="best-est-val">$${h.perSh.toFixed(2)}</span></span>` +
     quoteBlock +
     `<span class="best-est-sep">·</span><span class="best-est-item" title="${upsideTitle}"><span class="best-est-label">${h.vsRefLabel} <span class="tag m">model</span></span><span class="best-est-val">${h.upsideLabel}</span></span>`;
@@ -587,6 +600,22 @@ const scheduleUpdate = debounce(() => updateNow(false), 80);
 function updateHashQuiet() {
   if (restoringState) return;
   history.replaceState(null, "", buildShareHash(state));
+}
+
+function highlightPresets(sel, attr, id) {
+  document.querySelectorAll(sel).forEach((b) => {
+    const on = b.dataset[attr] === id;
+    b.classList.toggle("p-def", on);
+    b.classList.toggle("active", on);
+  });
+}
+
+function highlightExplainLevel(l) {
+  document.querySelectorAll(".expl-lvlnav .lvlb, .expl-levels .lvlb").forEach((b) => {
+    const on = b.dataset.lvl === l;
+    b.classList.toggle("active", on);
+    b.setAttribute("aria-pressed", on ? "true" : "false");
+  });
 }
 
 function highlightPresets(sel, attr, id) {
@@ -823,14 +852,14 @@ function renderStaticPanels() {
   if (threads) {
     threads.innerHTML = COMMUNITY_THREADS.map(
       (t) =>
-        `<tr><td><a href="${t.url}" target="_blank" rel="noopener">${t.label}</a></td><td>${t.reddit ? '<span class="reddit-tag">Reddit</span> ' : ""}${t.author}</td><td>${t.note}</td></tr>`
+        `<tr><td><a href="${t.url}" target="_blank" rel="noopener">${t.label}</a></td><td>${t.reddit ? `<span class="reddit-tag">Reddit</span> ` : ""}${t.author}</td><td>${t.note}</td></tr>`
     ).join("");
   }
   const contribs = $("commContribBody");
   if (contribs) {
     contribs.innerHTML = TOP_COMMUNITY_CONTRIBUTORS.map(
       (c) =>
-        `<tr><td>${c.reddit ? '<span class="reddit-tag">Reddit</span> ' : ""}${c.source ? `<a href="${c.source}" target="_blank" rel="noopener">${c.user}</a>` : c.user}</td><td>${c.role} <span class="tag ${c.tier === "helpful" ? "f" : c.tier === "misleading" ? "c" : "u"}">${c.tier || "—"}</span></td><td>${c.note}</td></tr>`
+        `<tr><td>${c.reddit ? `<span class="reddit-tag">Reddit</span> ` : ""}${c.source ? `<a href="${c.source}" target="_blank" rel="noopener">${c.user}</a>` : c.user}</td><td>${c.role} <span class="tag ${c.tier === "helpful" ? "f" : c.tier === "misleading" ? "c" : "u"}">${c.tier || "—"}</span></td><td>${c.note}</td></tr>`
     ).join("");
   }
   const redditNote = $("commRedditNote");
@@ -914,9 +943,6 @@ function init() {
 
   bindRange("mcFailureRate", "mcFailureRateVal");
   bindRange("dilPrice", "dilPriceVal", () => updateDilutionUI(computeFullValuation(readValState())));
-  document.querySelectorAll("[data-lk-block]").forEach((b) => {
-    b.onclick = () => applyLinkBlock(b.dataset.lkBlock);
-  });
   bindRange("coSats", "coSatsVal");
   bindRange("coContinuousSats", "coContinuousSatsVal");
   bindRange("coMinElev", "coMinElevVal");
@@ -927,7 +953,10 @@ function init() {
     const id = k.replace(/^v_/, "");
     bindRange("vv_" + id, "vv_" + id + "Val");
   });
-  Object.keys(DEFAULT_STATE.link).forEach((k) => bindRange("lk_" + k, "lk_" + k + "Val"));
+  Object.keys(DEFAULT_STATE.link).forEach((k) => {
+    if (k === "blockId" || k === "arraySqM") return;
+    bindRange("lk_" + k, "lk_" + k + "Val");
+  });
   $("v_riskadj")?.addEventListener("change", scheduleUpdate);
   $("ccalendarYear")?.addEventListener("input", () => {
     $("ccalendarYearVal").textContent = $("ccalendarYear").value;
@@ -959,6 +988,10 @@ function init() {
 }
 
 if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+else init();
+
+export { updateNow, applyConstPreset, switchTab, state };
+istener("DOMContentLoaded", init);
 else init();
 
 export { updateNow, applyConstPreset, switchTab, state };

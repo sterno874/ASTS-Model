@@ -54,9 +54,13 @@ test("peakWholesaleRevenueM scales with penetration", () => {
   assert.ok(high > low);
 });
 
-test("bull preset EV exceeds bear", () => {
-  assert.ok(computeFullValuation({ ...DEFAULT_STATE.val, ...VAL_PRESETS.bull }).ev >
-    computeFullValuation({ ...DEFAULT_STATE.val, ...VAL_PRESETS.bear }).ev);
+test("bull preset EV exceeds bear and reflects 45+ sats thesis", () => {
+  const bull = computeFullValuation({ ...DEFAULT_STATE.val, ...VAL_PRESETS.bull });
+  const bear = computeFullValuation({ ...DEFAULT_STATE.val, ...VAL_PRESETS.bear });
+  assert.ok(bull.ev > bear.ev);
+  assert.ok(bull.equityM > 15_000, "commercial bull should reach mid-teens $B equity");
+  assert.ok(bull.operatingEquityM < bull.equityM);
+  assert.ok(bull.platform >= 5000);
 });
 
 test("runway uses quarterly-to-months factor of 3", () => {

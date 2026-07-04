@@ -21,6 +21,9 @@ test("bull preset has higher penetration than bear", () => {
 test("VAL_PRESETS commercial bull exceeds bear EV inputs", () => {
   assert.ok(VAL_PRESETS.bull.v_pCommercial > VAL_PRESETS.bear.v_pCommercial);
   assert.ok(VAL_PRESETS.bull.v_mult > VAL_PRESETS.bear.v_mult);
+  assert.ok(VAL_PRESETS.bull.v_platform > VAL_PRESETS.bear.v_platform);
+  assert.equal(VAL_PRESETS.bull.v_arpuMonthly, 5);
+  assert.equal(VAL_PRESETS.bull.v_coverageFrac, 0.6);
 });
 
 test("coverage preset ramps sats to 45", () => {

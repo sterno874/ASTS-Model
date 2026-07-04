@@ -79,12 +79,13 @@ export function formatChangePct(pct) {
 
 export function computeVsMarketUpside(equityM, marketCapM) {
   if (!Number.isFinite(equityM) || !Number.isFinite(marketCapM) || marketCapM <= 0) {
-    return { upsidePct: NaN, upsideMult: NaN, upsideLabel: "—" };
+    return { upsidePct: NaN, upsideMult: NaN, upsideLabel: "—", direction: null };
   }
   const upsidePct = (equityM / marketCapM - 1) * 100;
   const upsideMult = equityM / marketCapM;
-  const upsideLabel = `${upsidePct >= 0 ? "+" : ""}${upsidePct.toFixed(0)}% (${upsideMult.toFixed(2)}×)`;
-  return { upsidePct, upsideMult, upsideLabel };
+  const direction = upsidePct >= 0 ? "upside" : "downside";
+  const upsideLabel = `${upsidePct >= 0 ? "+" : ""}${upsidePct.toFixed(0)}% ${direction} (${upsideMult.toFixed(2)}×)`;
+  return { upsidePct, upsideMult, upsideLabel, direction };
 }
 
 export async function fetchLiveQuote(symbol, options = {}) {
