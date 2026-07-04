@@ -29,6 +29,13 @@ import {
   computeHeaderStrip
 } from "./ui/state.js";
 import { buildBands, renderBands } from "./ui/bands.js";
+import {
+  DEFAULT_TICKER,
+  QUOTE_LABEL,
+  formatApproxPrice,
+  buildQuoteMeta,
+  startLiveQuotePoll
+} from "./ui/market-quote.js";
 
 const $ = (id) => document.getElementById(id);
 
@@ -37,6 +44,8 @@ let activeTab = "constellation";
 let curLvl = "eli5";
 let restoringState = false;
 let updateRaf = null;
+let liveQuote = null;
+let stopQuotePoll = null;
 const tabsDirty = { constellation: true, commercial: true, value: true, explain: true, technology: true };
 
 const TAB_SHORT_LABELS = {
@@ -264,12 +273,37 @@ function updateHeader() {
   if (!strip || !state.ui.showHeaderStrip) return;
   const cm = computeConstellationMetrics(state.constellation);
   const vm = computeFullValuation(state.val);
-  const h = computeHeaderStrip(state, vm, cm);
+  const h = computeHeaderStrip(state, vm, cm, liveQuote?.ok ? liveQuote : null);
+  let quoteBlock = "";
+  if (liveQuote?.loading) {
+    quoteBlock = `<span class="best-est-sep">·</span><span class="best-est-item market-live"><span class="best-est-label">${QUOTE_LABEL} <span class="tag f">market</span></span><span class="best-est-val best-est-val--loading">…</span><span class="best-est-sub">fetching…</span></span>`;
+  } else if (liveQuote?.ok) {
+    const meta = buildQuoteMeta(liveQuote);
+    quoteBlock = `<span class="best-est-sep">·</span><span class="best-est-item market-live" title="${meta}"><span class="best-est-label">${QUOTE_LABEL} <span class="tag f">market</span></span><span class="best-est-val">${formatApproxPrice(liveQuote.price, liveQuote.currency)}</span>${meta ? `<span class="best-est-sub">${meta}</span>` : ""}</span>`;
+  } else if (liveQuote && !liveQuote.ok) {
+    quoteBlock = `<span class="best-est-sep">·</span><span class="best-est-item market-live"><span class="best-est-label">${QUOTE_LABEL} <span class="tag f">market</span></span><span class="best-est-val best-est-val--error">—</span><span class="best-est-sub">unavailable</span></span>`;
+  }
+  const upsideTitle = `Model equity ${fmtM(h.equity)} vs mkt cap ${fmtM(h.mktCapM)}. Not investment advice.`;
   strip.innerHTML = `<span class="best-est-item best-est-item--scenario"><span class="best-est-label">Scenario</span><span class="best-est-val best-est-val--scenario">${CONST_PRESETS[h.preset]?.label || h.preset}</span></span>
     <span class="best-est-sep">·</span><span class="best-est-item"><span class="best-est-label">Sats</span><span class="best-est-val">${h.sats}</span></span>
     <span class="best-est-sep">·</span><span class="best-est-item"><span class="best-est-label">→ Continuous</span><span class="best-est-val">${h.cov.toFixed(0)}%</span></span>
     <span class="best-est-sep">·</span><span class="best-est-item"><span class="best-est-label">EV</span><span class="best-est-val">${fmtM(h.ev)}</span></span>
-    <span class="best-est-sep">·</span><span class="best-est-item"><span class="best-est-label">$/sh</span><span class="best-est-val">$${h.perSh.toFixed(2)}</span></span>`;
+    <span class="best-est-sep">·</span><span class="best-est-item"><span class="best-est-label">$/sh</span><span class="best-est-val">$${h.perSh.toFixed(2)}</span></span>` +
+    quoteBlock +
+    `<span class="best-est-sep">·</span><span class="best-est-item" title="${upsideTitle}"><span class="best-est-label">${h.vsRefLabel} <span class="tag m">model</span></span><span class="best-est-val">${h.upsideLabel}</span></span>`;
+}
+
+function initLiveQuote() {
+  if (parseEmbedMode() || typeof fetch === "undefined") return;
+  if (stopQuotePoll) stopQuotePoll();
+  stopQuotePoll = startLiveQuotePoll(
+    DEFAULT_TICKER,
+    (q) => {
+      liveQuote = q;
+      updateHeader();
+    },
+    { sharesM: state.val.v_shares }
+  );
 }
 
 function updateNow(forceHash) {
@@ -573,6 +607,7 @@ function init() {
     showLevel("eli5");
     updateNow(true);
   }
+  initLiveQuote();
 }
 
 if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);

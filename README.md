@@ -24,7 +24,11 @@ npm test
 
 ## Deploy (Vercel)
 
-Connect this repo; `vercel.json` enables clean URLs. Set production domain to `asts-model.vercel.app`.
+Connect this repo; `vercel.json` enables clean URLs. Set production domain to `asts-model.vercel.app`. Deploys `api/quote.js` as `/api/quote` — Yahoo Finance only, no API keys.
+
+### Delayed stock quote (header strip)
+
+Header shows **~$ASTS price**, **~$XM / ~$XB mkt cap**, and **vs mkt** upside when available. Labeled **Approx · delayed**. Polls every 5 min via serverless proxy (avoids browser CORS).
 
 ## Data tags
 

@@ -142,13 +142,40 @@ export function computeValuationMetrics(val) {
   return computeFullValuation(val);
 }
 
-export function computeHeaderStrip(state, valMetrics, constMetrics) {
+export function computeHeaderStrip(state, valMetrics, constMetrics, liveQuote = null) {
   const preset = state.activeConstPreset || "base";
   const ev = valMetrics?.ev ?? 0;
   const perSh = valMetrics?.perSh ?? 0;
   const sats = constMetrics?.sats ?? 0;
   const cov = constMetrics?.pctToContinuous ?? 0;
-  return { preset, ev, perSh, sats, cov };
+  const cash = state.val?.v_cash ?? 0;
+  const shares = state.val?.v_shares ?? 256;
+  const equity = ev + cash;
+  const refPrice =
+    liveQuote?.ok && liveQuote.price != null ? liveQuote.price : state.val?.v_refPrice ?? 45;
+  const refSource = liveQuote?.ok && liveQuote.price != null ? "live" : "illustrative";
+  let mktCapM =
+    liveQuote?.ok && liveQuote.marketCapM != null && liveQuote.marketCapM > 0
+      ? liveQuote.marketCapM
+      : shares * refPrice;
+  const upsidePct = mktCapM > 0 ? (equity / mktCapM - 1) * 100 : NaN;
+  const upsideMult = mktCapM > 0 ? equity / mktCapM : NaN;
+  return {
+    preset,
+    ev,
+    perSh,
+    sats,
+    cov,
+    refSource,
+    vsRefLabel: refSource === "live" ? "vs mkt" : "vs-ref",
+    equity,
+    mktCapM,
+    marketCapEstimated: !!(liveQuote?.ok && liveQuote.marketCapEstimated),
+    upsideLabel:
+      Number.isFinite(upsidePct) && Number.isFinite(upsideMult)
+        ? `${upsidePct >= 0 ? "+" : ""}${upsidePct.toFixed(0)}% (${upsideMult.toFixed(2)}×)`
+        : "—"
+  };
 }
 
 export function paramsFromPreset(preset, map) {
