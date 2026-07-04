@@ -442,6 +442,11 @@ function drawCoverageSvg(r) {
     <text x="${cx}" y="210" text-anchor="middle" font-size="10" fill="#141b26">Overlap ${(r.overlapFrac * 100).toFixed(1)}% · Continuous proxy ${(r.continuousFrac * 100).toFixed(1)}%</text>`;
 }
 
+function drawD2cArchSvg() {
+  const svg = $("d2cArchSvg");
+  if (!svg) return;
+  svg.innerHTML = `<rect width="480" height="200" fill="#f8fafc"/><rect x="200" y="18" width="80" height="28" rx="4" fill="#141b26"/><text x="240" y="36" text-anchor="middle" font-size="10" fill="#fff">BlueBird</text><rect x="216" y="92" width="48" height="64" rx="6" fill="#1f9d55"/><text x="240" y="118" text-anchor="middle" font-size="9" fill="#fff">Phone</text><rect x="330" y="96" width="88" height="56" rx="4" fill="#fff" stroke="#dde2e8"/><text x="374" y="118" text-anchor="middle" font-size="9">MNO</text>`;
+}
 
 function ddRow(row) {
   const v = verdictMeta(row.verdict);
@@ -600,22 +605,6 @@ const scheduleUpdate = debounce(() => updateNow(false), 80);
 function updateHashQuiet() {
   if (restoringState) return;
   history.replaceState(null, "", buildShareHash(state));
-}
-
-function highlightPresets(sel, attr, id) {
-  document.querySelectorAll(sel).forEach((b) => {
-    const on = b.dataset[attr] === id;
-    b.classList.toggle("p-def", on);
-    b.classList.toggle("active", on);
-  });
-}
-
-function highlightExplainLevel(l) {
-  document.querySelectorAll(".expl-lvlnav .lvlb, .expl-levels .lvlb").forEach((b) => {
-    const on = b.dataset.lvl === l;
-    b.classList.toggle("active", on);
-    b.setAttribute("aria-pressed", on ? "true" : "false");
-  });
 }
 
 function highlightPresets(sel, attr, id) {
@@ -988,10 +977,6 @@ function init() {
 }
 
 if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
-else init();
-
-export { updateNow, applyConstPreset, switchTab, state };
-istener("DOMContentLoaded", init);
 else init();
 
 export { updateNow, applyConstPreset, switchTab, state };
