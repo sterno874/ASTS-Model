@@ -49,6 +49,7 @@ import {
   computeVsMarketUpside,
   startLiveQuotePoll
 } from "./ui/market-quote.js";
+import { EXPLAIN_FOUNDATION } from "./content/explain-foundation.js";
 
 const $ = (id) => document.getElementById(id);
 
@@ -113,29 +114,7 @@ function debounce(fn, ms) {
 }
 
 const EXPL = {
-  eli5: `<h3>What is AST SpaceMobile ($ASTS)?</h3>
-<p><span class="tag f">Fact</span> <b>AST SpaceMobile</b> builds huge satellites that act like cell towers in space — so your normal phone can get signal where there are no ground towers (<a href="https://ast-science.com/" target="_blank" rel="noopener">company site</a>).</p>
-<p><span class="tag f">Fact</span> They partner with carriers like <b>AT&T</b> and <b>Verizon</b> instead of selling phone plans themselves. AST provides the space network; your carrier bills you (<a href="https://www.fcc.gov/document/fcc-grants-ast-spacemobile-authority-deploy-and-operate-ngso-system" target="_blank" rel="noopener">FCC authorization</a>).</p>
-<h4>The satellites</h4>
-<p><span class="tag f">Fact</span> <b>BlueWalker 3</b> was the test satellite (2022). Production <b>BlueBird</b> satellites have massive phased-array antennas — Block 2 arrays are ~223 m² (~2,400 sq ft) (<a href="https://spacenews.com/fcc-clears-ast-spacemobile-constellation-as-launch-setback-clouds-ramp-up/" target="_blank" rel="noopener">SpaceNews</a>).</p>
-<p><span class="tag f">Fact</span> As of Jun 2026, <b>BlueBirds 8–10</b> launched on SpaceX Falcon 9 after BlueBird 7 was lost to a low-orbit insertion error (<a href="https://www.businesswire.com/news/home/20260617420856/en/" target="_blank" rel="noopener">Business Wire</a>).</p>
-<h4>What this model does</h4>
-<p><span class="tag m">Model</span> Sliders let you ask “what if we have X satellites and Y% of subscribers pay $Z/month wholesale?” Blue bands = plausible guesses. Facts come from SEC, FCC, and IR — not Reddit hype.</p>`,
-
-  ms: `<h3>Direct-to-cell architecture</h3>
-<p><span class="tag f">Fact</span> AST uses <b>Supplemental Coverage from Space (SCS)</b> — satellites transmit on MNO-licensed low-band spectrum (700/800 MHz) so phones don't need new chips for basic integration (<a href="https://www.datacenterdynamics.com/en/news/fcc-gives-ast-spacemobile-the-go-ahead-to-launch-satellite-broadband-service/" target="_blank" rel="noopener">DCD</a>).</p>
-<p><span class="tag f">Fact</span> FCC authorized up to <b>248 satellites</b> (Order DA 26-391, Apr 2026). Company cites <b>45–60 sats</b> for continuous US coverage (<a href="https://spacenews.com/fcc-clears-ast-spacemobile-constellation-as-launch-setback-clouds-ramp-up/" target="_blank" rel="noopener">SpaceNews</a>).</p>
-<p><span class="tag f">Fact</span> ~<b>60 MNO agreements</b> covering <b>3B+ subscribers</b> — MOUs/partnerships, not all commercial contracts yet (<a href="https://ast-science.com/" target="_blank" rel="noopener">IR</a>).</p>
-<h4>Revenue path</h4>
-<p><span class="tag u">Assumption</span> Wholesale capacity fees / rev-share with MNOs and government gateway contracts. Q1 2026 revenue ~$14.7M was largely gateway hardware + gov milestones — not consumer broadband at scale.</p>
-<p>→ Try the <a href="#link-budget-sim" onclick="document.querySelector('.tabbtn[data-tab=technology]').click();return true;">link budget sim</a> on the Technology tab.</p>`,
-
-  hs: `<h3>Phased arrays &amp; link budget</h3>
-<p><span class="tag f">Fact</span> Large aperture phased arrays increase EIRP and gain, closing the link to a handset with ~0 dBi antenna and ≤23 dBm TX power. Block 2 arrays are ~3.5× Block 1 area → ~5 dB gain boost (rough √A scaling).</p>
-<p><span class="tag f">Fact</span> Demonstrated peaks: Block 1 <b>98.9 Mbps</b>; Block 2 target <b>~200 Mbps</b> peak — shared beam capacity, not per-user SLA (<a href="https://satnews.com/2026/06/17/direct-to-device-momentum-ast-spacemobile-successfully-launches-giant-next-gen-bluebird-satellites-atop-spacex-falcon-9/" target="_blank" rel="noopener">SatNews</a>).</p>
-<p><span class="tag m">Model</span> Technology tab uses Friis path loss to LEO (~550 km) at 700–800 MHz with adjustable elevation — educational, not AST proprietary RF planning.</p>
-<h4>Competition</h4>
-<p><span class="tag f">Fact</span> <b>SpaceX Starlink D2C</b> (T-Mobile partnership), <b>Lynk/Omnispace</b>, Apple/Globalstar emergency — overlapping D2D spectrum strategies. AST bets on fewer, larger satellites vs Starlink's distributed small-sat approach.</p>`,
+  ...EXPLAIN_FOUNDATION,
 
   col: `<h3>Constellation economics</h3>
 <p><span class="tag m">Model</span> Revenue proxy: <code>activeSubs = MNO_subs × penetration × coverageFraction</code>; <code>rev = activeSubs × ARPU_monthly × 12</code>. Penetration is space-layer attach rate, not total MNO subs.</p>
