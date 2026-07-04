@@ -18,7 +18,7 @@ import {
   formatCatalystMonth
 } from "./math/commercial.js";
 import { runLaunchMonteCarlo, LAUNCH_MC_PRESETS } from "./math/monte-carlo.js";
-import { computeFullyDilutedSharesM, CONVERTIBLE_NOTES, evPerShareFd } from "./math/dilution.js";
+import { computeFullyDilutedSharesM, CONVERTIBLE_NOTES, CONVERTIBLE_TOTAL_PRINCIPAL_M, evPerShareFd } from "./math/dilution.js";
 import { computeCoverageOrbit } from "./math/coverage-orbit.js";
 import {
   VALID_TABS,
@@ -38,6 +38,7 @@ import {
   QUOTE_LABEL,
   formatApproxPrice,
   buildQuoteMeta,
+  computeVsMarketUpside,
   startLiveQuotePoll
 } from "./ui/market-quote.js";
 
@@ -262,9 +263,59 @@ function updateDilutionUI(valMetrics) {
     tbody.innerHTML = fd.rows
       .map(
         (r) =>
-          `<tr><td>${r.label}</td><td>${r.principalM ? "$" + r.principalM + "M" : "—"}</td><td>${r.conversionPrice ? "$" + r.conversionPrice : "—"}</td><td>${r.addedSharesM.toFixed(1)}</td><td><span class="tag ${r.tag === "verified" ? "f" : "p"}">${r.tag}</span></td></tr>`
+          `<tr><td>${r.label}${r.source ? ` · <a href="${r.source}" target="_blank" rel="noopener">source</a>` : ""}</td><td>${r.principalM ? "$" + r.principalM + "M" : "—"}</td><td>${r.conversionPrice ? "$" + r.conversionPrice : "—"}</td><td>${r.addedSharesM.toFixed(1)}</td><td><span class="tag ${r.tag === "verified" ? "f" : "p"}">${r.tag}</span></td></tr>`
       )
       .join("");
+  }
+  const foot = $("dilNotesFoot");
+  if (foot) {
+    foot.innerHTML = `<tr><td colspan="2"><b>Total note principal</b></td><td colspan="3">$${CONVERTIBLE_TOTAL_PRINCIPAL_M}M · FD ${fd.fdSharesM.toFixed(1)}M @ $${price}</td></tr>`;
+  }
+  syncDilutionPresetButtons(state.val.v_shares);
+}
+
+function syncDilutionPresetButtons(sharesM) {
+  document.querySelectorAll("[data-dilution-stress]").forEach((b) => {
+    const target = Number(b.dataset.dilutionStress);
+    const active = Math.abs(sharesM - target) < 0.01;
+    b.classList.toggle("active", active);
+    b.classList.toggle("p-def", active);
+  });
+}
+
+function updateValMarketBlock(valMetrics) {
+  const set = (id, txt) => {
+    const el = $(id);
+    if (el) el.textContent = txt;
+  };
+  set("vQuoteLabel", QUOTE_LABEL);
+  const equityM = valMetrics?.equityM ?? 0;
+  set("vEquity", fmtM(equityM));
+  if (liveQuote?.loading) {
+    set("vMktPrice", "…");
+    set("vMktMeta", "fetching delayed quote…");
+    set("vVsMkt", "—");
+    return;
+  }
+  const refPrice =
+    liveQuote?.ok && liveQuote.price != null ? liveQuote.price : state.val?.v_refPrice ?? 45;
+  const shares = state.val?.v_shares ?? 256;
+  const mktCapM =
+    liveQuote?.ok && liveQuote.marketCapM != null && liveQuote.marketCapM > 0
+      ? liveQuote.marketCapM
+      : shares * refPrice;
+  if (liveQuote?.ok) {
+    set("vMktPrice", formatApproxPrice(liveQuote.price, liveQuote.currency));
+    set("vMktMeta", buildQuoteMeta(liveQuote));
+  } else {
+    set("vMktPrice", formatApproxPrice(refPrice));
+    set("vMktMeta", liveQuote && !liveQuote.ok ? "quote unavailable — using illustrative ref" : "illustrative ref price");
+  }
+  const u = computeVsMarketUpside(equityM, mktCapM);
+  set("vVsMkt", u.upsideLabel);
+  const note = $("vVsMktNote");
+  if (note) {
+    note.textContent = `Model equity ${fmtM(equityM)} vs mkt cap ${fmtM(mktCapM)} — scenario math, not investment advice.`;
   }
 }
 
@@ -354,16 +405,23 @@ function updateValUI() {
     tbody.innerHTML = v.rows
       .map(
         (r) =>
-          `<tr><td>${r.label}</td><td>${fmtM(r.peak)}</td><td>${(r.pSuccess * 100).toFixed(0)}%</td><td>${fmtM(r.evContrib)}</td></tr>`
+          `<tr><td>${r.label}</td><td>${fmtM(r.peak)}</td><td>${(r.pSuccess * 100).toFixed(0)}%</td><td>${(r.weight * 100).toFixed(0)}%</td><td>${fmtM(r.evContrib)}</td></tr>`
       )
       .join("");
+  }
+  const tfoot = $("vRowsFoot");
+  if (tfoot) {
+    const rowSum = v.rows.reduce((s, r) => s + r.evContrib, 0);
+    tfoot.innerHTML = `<tr><td colspan="4"><b>Platform + segments</b></td><td>${fmtM(rowSum)} + ${fmtM(v.platform)} = ${fmtM(v.ev)}</td></tr>`;
   }
   renderBands($, (id) => {
     const key = id.replace("mk-vv_", "vv_").replace("mk-", "");
     if (key.startsWith("vv_")) return val["v_" + key.slice(3)];
     return null;
   });
+  updateValMarketBlock(v);
   updateDilutionUI(v);
+  syncDilutionPresetButtons(val.v_shares);
   updateHeader();
 }
 
@@ -443,6 +501,7 @@ function initLiveQuote() {
     (q) => {
       liveQuote = q;
       updateHeader();
+      if (activeTab === "value") updateValMarketBlock(computeFullValuation(state.val));
     },
     { sharesM: state.val.v_shares }
   );
@@ -503,6 +562,7 @@ function applyDilutionStress(sharesM) {
   if (el) el.value = sharesM;
   const lbl = $("vv_sharesVal");
   if (lbl) lbl.textContent = sharesM;
+  syncDilutionPresetButtons(sharesM);
   updateValUI();
   if (!restoringState) updateHashQuiet();
 }

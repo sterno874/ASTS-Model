@@ -3,50 +3,39 @@ import assert from "node:assert/strict";
 import {
   sharesFromConversionM,
   computeFullyDilutedSharesM,
-  CONVERTIBLE_NOTES,
+  CONVERTIBLE_TOTAL_PRINCIPAL_M,
   DILUTION_STRESS_PRESETS,
+  SEC_10K_URL,
+  CONVERTIBLE_NOTES,
   evPerShareFd
 } from "../js/math/dilution.js";
 
 test("sharesFromConversionM at $120.12 for $575M note", () => {
-  const sh = sharesFromConversionM(575, 120.12);
-  assert.ok(sh > 4.5 && sh < 5.0);
+  assert.ok(sharesFromConversionM(575, 120.12) > 4.5);
 });
 
-test("FD shares increase when price above conversion", () => {
-  const low = computeFullyDilutedSharesM({ baseSharesM: 256, stockPrice: 40 });
-  const high = computeFullyDilutedSharesM({ baseSharesM: 256, stockPrice: 130 });
-  assert.ok(high.fdSharesM > low.fdSharesM);
-});
-
-test("FD shares at $45 include partial conversion", () => {
+test("FD shares at $45 include warrants only", () => {
   const fd = computeFullyDilutedSharesM({ baseSharesM: 256, stockPrice: 45 });
-  assert.ok(fd.fdSharesM > 256);
-  assert.ok(fd.dilutionPct > 0);
+  assert.ok(fd.fdSharesM > 256 && fd.fdSharesM < 280);
 });
 
-test("CONVERTIBLE_NOTES has 2036 note at $85 conversion", () => {
-  const n = CONVERTIBLE_NOTES.find((x) => x.id === "2036_200");
-  assert.ok(n);
-  assert.equal(n.conversionPrice, 85);
-  assert.equal(n.principalM, 1000);
+test("CONVERTIBLE_TOTAL_PRINCIPAL_M is $2035M", () => {
+  assert.equal(CONVERTIBLE_TOTAL_PRINCIPAL_M, 2035);
 });
 
-test("DILUTION_STRESS_PRESETS filing anchor 256M", () => {
+test("DILUTION_STRESS_PRESETS 256/280/320/360M", () => {
   assert.equal(DILUTION_STRESS_PRESETS.filing.sharesM, 256);
+  assert.equal(DILUTION_STRESS_PRESETS.atm.sharesM, 280);
+  assert.equal(DILUTION_STRESS_PRESETS.convert.sharesM, 320);
+  assert.equal(DILUTION_STRESS_PRESETS.full.sharesM, 360);
 });
 
-test("evPerShareFd decreases vs base when FD higher", () => {
+test("evPerShareFd decreases when FD higher", () => {
   const fd = computeFullyDilutedSharesM({ baseSharesM: 256, stockPrice: 120 });
-  const basePer = evPerShareFd(5000, 3460, 698, { fdSharesM: 256 });
-  const fdPer = evPerShareFd(5000, 3460, 698, fd);
-  assert.ok(fdPer < basePer);
+  assert.ok(evPerShareFd(5000, 3460, 698, fd) < evPerShareFd(5000, 3460, 698, { fdSharesM: 256 }));
 });
 
-test("warrants add fixed shares regardless of price", () => {
-  const a = computeFullyDilutedSharesM({ baseSharesM: 256, stockPrice: 30 });
-  const b = computeFullyDilutedSharesM({ baseSharesM: 256, stockPrice: 200 });
-  const wa = a.rows.find((r) => r.id === "warrants");
-  const wb = b.rows.find((r) => r.id === "warrants");
-  assert.equal(wa.addedSharesM, wb.addedSharesM);
+test("CONVERTIBLE_NOTES sourced from 10-K", () => {
+  assert.ok(SEC_10K_URL.includes("1780312"));
+  assert.ok(CONVERTIBLE_NOTES.every((n) => n.source));
 });

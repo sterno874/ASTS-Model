@@ -3,7 +3,9 @@
  * Educational; not tax or securities advice.
  */
 
-/** Verified / filing anchors — FY2025 10-K + Jul 2025 note PRs. */
+export const SEC_10K_URL =
+  "https://www.sec.gov/Archives/edgar/data/1780312/000149315226019390/formars.pdf";
+
 export const CONVERTIBLE_NOTES = [
   {
     id: "2032_425",
@@ -27,7 +29,7 @@ export const CONVERTIBLE_NOTES = [
     principalM: 1000,
     conversionPrice: 85.0,
     tag: "verified",
-    source: "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001780312"
+    source: SEC_10K_URL
   },
   {
     id: "warrants",
@@ -35,9 +37,14 @@ export const CONVERTIBLE_NOTES = [
     principalM: 0,
     sharesM: 18,
     tag: "partial",
-    source: "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001780312"
+    source: SEC_10K_URL
   }
 ];
+
+export const CONVERTIBLE_TOTAL_PRINCIPAL_M = CONVERTIBLE_NOTES.filter((n) => n.principalM > 0).reduce(
+  (s, n) => s + n.principalM,
+  0
+);
 
 export const SHARE_ANCHORS = {
   basicMar2026_M: 298.45,
@@ -49,24 +56,11 @@ export const SHARE_ANCHORS = {
   tag: "verified"
 };
 
-/**
- * Shares from convertible conversion at given stock price ($).
- * @param {number} principalM — note face ($M)
- * @param {number} conversionPrice — $/share conversion
- */
 export function sharesFromConversionM(principalM, conversionPrice) {
   if (conversionPrice <= 0 || principalM <= 0) return 0;
   return (principalM * 1e6) / conversionPrice / 1e6;
 }
 
-/**
- * Fully diluted share count under conversion scenario.
- * @param {object} p
- * @param {number} p.baseSharesM — reported diluted shares (M)
- * @param {number} p.stockPrice — assumed conversion/ref price ($)
- * @param {number} [p.extraEquityM] — ATM / RSU / option dilution ($M notional)
- * @param {boolean} [p.convertAll] — assume all notes convert in-the-money
- */
 export function computeFullyDilutedSharesM({
   baseSharesM = 256,
   stockPrice = 45,
@@ -96,21 +90,18 @@ export function computeFullyDilutedSharesM({
     addFromNotesM: addSharesM,
     addFromExtraM: extraSharesM,
     rows,
-    stockPrice
+    stockPrice,
+    totalPrincipalM: CONVERTIBLE_TOTAL_PRINCIPAL_M
   };
 }
 
-/** Preset FD stress scenarios (M shares). */
 export const DILUTION_STRESS_PRESETS = {
-  filing: { sharesM: 256, label: "FY2025 diluted ◆" },
-  atm: { sharesM: 280, label: "ATM ramp ~280M" },
-  convert: { sharesM: 320, label: "Partial convert ~320M" },
-  full: { sharesM: 360, label: "Full convert + warrants ~360M" }
+  filing: { sharesM: 256, label: "FY2025 diluted ◆", sub: "10-K ~256M diluted" },
+  atm: { sharesM: 280, label: "ATM ramp ~280M", sub: "Shelf issuance scenario" },
+  convert: { sharesM: 320, label: "Partial convert ~320M", sub: "Some notes in-the-money" },
+  full: { sharesM: 360, label: "Full convert + warrants ~360M", sub: "All notes + warrants" }
 };
 
-/**
- * EV per share under FD scenario.
- */
 export function evPerShareFd(evM, cashM, debtM, fd) {
   if (!fd?.fdSharesM || fd.fdSharesM <= 0) return NaN;
   return (evM + cashM - debtM) / fd.fdSharesM;
