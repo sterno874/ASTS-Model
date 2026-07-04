@@ -52,6 +52,8 @@ export function updateFriisPanel($, r) {
 
 export function syncBlockPresetButtons(blockId) {
   document.querySelectorAll("[data-lk-block]").forEach((btn) => {
-    btn.classList.toggle("active", btn.dataset.lkBlock === blockId);
+    const on = btn.dataset.lkBlock === blockId;
+    btn.classList.toggle("p-def", on);
+    btn.classList.toggle("active", on);
   });
 }

@@ -106,6 +106,23 @@ test("og-image and vercel analytics", () => {
   assert.match(html, /_vercel\/insights/);
 });
 
+test("explain level click toggles active class", () => {
+  assert.match(js, /function highlightExplainLevel\(/);
+  assert.match(js, /classList\.toggle\("active", on\)/);
+  assert.match(js, /querySelectorAll\("\.expl-lvlnav \.lvlb, \.expl-levels \.lvlb"\)/);
+  assert.match(js, /setAttribute\("aria-pressed"/);
+  assert.match(html, /class="expl-lvlnav"/);
+  assert.match(html, /aria-pressed="true"/);
+});
+
+test("preset highlight toggles p-def class", () => {
+  assert.match(js, /function highlightPresets\(/);
+  assert.match(js, /classList\.toggle\("p-def", on\)/);
+  assert.match(js, /highlightPresets\("\[data-const-preset\]"/);
+  assert.match(js, /highlightPresets\("\[data-val-preset\]"/);
+  assert.match(js, /highlightPresets\("\[data-mc-preset\]"/);
+});
+
 test("no duplicate element ids", () => {
   const ids = matchAll(/\bid="([^"]+)"/g, html).map((m) => m[1]);
   const seen = new Set();

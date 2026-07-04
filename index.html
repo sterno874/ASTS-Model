@@ -294,18 +294,20 @@
 <!-- ========== Explain ========== -->
 <div id="tab-explain" class="tabpage" hidden>
   <div class="tab-intro-bar expl-intro">
-    <span class="sub">Graded explanations with citations — facts vs model vs community.</span>
-  </div>
-  <div class="facts expl-content page-inner">
-    <div class="expl-lvlnav">
-      <button type="button" class="lvlb active" data-lvl="eli5">ELI5</button>
-      <button type="button" class="lvlb" data-lvl="ms">Middle school</button>
-      <button type="button" class="lvlb" data-lvl="hs">High school</button>
-      <button type="button" class="lvlb" data-lvl="col">College</button>
-      <button type="button" class="lvlb" data-lvl="pro">Professional</button>
-      <button type="button" class="lvlb" data-lvl="phd">PhD</button>
+    <p class="sub expl-lead">Graded explanations with citations — facts vs model vs community.</p>
+    <div class="expl-lvlnav" role="group" aria-label="Explanation depth">
+      <button type="button" class="lvlb active" data-lvl="eli5" aria-pressed="true">ELI5</button>
+      <button type="button" class="lvlb" data-lvl="ms" aria-pressed="false">Middle school</button>
+      <button type="button" class="lvlb" data-lvl="hs" aria-pressed="false">High school</button>
+      <button type="button" class="lvlb" data-lvl="col" aria-pressed="false">College</button>
+      <button type="button" class="lvlb" data-lvl="pro" aria-pressed="false">Professional</button>
+      <button type="button" class="lvlb" data-lvl="phd" aria-pressed="false">PhD</button>
     </div>
-    <div id="explbody" class="expl-body card"></div>
+  </div>
+  <div class="facts expl-content">
+    <div class="card expl-card">
+      <div id="explbody"></div>
+    </div>
   </div>
 </div>
 

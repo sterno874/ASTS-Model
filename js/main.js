@@ -589,6 +589,22 @@ function updateHashQuiet() {
   history.replaceState(null, "", buildShareHash(state));
 }
 
+function highlightPresets(sel, attr, id) {
+  document.querySelectorAll(sel).forEach((b) => {
+    const on = b.dataset[attr] === id;
+    b.classList.toggle("p-def", on);
+    b.classList.toggle("active", on);
+  });
+}
+
+function highlightExplainLevel(l) {
+  document.querySelectorAll(".expl-lvlnav .lvlb, .expl-levels .lvlb").forEach((b) => {
+    const on = b.dataset.lvl === l;
+    b.classList.toggle("active", on);
+    b.setAttribute("aria-pressed", on ? "true" : "false");
+  });
+}
+
 function applyConstPreset(name) {
   const p = CONST_PRESETS[name];
   if (!p) return;
@@ -601,7 +617,7 @@ function applyConstPreset(name) {
     const lbl = $("c" + k + "Val");
     if (lbl) lbl.textContent = v;
   }
-  document.querySelectorAll("[data-const-preset]").forEach((b) => b.classList.toggle("active", b.dataset.constPreset === name));
+  highlightPresets("[data-const-preset]", "constPreset", name);
   updateNow(false);
   if (!restoringState) updateHashQuiet();
 }
@@ -619,7 +635,7 @@ function applyValPreset(name) {
     const lbl = $("vv_" + id + "Val");
     if (lbl) lbl.textContent = typeof v === "number" && v < 1 ? v : v;
   }
-  document.querySelectorAll("[data-val-preset]").forEach((b) => b.classList.toggle("active", b.dataset.valPreset === name));
+  highlightPresets("[data-val-preset]", "valPreset", name);
   updateNow(false);
   if (!restoringState) updateHashQuiet();
 }
@@ -737,9 +753,10 @@ function switchTab(t, fromRestore = false) {
 }
 
 function showLevel(l) {
+  if (!EXPLAIN_LEVELS.includes(l)) l = "eli5";
   curLvl = l;
   state.ui.explainLvl = l;
-  document.querySelectorAll(".lvlb").forEach((b) => b.classList.toggle("active", b.dataset.lvl === l));
+  highlightExplainLevel(l);
   const body = $("explbody");
   if (body) body.innerHTML = EXPL[l] || "";
   if (!restoringState) updateHashQuiet();
@@ -872,7 +889,9 @@ function init() {
     };
   });
   initMobileNav();
-  document.querySelectorAll(".lvlb").forEach((b) => (b.onclick = () => showLevel(b.dataset.lvl)));
+  document.querySelectorAll(".expl-lvlnav .lvlb, .expl-levels .lvlb").forEach((b) => {
+    b.onclick = () => showLevel(b.dataset.lvl);
+  });
   document.querySelectorAll("[data-const-preset]").forEach((b) => (b.onclick = () => applyConstPreset(b.dataset.constPreset)));
   document.querySelectorAll("[data-val-preset]").forEach((b) => (b.onclick = () => applyValPreset(b.dataset.valPreset)));
   document.querySelectorAll("[data-dilution-stress]").forEach((b) => {
@@ -885,7 +904,7 @@ function init() {
       const el = $("mcFailureRate");
       if (el) el.value = p.failureRate;
       $("mcFailureRateVal").textContent = p.failureRate;
-      document.querySelectorAll("[data-mc-preset]").forEach((x) => x.classList.toggle("active", x.dataset.mcPreset === b.dataset.mcPreset));
+      highlightPresets("[data-mc-preset]", "mcPreset", b.dataset.mcPreset);
       scheduleUpdate();
     };
   });

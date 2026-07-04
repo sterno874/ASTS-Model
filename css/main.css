@@ -435,8 +435,10 @@
   .presets{align-items:stretch}
   button.p{display:flex;flex-direction:column;justify-content:center}
   .grid2{align-items:stretch}
-  /* explain tab — panel spans content column; prose capped for line length */
-  #tab-explain .facts.expl-content{display:flex;flex-direction:column;gap:var(--space-sm);padding:var(--space-md) var(--page-pad) var(--space-2xl);max-width:var(--content-max);width:100%;margin:0 auto;box-sizing:border-box}
+  /* explain tab — intro bar holds level nav; content card below */
+  #tab-explain .tab-intro-bar.expl-intro{display:flex;flex-direction:column;align-items:stretch;gap:var(--space-md);border-bottom:none;padding-bottom:var(--space-sm);max-width:var(--content-max);width:100%;margin:0 auto;box-sizing:border-box}
+  #tab-explain .facts.expl-content{display:block;padding:var(--space-md) var(--page-pad) var(--space-2xl);max-width:var(--content-max);width:100%;margin:0 auto;box-sizing:border-box}
+  #tab-explain .expl-content{padding-top:0!important}
   #tab-explain .expl-lead{margin:0;max-width:none;font-size:12.5px;line-height:1.45;color:var(--muted)}
   .expl-lvlnav,.expl-levels{display:grid;grid-template-columns:repeat(6,1fr);gap:var(--space-sm);margin:0;width:100%;max-width:none;box-sizing:border-box}
   @media(max-width:900px){.expl-lvlnav,.expl-levels{grid-template-columns:repeat(3,1fr)}}
@@ -444,7 +446,7 @@
   .expl-lvlnav .lvlb,.expl-levels .lvlb{min-width:0;min-height:var(--touch-min);padding:var(--space-sm);border:1px solid var(--line);background:#fff;border-radius:var(--radius-sm);font-size:12px;font-weight:600;cursor:pointer;text-align:center;line-height:1.25;color:var(--ink);white-space:normal;-webkit-tap-highlight-color:transparent}
   .expl-lvlnav .lvlb:hover,.expl-levels .lvlb:hover{border-color:var(--accent);color:var(--accent);background:#f5f8ff}
   .expl-lvlnav .lvlb.active,.expl-levels .lvlb.active{border-color:var(--accent);background:var(--surface-accent);color:var(--accent);font-weight:700;box-shadow:inset 0 0 0 1px rgba(47,111,237,.15)}
-  #tab-explain .expl-card{max-width:none;width:100%;margin:0;padding:var(--space-md) var(--space-lg);flex:1 1 auto;display:flex;flex-direction:column;gap:0}
+  #tab-explain .expl-card{max-width:none;width:100%;margin:0;padding:var(--space-lg);box-sizing:border-box}
   #tab-explain #explbody{font-size:14.5px;line-height:1.7;padding:0;max-width:none}
   #tab-explain #explbody h3{margin:0 0 var(--space-md);font-size:18px;line-height:1.3;color:var(--ink);letter-spacing:-.01em}
   #tab-explain #explbody h4{margin:var(--space-lg) 0 var(--space-sm);font-size:14px;line-height:1.35;color:var(--ink);font-weight:700}
@@ -453,7 +455,7 @@
   #tab-explain #explbody p:last-child{margin-bottom:0}
   #tab-explain #explbody a{color:var(--accent);text-decoration:none;font-weight:500}
   #tab-explain #explbody a:hover{text-decoration:underline}
-  #tab-explain #explbody .tag{margin-right:6px;margin-left:0;vertical-align:baseline;white-space:nowrap}
+  #tab-explain #explbody .tag{margin-right:6px;margin-left:0;margin-bottom:2px;vertical-align:baseline;white-space:nowrap}
   #tab-explain .expl-sources{margin:var(--space-md) 0 0;padding-top:var(--space-md);border-top:1px solid var(--line);max-width:none;font-size:12px;line-height:1.5;color:var(--muted)}
   #tab-explain .expl-sources a{color:var(--accent);text-decoration:none;font-weight:500}
   #tab-explain .expl-sources a:hover{text-decoration:underline}
