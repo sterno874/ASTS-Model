@@ -52,6 +52,8 @@ test("technology tab has link budget sim", () => {
 test("technology tab has coverage orbit sim", () => {
   assert.match(html, /id="coverage-orbit-sim"/);
   assert.match(html, /id="coverageSvg"/);
+  assert.match(html, /id="d2cArchSvg"/);
+  assert.match(html, /co-overlap-explainer/);
 });
 
 test("constellation tab has Monte Carlo controls", () => {
