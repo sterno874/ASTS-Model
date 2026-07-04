@@ -2,7 +2,7 @@
 
 Interactive due-diligence explorer for **AST SpaceMobile (NASDAQ: ASTS)** — constellation scale, MNO commercial path, link-budget pedagogy, and scenario valuation with primary-source tags.
 
-**Live (placeholder):** [asts-model.vercel.app](https://asts-model.vercel.app/)  
+**Live:** [asts-model-phi.vercel.app](https://asts-model-phi.vercel.app/)  
 **Research memo:** [RESEARCH.md](./RESEARCH.md)
 
 ## Tabs
@@ -30,7 +30,7 @@ npm run test:mutation  # 100% mutation kill rate on core math
 
 ## Deploy (Vercel)
 
-Connect this repo; `vercel.json` enables clean URLs. Set production domain to `asts-model.vercel.app`. Deploys `api/quote.js` as `/api/quote` — Yahoo Finance only, no API keys.
+Connect this repo; `vercel.json` enables clean URLs. Production domain: `asts-model-phi.vercel.app`. Deploys `api/quote.js` as `/api/quote` — Yahoo Finance only, no API keys.
 
 ### Delayed stock quote (header strip)
 
