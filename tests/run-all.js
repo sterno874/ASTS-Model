@@ -19,7 +19,8 @@ const files = [
   "commercial.test.js",
   "kook-report.test.js",
   "presets.test.js",
-  "device.test.js"
+  "device.test.js",
+  "explain-content.test.js"
 ].map((f) => path.join(dir, f));
 const result = spawnSync(process.execPath, ["--test", ...files], { stdio: "inherit" });
 process.exit(result.status === null ? 1 : result.status);

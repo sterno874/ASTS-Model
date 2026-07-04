@@ -21,7 +21,8 @@ export const MUTATION_TARGETS = [
     id: "rev-proxy-multiply",
     file: "js/math/constellation.js",
     description: "Drop ARPU annualization in wholesale revenue",
-    apply: (src) => src.replace("return activeSubsM * arpuMonthly * 12;", "return activeSubsM * arpuMonthly;")
+    apply: (src) =>
+      src.replace("annualRevenueM: activeSubsM * arpuMonthly * 12", "annualRevenueM: activeSubsM * arpuMonthly")
   },
   {
     id: "ev-per-share-cash",
@@ -68,8 +69,8 @@ export const MUTATION_TARGETS = [
     description: "Linear overlap instead of probabilistic",
     apply: (src) =>
       src.replace(
-        "const uncapped = 1 - Math.pow(1 - f, satCount);",
-        "const uncapped = f * satCount;"
+        "return Math.min(1, 1 - Math.pow(1 - f, satCount));",
+        "return Math.min(1, f * satCount);"
       )
   }
 ];
