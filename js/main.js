@@ -39,7 +39,9 @@ import {
   decodeShareHash,
   parseEmbedMode,
   computeValuationMetrics,
-  computeHeaderStrip
+  computeHeaderStrip,
+  formatShareDilutionSubtitle,
+  REF_SHARES_M
 } from "./ui/state.js";
 import { buildBands, renderBands } from "./ui/bands.js";
 import {
@@ -98,6 +100,7 @@ function loadCommunityDD() {
 let updateRaf = null;
 let liveQuote = null;
 let stopQuotePoll = null;
+let lastQuoteSharesM = null;
 const tabsDirty = { constellation: true, commercial: true, value: true, explain: true, technology: true };
 
 const TAB_SHORT_LABELS = {
@@ -197,6 +200,37 @@ function readConstState() {
     if (el) s[k] = +el.value;
   }
   return s;
+}
+
+function formatValSliderLabel(k, v) {
+  if (typeof v !== "number") return String(v);
+  if (k === "v_penetration" || k === "v_coverageFrac" || (v > 0 && v < 1)) return v.toFixed(3);
+  return String(v);
+}
+
+/** Constellation tab → valuation wholesale inputs (coverage, pen, ARPU, MNO subs). */
+function syncConstellationMetricsToValSliders(metrics) {
+  const links = {
+    v_mnoSubsM: metrics.mnoSubsM,
+    v_penetration: metrics.penetration,
+    v_arpuMonthly: metrics.arpuMonthly,
+    v_coverageFrac: metrics.coverageFrac
+  };
+  for (const [k, v] of Object.entries(links)) {
+    state.val[k] = v;
+    const id = k.replace(/^v_/, "");
+    const el = $("vv_" + id);
+    if (el) el.value = v;
+    const lbl = $("vv_" + id + "Val");
+    if (lbl) lbl.textContent = formatValSliderLabel(k, v);
+  }
+}
+
+function refreshLiveQuotePollIfSharesChanged(sharesM) {
+  const s = Number.isFinite(sharesM) && sharesM > 0 ? sharesM : state.val?.v_shares;
+  if (!Number.isFinite(s) || s <= 0 || lastQuoteSharesM === s) return;
+  lastQuoteSharesM = s;
+  initLiveQuote();
 }
 
 function readValState() {
@@ -590,6 +624,17 @@ function updateValUI() {
   };
   set("vEv", fmtM(v.ev));
   set("vPerSh", "$" + v.perSh.toFixed(2));
+  const perShDil = $("vPerShDil");
+  if (perShDil) {
+    const dilNote = formatShareDilutionSubtitle(val.v_shares);
+    if (dilNote) {
+      perShDil.textContent = dilNote;
+      perShDil.hidden = false;
+    } else {
+      perShDil.textContent = "";
+      perShDil.hidden = true;
+    }
+  }
   set("vPeak", fmtM(v.totalPeak) + "/yr");
   set("vRunway", v.runwayMo === Infinity ? "∞" : v.runwayMo.toFixed(0) + " mo");
   const tbody = $("vRowsBody");
@@ -675,6 +720,8 @@ function updateHeader() {
 
 function initLiveQuote() {
   if (parseEmbedMode() || typeof fetch === "undefined") return;
+  const sharesM = state.val.v_shares;
+  lastQuoteSharesM = sharesM;
   if (stopQuotePoll) stopQuotePoll();
   stopQuotePoll = startLiveQuotePoll(
     DEFAULT_TICKER,
@@ -683,15 +730,22 @@ function initLiveQuote() {
       updateHeader();
       if (activeTab === "value") updateValMarketBlock(computeFullValuation(state.val));
     },
-    { sharesM: state.val.v_shares }
+    { sharesM }
   );
 }
 
 function updateNow(forceHash) {
+  const c = readConstState();
+  state.constellation = { ...state.constellation, ...c };
+  syncConstellationMetricsToValSliders(computeConstellationMetrics(c));
+  state.val = readValState();
+  refreshLiveQuotePollIfSharesChanged(state.val.v_shares);
   if (activeTab === "constellation" || forceHash) updateConstUI();
   if (activeTab === "commercial" || forceHash) updateCommercialUI();
   if (activeTab === "value" || forceHash) updateValUI();
   if (activeTab === "technology" || forceHash) updateLinkUI();
+  updateHeader();
+  if (!restoringState && forceHash !== "restore") updateHashQuiet();
 }
 
 const scheduleUpdate = debounce(() => updateNow(false), 80);
@@ -761,8 +815,8 @@ function applyDilutionStress(sharesM) {
   const lbl = $("vv_sharesVal");
   if (lbl) lbl.textContent = sharesM;
   syncDilutionPresetButtons(sharesM);
-  updateValUI();
-  if (!restoringState) updateHashQuiet();
+  refreshLiveQuotePollIfSharesChanged(sharesM);
+  updateNow(true);
 }
 
 function applyState(next) {
@@ -791,7 +845,7 @@ function applyState(next) {
   if (state.activeConstPreset) applyConstPreset(state.activeConstPreset);
   if (state.activeValPreset) applyValPreset(state.activeValPreset);
   restoringState = false;
-  updateNow(true);
+  updateNow("restore");
 }
 
 function openMobileNav() {

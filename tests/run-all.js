@@ -11,6 +11,7 @@ const files = [
   "verified-milestones.test.js",
   "bands.test.js",
   "share.test.js",
+  "share-dilution.test.js",
   "ui-logic.test.js",
   "dom-smoke.test.js",
   "market-quote.test.js",

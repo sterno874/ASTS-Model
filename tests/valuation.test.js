@@ -91,3 +91,13 @@ test("vs-mkt range spans operating to combined equity", () => {
 test("runway uses quarterly-to-months factor of 3", () => {
   assert.equal(computeRunwayMonths(300, 100), 9);
 });
+
+test("256M→360M share dilution drops $/sh ~29% with same EV", () => {
+  const base = computeFullValuation({ ...DEFAULT_STATE.val, v_shares: 256 });
+  const diluted = computeFullValuation({ ...DEFAULT_STATE.val, v_shares: 360 });
+  assert.ok(Math.abs(diluted.ev - base.ev) < 0.02, "EV must not change with share count");
+  const ratio = diluted.perSh / base.perSh;
+  assert.ok(Math.abs(ratio - 256 / 360) < 0.001);
+  const dropPct = (1 - ratio) * 100;
+  assert.ok(Math.abs(dropPct - 28.9) < 0.5, `expected ~29% drop, got ${dropPct.toFixed(1)}%`);
+});

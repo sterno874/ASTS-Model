@@ -95,6 +95,20 @@ export const DEFAULT_STATE = {
   ui: { explainLvl: "eli5", showHeaderStrip: true, showOptionalityRange: false }
 };
 
+/** FY2025 diluted shares anchor (M) — 10-K default denominator. */
+export const REF_SHARES_M = 256;
+
+/** UX subtitle when share slider differs from anchor — EV unchanged, $/sh scales ÷ shares. */
+export function formatShareDilutionSubtitle(sharesM, refSharesM = REF_SHARES_M, refLabel = "256M FY25") {
+  if (!Number.isFinite(sharesM) || !Number.isFinite(refSharesM) || refSharesM <= 0) return "";
+  if (Math.abs(sharesM - refSharesM) < 0.05) return "";
+  const sharePct = (sharesM / refSharesM - 1) * 100;
+  const perShPct = (refSharesM / sharesM - 1) * 100;
+  const shareSign = sharePct >= 0 ? "+" : "−";
+  const psSign = perShPct >= 0 ? "+" : "−";
+  return `${shareSign}${Math.abs(sharePct).toFixed(0)}% vs ${refLabel} · ${psSign}${Math.abs(perShPct).toFixed(0)}% $/sh · EV unchanged`;
+}
+
 export const CONST_PRESETS = {
   base: { sats: 10, targetSats: 45, penetration: 0.02, arpuMonthly: 3, label: "Base — 10 sats today" },
   ramp: { sats: 25, targetSats: 45, penetration: 0.025, arpuMonthly: 3.5, label: "Ramp — mid-2026 target" },
