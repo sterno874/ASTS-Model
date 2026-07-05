@@ -9,9 +9,11 @@ import {
   verifyEvReconciliation,
   computeEquityM,
   COMPARABLES,
-  P_COMMERCIAL_FRAMING
+  P_COMMERCIAL_FRAMING,
+  splitOperatingOptionality
 } from "../js/math/valuation.js";
 import { DEFAULT_STATE, VAL_PRESETS } from "../js/ui/state.js";
+import { computeVsMarketRange } from "../js/ui/market-quote.js";
 
 test("segment rows sum to total EV", () => {
   const v = computeFullValuation(DEFAULT_STATE.val);
@@ -61,6 +63,29 @@ test("bull preset EV exceeds bear and reflects 45+ sats thesis", () => {
   assert.ok(bull.equityM > 15_000, "commercial bull should reach mid-teens $B equity");
   assert.ok(bull.operatingEquityM < bull.equityM);
   assert.ok(bull.platform >= 5000);
+});
+
+test("constellation248 preset equity exceeds commercial bull and is model-only", () => {
+  const c248 = computeFullValuation({ ...DEFAULT_STATE.val, ...VAL_PRESETS.constellation248 });
+  const bull = computeFullValuation({ ...DEFAULT_STATE.val, ...VAL_PRESETS.bull });
+  assert.ok(c248.equityM > bull.equityM);
+  assert.ok(VAL_PRESETS.constellation248.modelOnly);
+});
+
+test("operating vs optionality split sums to combined equity", () => {
+  const v = computeFullValuation({ ...DEFAULT_STATE.val, ...VAL_PRESETS.bull });
+  const split = splitOperatingOptionality(v);
+  assert.ok(Math.abs(split.operatingEquityM + split.optionalityM - split.totalEquityM) < 0.02);
+  assert.equal(split.optionalityM, v.platform);
+});
+
+test("vs-mkt range spans operating to combined equity", () => {
+  const v = computeFullValuation({ ...DEFAULT_STATE.val, ...VAL_PRESETS.base });
+  const mktCapM = 33_000;
+  const split = splitOperatingOptionality(v);
+  const range = computeVsMarketRange(split.operatingEquityM, split.totalEquityM, mktCapM);
+  assert.match(range.rangeLabel, /→/);
+  assert.ok(range.total.upsideMult > range.operating.upsideMult);
 });
 
 test("runway uses quarterly-to-months factor of 3", () => {

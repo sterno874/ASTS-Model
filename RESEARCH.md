@@ -291,7 +291,6 @@ Community tracks **Form 4** sales by executives (Q3 2025–Q1 2026). **Partial v
 
 **Usage guidance:** Treat rows 1–6 and 9–10 as **catalyst pointers** worth verifying each week against SEC 8-K and launch manifests. Rows 11–13 and 16 are **recurring errors** — safe to down-weight in revenue models.
 
-
 ---
 
 ## Patents & intellectual property
@@ -354,7 +353,6 @@ Community tracks **Form 4** sales by executives (Q3 2025–Q1 2026). **Partial v
 | **Geolocation** | Doppler + TOF from spaceborne arrays | Gov / emergency use cases | partial |
 
 **Cross-check note:** Patent counts in IR (3,900+) include **pending** claims globally; granted US count is a subset. Competitors (SpaceX, Lynk) have their own D2D portfolios — FTO disputes are possible but none disclosed in 10-K as material litigation as of FY2025.
-
 
 ---
 
@@ -438,7 +436,6 @@ Community tracks **Form 4** sales by executives (Q3 2025–Q1 2026). **Partial v
 | Starlink D2C | Competing D2D via T-Mobile spectrum — different architecture | verified | SpaceX FCC filings |
 | Lynk / Omnispace | Adjacent D2D / MSS players | partial | Industry status varies |
 
-
 ---
 
 ## Competitor snapshot
@@ -497,7 +494,6 @@ Useful for **catalyst calendar** and **regulatory pointer** (FCC experimental, l
 | FCC parsing | [reddit search](https://www.reddit.com/r/ASTSpaceMobile/search/?q=FCC&restrict_sr=1) |
 | Kook Report refs | [Thread Reader](https://threadreaderapp.com/user/thekookreport) |
 
-
 ---
 
 ## Modeling techniques implemented (ASTS-Model Phase 2)
@@ -511,7 +507,25 @@ Useful for **catalyst calendar** and **regulatory pointer** (FCC experimental, l
 | **Link budget + footprint** | Technology | Friis margin vs elevation; overlap coverage heuristic |
 | **Coverage orbit timeline** | Technology | Milestone months to 45/60 sats |
 
-**Presets:** Bear · Base · Bull · **BAG** (best-available guess — Jul 2026 anchors) · Commercial bull (valuation).
+**Presets:** Bear · Base · **BAG** (best-available guess — Jul 2026 anchors) · Operating DCF (base) · Commercial bull · **Constellation scale (248 sat)** 🔬 · **Strategic / optionality** 🔬 (valuation).
+
+---
+
+## Valuation methodology {#valuation-methodology}
+
+The ASTS-Model separates **operating DCF** from **optionality overlay** so users can compare near-term wholesale economics to strategic upside without conflating them with Best Available Guess (BAG) or default header scenarios.
+
+| Layer | What it is | Tag | Upgrade path |
+|-------|-----------|-----|--------------|
+| **Operating DCF** | Segment-weighted EV from MNO wholesale peaks × P(commercial) × EV/Revenue + cash − debt | Model inputs on verified business model (wholesale to MNOs) | Wholesale terms, attach rates, or segment revenue in 10-Q/PR |
+| **Optionality overlay** | Platform / strategic NAV lump ($M slider) — constellation scale, MNO stake premium, pre-commercial strategic value | 🔬 **model** until disclosed | Contracted backlog, disclosed rev-share, or strategic transaction values in filings |
+| **Combined equity** | Operating DCF equity + optionality overlay | Scenario sum | Partial verification as milestones move pending → verified |
+
+**Constellation scale (248 sat)** and **Strategic / optionality** presets are explicit **possibility scenarios** — higher coverage, peak revenue, or platform NAV — **not** verified revenue and **not** the default BAG/header. When FCC scale, launch cadence, or wholesale terms are confirmed via PR/filings, entries in `verified-milestones.js` can nudge preset bands (documented in code comments).
+
+**vs market:** At ~$33B class market cap (Jul 2026), operating DCF on base presets often trails mkt cap by a wide margin; commercial bull and 🔬 optionality presets illustrate how the market may be pricing full-constellation and strategic upside beyond near-term wholesale DCF. Enable the vs-mkt **range** checkbox to compare operating-only to operating + optionality.
+
+**Consumer upside band (illustrative):** Model ARPU sliders are **wholesale $/sub/mo to AST**. An illustrative consumer rev-share band ($1–5/mo AST take if terms were disclosed) is shown for context only — **not** the rejected "$3 × 3B subs" community math. See Commercial tab Community DD.
 
 ---
 
@@ -628,4 +642,3 @@ Facts in the app header grid carry `data-as-of` ISO dates. Items older than **90
 ---
 
 *End of RESEARCH.md — ASTS-Model Phase 2 / Workstream 8*
-

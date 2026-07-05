@@ -26,6 +26,13 @@ test("VAL_PRESETS commercial bull exceeds bear EV inputs", () => {
   assert.equal(VAL_PRESETS.bull.v_coverageFrac, 0.6);
 });
 
+test("VAL_PRESETS has operating base and model optionality presets", () => {
+  assert.equal(VAL_PRESETS.base.label, "Operating DCF (base)");
+  assert.ok(VAL_PRESETS.constellation248.modelOnly);
+  assert.ok(VAL_PRESETS.strategic.modelOnly);
+  assert.ok(VAL_PRESETS.constellation248.v_platform > VAL_PRESETS.bull.v_platform);
+});
+
 test("coverage preset ramps sats to 45", () => {
   assert.equal(CONST_PRESETS.coverage.sats, 45);
 });

@@ -92,7 +92,7 @@ export const DEFAULT_STATE = {
     satsPerLaunch: 3,
     launchIntervalMonths: 1.5
   },
-  ui: { explainLvl: "eli5", showHeaderStrip: true }
+  ui: { explainLvl: "eli5", showHeaderStrip: true, showOptionalityRange: false }
 };
 
 export const CONST_PRESETS = {
@@ -105,7 +105,13 @@ export const CONST_PRESETS = {
 };
 
 export const VAL_PRESETS = {
-  base: { v_penetration: 0.015, v_pCommercial: 0.45, v_mult: 5, v_platform: 500, label: "Base" },
+  base: {
+    v_penetration: 0.015,
+    v_pCommercial: 0.45,
+    v_mult: 5,
+    v_platform: 500,
+    label: "Operating DCF (base)"
+  },
   bull: {
     v_penetration: 0.05,
     v_pCommercial: 0.75,
@@ -114,6 +120,26 @@ export const VAL_PRESETS = {
     v_arpuMonthly: 5,
     v_coverageFrac: 0.6,
     label: "Commercial bull — 45+ sats scale"
+  },
+  constellation248: {
+    v_penetration: 0.04,
+    v_pCommercial: 0.65,
+    v_mult: 11,
+    v_platform: 8000,
+    v_arpuMonthly: 5.5,
+    v_coverageFrac: 0.85,
+    label: "Constellation scale (248 sat)",
+    modelOnly: true
+  },
+  strategic: {
+    v_penetration: 0.025,
+    v_pCommercial: 0.55,
+    v_mult: 7,
+    v_platform: 12000,
+    v_arpuMonthly: 4,
+    v_coverageFrac: 0.5,
+    label: "Strategic / optionality",
+    modelOnly: true
   },
   bear: { v_penetration: 0.008, v_pCommercial: 0.25, v_mult: 3, v_platform: 200, label: "Bear" }
 };
@@ -176,6 +202,7 @@ export function computeHeaderStrip(state, valMetrics, constMetrics, liveQuote = 
   const cov = constMetrics?.pctToContinuous ?? 0;
   const shares = state.val?.v_shares ?? 256;
   const equity = valMetrics?.equityM ?? 0;
+  const operatingEquityM = valMetrics?.operatingEquityM ?? equity;
   const refPrice =
     liveQuote?.ok && liveQuote.price != null ? liveQuote.price : state.val?.v_refPrice ?? 45;
   const refSource = liveQuote?.ok && liveQuote.price != null ? "live" : "illustrative";
@@ -193,6 +220,7 @@ export function computeHeaderStrip(state, valMetrics, constMetrics, liveQuote = 
     refSource,
     vsRefLabel: refSource === "live" ? "vs mkt" : "vs-ref",
     equity,
+    operatingEquityM,
     mktCapM,
     marketCapEstimated: !!(liveQuote?.ok && liveQuote.marketCapEstimated),
     upsideLabel: vsMkt.upsideLabel,

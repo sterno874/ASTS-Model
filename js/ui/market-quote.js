@@ -88,6 +88,16 @@ export function computeVsMarketUpside(equityM, marketCapM) {
   return { upsidePct, upsideMult, upsideLabel, direction };
 }
 
+export function computeVsMarketRange(operatingEquityM, totalEquityM, marketCapM) {
+  const operating = computeVsMarketUpside(operatingEquityM, marketCapM);
+  const total = computeVsMarketUpside(totalEquityM, marketCapM);
+  if (!Number.isFinite(operating.upsidePct) || !Number.isFinite(total.upsidePct)) {
+    return { operating, total, rangeLabel: "—" };
+  }
+  const rangeLabel = `${operating.upsideLabel} → ${total.upsideLabel}`;
+  return { operating, total, rangeLabel };
+}
+
 export async function fetchLiveQuote(symbol, options = {}) {
   const { fetchFn = globalThis.fetch, apiBase = "/api/quote", sharesM, signal } = options;
   const params = new URLSearchParams({ symbol });

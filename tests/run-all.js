@@ -8,6 +8,7 @@ const files = [
   "constellation.test.js",
   "link-budget.test.js",
   "valuation.test.js",
+  "verified-milestones.test.js",
   "bands.test.js",
   "share.test.js",
   "ui-logic.test.js",

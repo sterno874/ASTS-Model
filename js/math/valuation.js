@@ -81,6 +81,14 @@ export function computeEquityM(evM, cashM, debtM) {
   return evM + cashM - debtM;
 }
 
+/** Operating DCF vs optionality overlay — platform lump is explicit unmodeled strategic NAV. */
+export function splitOperatingOptionality(valMetrics) {
+  const operatingEquityM = valMetrics.operatingEquityM ?? 0;
+  const optionalityM = valMetrics.platform ?? 0;
+  const totalEquityM = valMetrics.equityM ?? operatingEquityM + optionalityM;
+  return { operatingEquityM, optionalityM, totalEquityM };
+}
+
 export function verifyEvReconciliation(rows, platformM, evM, tol = 0.02) {
   const rowSum = rows.reduce((s, r) => s + r.evContrib, 0) + platformM;
   return Math.abs(rowSum - evM) <= tol;

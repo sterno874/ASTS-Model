@@ -3,7 +3,7 @@
 import { computeConstellationMetrics, monthsToTarget, launchSchedule, CONSTELLATION_ANCHORS } from "./math/constellation.js";
 import { computeLinkBudget, BLOCK_PRESETS } from "./math/link-budget.js";
 import { drawLinkSvg, updateLinkGauge, updateFriisPanel, syncBlockPresetButtons } from "./ui/link-budget-sim.js";
-import { computeFullValuation, COMPARABLES, FILING_ANCHORS } from "./math/valuation.js";
+import { computeFullValuation, COMPARABLES, FILING_ANCHORS, splitOperatingOptionality } from "./math/valuation.js";
 import {
   MNO_PARTNERS,
   CATALYSTS,
@@ -48,8 +48,10 @@ import {
   formatApproxPrice,
   buildQuoteMeta,
   computeVsMarketUpside,
+  computeVsMarketRange,
   startLiveQuotePoll
 } from "./ui/market-quote.js";
+import { renderMilestoneStripHtml, applyVerifiedNudges, VERIFIED_MILESTONES } from "./math/verified-milestones.js";
 import { EXPLAIN_FOUNDATION } from "./content/explain-foundation.js";
 
 const $ = (id) => document.getElementById(id);
@@ -142,7 +144,9 @@ const EXPL = {
 <h4>Wholesale economics — what we can and cannot model</h4>
 <p><span class="tag f">Fact</span> Revenue today: Q1 2026 <b>$14.7M</b> (gateway + gov milestones). Wholesale rev-share rates and per-MNO pricing are <b>not disclosed</b> in SEC filings (<a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001780312" target="_blank" rel="noopener">10-Q</a>).</p>
 <p><span class="tag u">Assumption</span> ~60 MNO agreements covering 3B+ subs are addressable TAM, not contracted ARR — commercial terms largely undisclosed (<a href="https://ast-science.com/" target="_blank" rel="noopener">IR</a>).</p>
-<p><span class="tag m">Model</span> Valuation tab uses segment-weighted EV = Σ (peakRev × P(commercial) × EV/Revenue × weight). Constellation tab ARPU slider is wholesale $/sub/month proxy — not carrier consumer pricing.</p>
+<p><span class="tag m">Model</span> Valuation tab uses segment-weighted EV = Σ (peakRev × P(commercial) × EV/Revenue × weight) + platform optionality ($M). Constellation tab ARPU slider is wholesale $/sub/month proxy — not carrier consumer pricing.</p>
+<h4>Operating DCF vs market optionality</h4>
+<p><span class="tag m">Model</span> <b>Operating DCF (base)</b> presets anchor near-term wholesale segment EV + cash − debt. <b>Commercial bull</b> scales 45+ sats operating assumptions. <b>Constellation scale (248 sat)</b> and <b>Strategic / optionality</b> presets (🔬) show higher coverage, peak revenue, or platform NAV as <em>explicit possibilities</em> — not Best Available Guess and not the default header scenario. Outputs split <b>Operating DCF equity</b> vs <b>Optionality overlay</b>; vs-mkt can compare operating-only to operating + optionality when the range checkbox is enabled. Market cap (~$33B class) often embeds strategic upside beyond operating DCF — the gap is optionality, not necessarily model error.</p>
 <h4>Capital structure &amp; dilution path</h4>
 <p><span class="tag f">Fact</span> Three convertible tranches (~$460M + $575M + $1.0B) at effective conversion ~$85–$120/sh; Jul 2025 $575M close documented (<a href="https://www.businesswire.com/news/home/20250729408729/en/" target="_blank" rel="noopener">Business Wire</a> · <a href="https://www.sec.gov/Archives/edgar/data/1780312/000149315226019390/formars.pdf" target="_blank" rel="noopener">10-K</a>).</p>
 <p><span class="tag f">Fact</span> Q1 2026 equity footnote: Class A ~298.5M + Class B ~11.2M + Class C ~78.2M shares — multi-class structure complicates per-share math (<a href="https://www.sec.gov/Archives/edgar/data/1780312/000119312526216950/R21.htm" target="_blank" rel="noopener">Q1 2026 10-Q equity note</a>).</p>
@@ -344,14 +348,38 @@ function syncDilutionPresetButtons(sharesM) {
   });
 }
 
+function renderVerifiedMilestones() {
+  const html = renderMilestoneStripHtml(VERIFIED_MILESTONES);
+  const val = $("verifiedMilestonesVal");
+  const comm = $("verifiedMilestonesComm");
+  if (val) val.innerHTML = html;
+  if (comm) comm.innerHTML = html;
+}
+
+function updateValPresetNote(name) {
+  const note = $("valPresetNote");
+  if (!note) return;
+  const p = VAL_PRESETS[name];
+  if (!p) return;
+  if (p.modelOnly) {
+    note.innerHTML = `<span class="tag m">🔬 Model</span> <b>${p.label}</b> — possibility scenario only; not verified revenue or default BAG. Upgrade toward verified when PR/filings disclose wholesale terms or scale revenue.`;
+    return;
+  }
+  note.innerHTML = `<span class="tag m">Model</span> Operating DCF presets anchor near-term wholesale; 🔬 presets show constellation/strategic upside as explicit possibilities — not default BAG/header.`;
+}
+
 function updateValMarketBlock(valMetrics) {
   const set = (id, txt) => {
     const el = $(id);
     if (el) el.textContent = txt;
   };
   set("vQuoteLabel", QUOTE_LABEL);
-  const equityM = valMetrics?.equityM ?? 0;
-  set("vEquity", fmtM(equityM));
+  const split = splitOperatingOptionality(valMetrics);
+  set("vOperatingEquity", fmtM(split.operatingEquityM));
+  set("vOptionality", fmtM(split.optionalityM));
+  set("vEquity", fmtM(split.totalEquityM));
+  const arpu = state.val?.v_arpuMonthly ?? 3;
+  set("vWholesaleArpu", "$" + arpu);
   if (liveQuote?.loading) {
     set("vMktPrice", "…");
     set("vMktMeta", "fetching delayed quote…");
@@ -372,17 +400,21 @@ function updateValMarketBlock(valMetrics) {
     set("vMktPrice", formatApproxPrice(refPrice));
     set("vMktMeta", liveQuote && !liveQuote.ok ? "quote unavailable — using illustrative ref" : "illustrative ref price");
   }
-  const u = computeVsMarketUpside(equityM, mktCapM);
-  set("vVsMkt", u.upsideLabel);
+  const showRange = !!state.ui.showOptionalityRange;
+  const u = showRange
+    ? computeVsMarketRange(split.operatingEquityM, split.totalEquityM, mktCapM)
+    : { rangeLabel: null, operating: computeVsMarketUpside(split.totalEquityM, mktCapM), total: null };
+  const vs = showRange ? u : { upsideLabel: u.operating.upsideLabel, direction: u.operating.direction };
+  set("vVsMkt", showRange ? u.rangeLabel : vs.upsideLabel);
   const note = $("vVsMktNote");
   if (note) {
-    const operatingM = valMetrics?.operatingEquityM ?? equityM;
-    const platformM = valMetrics?.platform ?? 0;
-    let framing = `Model equity ${fmtM(equityM)} vs mkt cap ${fmtM(mktCapM)}`;
-    if (u.direction === "downside" && platformM > 0) {
-      framing += ` · Operating DCF (ex-platform) ${fmtM(operatingM)}`;
+    let framing = showRange
+      ? `Operating ${fmtM(split.operatingEquityM)} → combined ${fmtM(split.totalEquityM)} vs mkt cap ${fmtM(mktCapM)}`
+      : `Model equity ${fmtM(split.totalEquityM)} vs mkt cap ${fmtM(mktCapM)}`;
+    if ((vs.direction || u.operating?.direction) === "downside" && split.optionalityM > 0) {
+      framing += ` · Operating DCF (ex-platform) ${fmtM(split.operatingEquityM)}`;
     }
-    if (u.direction === "downside") {
+    if ((vs.direction || u.operating?.direction) === "downside") {
       framing += " — market prices full-constellation optionality beyond near-term wholesale DCF";
     }
     framing += " — scenario math, not investment advice.";
@@ -629,12 +661,14 @@ function updateHeader() {
   } else if (liveQuote && !liveQuote.ok) {
     quoteBlock = `<span class="best-est-sep">·</span><span class="best-est-item market-live"><span class="best-est-label">${QUOTE_LABEL} <span class="tag f">market</span></span><span class="best-est-val best-est-val--error">—</span><span class="best-est-sub">unavailable</span></span>`;
   }
-  const upsideTitle = `Model equity ${fmtM(h.equity)} vs mkt cap ${fmtM(h.mktCapM)}${h.vsMktDirection === "downside" ? " — market prices constellation optionality" : ""}. Not investment advice.`;
+  const upsideTitle = `Operating ${fmtM(h.operatingEquityM)} · combined ${fmtM(h.equity)} vs mkt cap ${fmtM(h.mktCapM)}${h.vsMktDirection === "downside" ? " — market embeds optionality beyond operating DCF" : ""}. Not investment advice.`;
   strip.innerHTML = `<span class="best-est-item best-est-item--scenario"><span class="best-est-label">Scenario</span><span class="best-est-val best-est-val--scenario">${CONST_PRESETS[h.preset]?.label || h.preset}</span></span>
     <span class="best-est-sep">·</span><span class="best-est-item"><span class="best-est-label">Sats</span><span class="best-est-val">${h.sats}</span></span>
     <span class="best-est-sep">·</span><span class="best-est-item"><span class="best-est-label">→ Continuous</span><span class="best-est-val">${h.cov.toFixed(0)}%</span></span>
+    <span class="best-est-sep">·</span><span class="best-est-item"><span class="best-est-label">Operating DCF</span><span class="best-est-val">${fmtM(h.operatingEquityM)}</span></span>
     <span class="best-est-sep">·</span><span class="best-est-item"><span class="best-est-label">Model equity</span><span class="best-est-val">${fmtM(h.equity)}</span></span>
-    <span class="best-est-sep">·</span><span class="best-est-item"><span class="best-est-label">$/sh</span><span class="best-est-val">$${h.perSh.toFixed(2)}</span></span>` +
+    <span class="best-est-sep">·</span><span class="best-est-item"><span class="best-est-label">$/sh</span><span class="best-est-val">$${h.perSh.toFixed(2)}</span></span>
+    <span class="best-est-sep">·</span><span class="best-est-item best-est-item--note"><span class="best-est-sub">Mkt cap often embeds optionality beyond operating DCF</span></span>` +
     quoteBlock +
     `<span class="best-est-sep">·</span><span class="best-est-item" title="${upsideTitle}"><span class="best-est-label">${h.vsRefLabel} <span class="tag m">model</span></span><span class="best-est-val">${h.upsideLabel}</span></span>`;
 }
@@ -701,11 +735,12 @@ function applyConstPreset(name) {
 }
 
 function applyValPreset(name) {
-  const p = VAL_PRESETS[name];
-  if (!p) return;
+  const raw = VAL_PRESETS[name];
+  if (!raw) return;
+  const p = applyVerifiedNudges(name, raw);
   state.activeValPreset = name;
   for (const [k, v] of Object.entries(p)) {
-    if (k === "label") continue;
+    if (k === "label" || k === "modelOnly") continue;
     state.val[k] = v;
     const id = k.replace(/^v_/, "");
     const el = $("vv_" + id);
@@ -714,6 +749,7 @@ function applyValPreset(name) {
     if (lbl) lbl.textContent = typeof v === "number" && v < 1 ? v : v;
   }
   highlightPresets("[data-val-preset]", "valPreset", name);
+  updateValPresetNote(name);
   updateNow(false);
   if (!restoringState) updateHashQuiet();
 }
@@ -960,6 +996,7 @@ function init() {
 
   buildBands($);
   renderStaticPanels();
+  renderVerifiedMilestones();
   drawD2cArchSvg();
   initFactsAsOf();
 
@@ -1011,6 +1048,11 @@ function init() {
     bindRange("lk_" + k, "lk_" + k + "Val");
   });
   $("v_riskadj")?.addEventListener("change", scheduleUpdate);
+  $("v_showOptionalityRange")?.addEventListener("change", (e) => {
+    state.ui.showOptionalityRange = !!e.target.checked;
+    updateValMarketBlock(computeFullValuation(state.val));
+    if (!restoringState) updateHashQuiet();
+  });
   $("ccalendarYear")?.addEventListener("input", () => {
     $("ccalendarYearVal").textContent = $("ccalendarYear").value;
     updateCommercialUI();
@@ -1037,6 +1079,8 @@ function init() {
     showLevel("eli5");
     updateNow(true);
   }
+  const optRange = $("v_showOptionalityRange");
+  if (optRange) optRange.checked = !!state.ui.showOptionalityRange;
   initLiveQuote();
 }
 

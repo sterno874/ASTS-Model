@@ -84,6 +84,9 @@ test("valuation tab has dilution path table", () => {
   assert.match(html, /data-dilution-stress="280"/);
   assert.match(html, /id="vVsMkt"/);
   assert.match(html, /Q1 2026 filing anchors/);
+  assert.match(html, /data-val-preset="constellation248"/);
+  assert.match(html, /id="vOperatingEquity"/);
+  assert.match(html, /id="verifiedMilestonesVal"/);
 });
 
 test("community DD expandable panel present", () => {
